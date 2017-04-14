@@ -1,0 +1,43 @@
+{
+  "manifest_version": 2,
+
+  "name": "MovieMania",
+  "description": "This extension takes care of all your movie needs.",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "images/movie-icon-48.png",
+    "default_title": "MovieMania"
+  },
+  "icons": {
+    "16": "images/movie-icon-16.png",
+    "48": "images/movie-icon-48.png",
+    "128": "images/movie-icon-128.png"
+  },
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "<all_urls>",
+    "webRequest",
+    "webRequestBlocking",
+    "background",
+    "downloads",
+    "downloads.shelf",
+    "downloads.open"
+  ],
+  "background" : {
+    "scripts": [
+      "js/jquery.js",
+      "js/background.js"
+    ],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["css/pub.css"],
+      "js": ["js/jquery.js", "js/pub.js"],
+      "run_at": "document_start"
+    }
+  ]
+}

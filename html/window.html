@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MovieMania</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/window.css">
+    <script src="../js/jquery.js"></script>
+    <script src="../js/md5.js"></script>
+    <script src="../js/layout.js"></script>
+    <script src="../js/movies.js"></script>
+    <script src="../js/rottentomatoes.js"></script>
+    <script src="../js/vumoo.js"></script>
+    <script src="../js/movies123.js"></script>
+    <script src="../js/watchseries.js"></script>
+    <script src="../js/downloads.js"></script>
+    <script src="../js/window.js"></script>
+</head>
+<body>
+    <div class="popup-wrapper" style="display:none">
+        <div class="popup-box">
+            <div class="popup-content">
+                <div class="popup-header">
+
+                </div>
+                <div class="popup-main-part">
+                    <div>
+                        <table>
+                            <thead>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="popup-close">x</div>
+        </div>
+    </div>
+    <div class="waiter-wrapper" style="display:none">
+        <div class="waiter-box">
+            <div class="waiter-content">
+                <div class="waiter-text">
+                    <p></p>
+                </div>
+                <div class="waiter-loader">
+                    <i class="fa fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-wrapper">
+        <div class="header">
+            <div class="row">
+                <div class="header-logo-part">
+                    <div class="header-logo"><img src="../images/bringe_black.png"></div>
+                </div>
+                <div class="header-right">
+                    <div class="row">
+                        <div id="downloads-button">Downloads</div>
+                        <div class="header-close-part">
+                            <div class="close-button">
+                                <i class="fa fa-close" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="search-wrapper">
+        <div class="search-section">
+            <div class="form-group">
+                <form id="searchForm">
+                    <div class="row">
+                        <div class="search-input col-sm-8">
+                            <input id="search-input" type="text" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="search-button col-sm-4">
+                            <button id="search-button" class="btn" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="results-wrapper">
+        <div class="results" id="searchResultsList">
+            <div id="moviesResultsList"></div>
+            <div id="seriesResultsList"></div>
+        </div>
+    </div>
+    <div class="movie-wrapper" style="display:none">
+        <div class="movie-top-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="movie-data-section row">
+                        <div class="movie-poster">
+                            <img>
+                        </div>
+                        <div class="movie-info">
+                            <div class="movie-name-year">
+                                <div class="movie-name"></div>
+                                <div class="movie-year"></div>
+                            </div>
+                            <div class="movie-ratings">
+                                <div class="row">
+                                    <div class="movie-rating-box">
+                                        <img src="../images/rotten_icon.png">
+                                        <div id="movie-rotten-rating" class="movie-rating"></div>
+                                    </div>
+                                    <div id="imdb-movie-rating-box" class="movie-rating-box" style="display: none;">
+                                        <img src="../images/imdb_icon.png">
+                                        <div id="movie-imdb-rating" class="movie-rating"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="movie-download-section">
+                        <div class="movieActionButtons">
+                            <div id="movieStreamButton" class="movieActionButton" style="display:none">
+                                <div class="row">
+                                    <div class="feeling-lucky">
+                                        <i class="fa fa-play-circle" aria-hidden="true"></i>
+                                        <span class="movieActionName">Stream Movie</span>
+                                    </div>
+                                    <div class="movieActionOption">
+                                        <i class="fa fa-angle-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="movieDownloadButton" class="movieActionButton" style="display:none">
+                                <div class="row">
+                                    <div class="feeling-lucky">
+                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                        <span class="movieActionName">Download Movie</span>
+                                    </div>
+                                    <div class="movieActionOption">
+                                        <i class="fa fa-angle-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="movieSubtitleButton" class="movieActionButton" style="display:none">
+                                <div class="row">
+                                    <div class="feeling-lucky">
+                                        <i class="fa fa-creative-commons" aria-hidden="true"></i>
+                                        <span class="movieActionName">Download Subtitles</span>
+                                    </div>
+                                    <div class="movieActionOption">
+                                        <i class="fa fa-angle-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                <div class="movieInfo-section" style="display:none">
+                    <div class="section-header">Movie Info</div>
+                    <div id="movieInfoList">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="synopsis-section" style="display:none">
+                    <div class="section-header">Synopsis</div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div id="movie-synopsis">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="cast-section" style="display:none">
+                    <div class="section-header">The Cast</div>
+                    <div class="cast-list row">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--  Serie Wrapper Start  -->
+
+    <div class="serie-wrapper" style="display:none">
+        <div id="link-route" style="display: none">
+            <button id="route-serie" class="route-box btn btn-info btn-arrow-right"></button>
+            <button id="route-season" class="route-box btn btn-info btn-arrow-right"></button>
+            <button id="route-episode" class="route-box btn btn-info btn-arrow-right"></button>
+        </div>
+        <div class="serie-level">
+            <div class="serie-top-section">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="serie-data-section row" style="display: none;">
+                            <div class="serie-poster">
+                                <img>
+                            </div>
+                            <div class="serie-info">
+                                <div class="serie-name-year">
+                                    <div class="serie-name"></div>
+                                    <div class="serie-year"></div>
+                                </div>
+                                <div class="serie-ratings">
+                                    <div class="row">
+                                        <div id="rotten-serie-rating-box" class="serie-rating-box">
+                                            <img src="../images/rotten_icon.png">
+                                            <div id="serie-rotten-rating" class="serie-rating"></div>
+                                        </div>
+                                        <div id="imdb-serie-rating-box" class="serie-rating-box" style="display: none;">
+                                            <img src="../images/imdb_icon.png">
+                                            <div id="serie-imdb-rating" class="serie-rating"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="serieInfo-section" style="display:none">
+                            <div class="section-header">Serie Info</div>
+                            <div class="col-xs-12">
+                                <div id="serie-synopsis">
+                                </div>
+                            </div>
+                            <div id="serieInfoList">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="seasons-section" style="display:none">
+                        <div class="section-header">Seasons</div>
+                        <div class="seasons-list row">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="cast-section" style="display:none">
+                        <div class="section-header">The Cast</div>
+                        <div class="cast-list row">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="season-level" style="display: none;">
+            <div class="season-top-section">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="season-data-section row" style="display:none">
+                            <div class="season-poster">
+                                <img>
+                            </div>
+                            <div class="season-info">
+                                <div class="season-name-year">
+                                    <div class="season-name"></div>
+                                    <div class="season-year"></div>
+                                </div>
+                                <div class="season-ratings">
+                                    <div class="row">
+                                        <div id="rotten-season-rating-box" class="season-rating-box">
+                                            <img src="../images/rotten_icon.png">
+                                            <div id="season-rotten-rating" class="season-rating"></div>
+                                        </div>
+                                        <div id="imdb-season-rating-box" class="season-rating-box" style="display: none;">
+                                            <img src="../images/imdb_icon.png">
+                                            <div id="season-imdb-rating" class="season-rating"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="seasonInfo-section" style="display:none">
+                            <div class="section-header">Season Info</div>
+                            <div class="col-xs-12">
+                                <div id="season-synopsis">
+                                </div>
+                            </div>
+                            <div id="seasonInfoList">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="episodes-section" style="display:none">
+                        <div class="section-header">Episodes</div>
+                        <div class="episodes-list row">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="cast-section" style="display:none">
+                        <div class="section-header">The Cast</div>
+                        <div class="cast-list row">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="episode-level" style="display: none;">
+            <div class="episode-top-section">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="episode-data-section row" style="display:none">
+                            <div class="episode-poster">
+                                <img>
+                            </div>
+                            <div class="episode-info">
+                                <div class="episode-name-year">
+                                    <div class="episode-name"></div>
+                                    <div class="episode-year"></div>
+                                </div>
+                                <div class="episode-ratings">
+                                    <div class="row">
+                                        <div id="rotten-episode-rating-box" class="season-rating-box">
+                                            <img src="../images/rotten_icon.png">
+                                            <div id="episode-rotten-rating" class="season-rating"></div>
+                                        </div>
+                                        <div id="imdb-episode-rating-box" class="season-rating-box" style="display: none;">
+                                            <img src="../images/imdb_icon.png">
+                                            <div id="episode-imdb-rating" class="season-rating"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="episode-download-section">
+                            <div class="movieActionButtons">
+                                <div id="episodeStreamButton" class="movieActionButton" style="display:none">
+                                    <div class="row">
+                                        <div class="feeling-lucky">
+                                            <i class="fa fa-play-circle" aria-hidden="true"></i>
+                                            <span class="movieActionName">Watch Episode</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="episodeSubtitleButton" class="movieActionButton" style="display:none">
+                                    <div class="row">
+                                        <div class="feeling-lucky">
+                                            <i class="fa fa-creative-commons" aria-hidden="true"></i>
+                                            <span class="movieActionName">Download Subtitles</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="episodeInfo-section" style="display:none">
+                            <div class="section-header">Episode Info</div>
+                            <div id="episodeInfoList">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="episodeSynopsis-section" style="display:none">
+                            <div class="section-header">Synopsis</div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="episode-synopsis">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="cast-section" style="display:none">
+                        <div class="section-header">The Cast</div>
+                        <div class="cast-list row">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="downloads-wrapper" style="display: none">
+        <div class="downloads-header">
+            <div class="row">
+                <div class="downloads-back">
+                    <i class="fa fa-chevron-left"></i>
+                </div>
+                <div class="downloads-head">
+                    <div class="downloads-head-text">
+                        Downloads
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="download-list">
+        </div>
+    </div>
+</body>
+</html>

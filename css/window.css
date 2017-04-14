@@ -1,0 +1,1200 @@
+body{
+    font-family: 'Varela Round';
+    font-size: 14px;
+    color: #555;
+    word-wrap: break-word;
+    background-color: #f7f7f7;
+}
+/* hebrew */
+@font-face {
+    font-family: 'Varela Round';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Varela Round'), local('VarelaRound-Regular'), url(https://fonts.gstatic.com/s/varelaround/v7/APH4jr0uSos5wiut5cpjrvZjSN9jRjHSPidsMdAc5jQ.woff2) format('woff2');
+    unicode-range: U+0590-05FF, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+/* latin */
+@font-face {
+    font-family: 'Varela Round';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Varela Round'), local('VarelaRound-Regular'), url(https://fonts.gstatic.com/s/varelaround/v7/APH4jr0uSos5wiut5cpjrhampu5_7CjHW5spxoeN3Vs.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+.stop-scrolling {
+    height: 100%;
+    overflow: hidden;
+}
+.header-wrapper {
+    height: 60px;
+    width: 100%;
+    background-color: #1b6d85;
+}
+.header-logo {
+    height: 60px;
+    width: 200px;
+    padding: 15px 0;
+    cursor: pointer;
+}
+.header-logo img {
+    height: 30px;
+    width: 240px;
+}
+.header-logo-part {
+    float:left;
+    margin-left: 20px;
+    width: 240px;
+}
+.header-right {
+    float:right;
+}
+#downloads-button {
+    float: left;
+    color: #ffffff;
+    background-color: #FF9800;
+    font-size: 16px;
+    line-height: 40px;
+    margin-top: 10px;
+    padding: 0 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 20px;
+    transition: 0.5s;
+}
+#downloads-button:hover {
+    background-color: #F57C00;
+}
+.header-close-part {
+    float: right;
+    margin: 0 10px;
+    font-size: 30px;
+    line-height: 60px;
+}
+.close-button {
+    color: #fff;
+    cursor: pointer;
+}
+.popup-wrapper{
+    position: fixed;
+    background-color: rgba(50,50,50,0.7);
+    z-index: 9999;
+    height:100%;
+    width:100%;
+}
+.popup-box {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    clear:both;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    box-shadow: 4px 4px 17px rgba(50,50,50,0.5);
+    background-color: #fff;
+    font-size: 20px;
+    padding: 15px;
+}
+.popup-close {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+}
+.popup-box .popup-header {
+    font-size: 24px;
+    color: coral;
+    text-align: center;
+    line-height: 30px;
+    vertical-align: middle;
+    margin-bottom: 10px;
+}
+.popup-main-part {
+    overflow: scroll;
+    height: 530px;
+}
+.popup-box table {
+    width: 100%;
+    text-align: center;
+    padding: 15px;
+}
+.popup-box thead {
+    background-color: cornflowerblue;
+    padding: 4px 0;
+    color: #fff;
+}
+.popup-box td {
+    padding: 4px;
+}
+.popup-box tbody tr {
+    cursor: pointer;
+}
+
+.popup-box tbody tr:hover {
+    background-color: #f3f3f3;
+}
+.waiter-wrapper{
+    position: fixed;
+    background-color: rgba(50,50,50,0.7);
+    z-index: 9999;
+    height:100%;
+    width:100%;
+}
+.waiter-box {
+    position: absolute;
+    width: 400px;
+    height: 280px;
+    clear:both;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    box-shadow: 4px 4px 17px rgba(50,50,50,0.5);
+    background-color: #fff;
+    font-size: 20px;
+    padding: 15px;
+    border-radius: 4px;
+}
+.waiter-content {
+    height: 250px;
+    width: 370px;
+}
+.waiter-text {
+    width:100%;
+    height: 80px;
+    display: table;
+}
+.waiter-text p {
+    display: table-cell;
+    margin: 0;
+    vertical-align: middle;
+    text-align: center;
+}
+.waiter-loader {
+    width:100%;
+    height: 160px;
+    font-size: 40px;
+    text-align:center;
+    margin-top: 40px;
+}
+.rotten-buffer {
+    width:100%;
+    height: 160px;
+    font-size: 40px;
+    text-align:center;
+    margin-top: 40px;
+}
+.search-wrapper {
+}
+.search-section {
+    max-width: 700px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.search-section .form-group {
+    margin-bottom: 0;
+}
+.search-input {
+    padding: 0;
+}
+.search-button {
+    padding: 0;
+}
+@media (min-width: 768px) {
+    .search-section input {
+        border-radius: 4px 0 0 4px;
+    }
+    .search-section .btn {
+        border-radius: 0 4px 4px 0;
+    }
+}
+/*button.btn{
+    font-size: 16px;
+    padding: 5px;
+    width:100%;
+    color: #ffffff;
+    background-color: #2e6da4;
+}
+button.btn:hover {
+    background-color: #1b6d85;
+    color: #ffffff;
+}*/
+
+#search-button{
+    font-size: 16px;
+    padding: 5px;
+    width:100%;
+    color: #ffffff;
+    background-color: #2e6da4;
+}
+#search-button:hover {
+    background-color: #1b6d85;
+    color: #ffffff;
+}
+
+.results {
+    max-width: 800px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.search-buffer {
+    text-align: center;
+    font-size: 40px;
+    margin-top: 40px;
+}
+.searchTypeTitle {
+    margin: 20px 0;
+    font-size: 20px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #4cae4c;
+    color: #fff;
+    border-radius: 4px;
+}
+.searchMovie {
+    height: 110px;
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.searchSerie {
+    height: 110px;
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.searchMovieImage {
+    height: 90px;
+    width: 60px;
+    float: left;
+}
+.searchMovieImage img {
+    width: 100%;
+    height: 100%;
+}
+.searchMovieDetail {
+    float: left;
+    width: calc(100% - 120px);
+    padding: 0 10px;
+}
+.searchMovieName {
+    height: 30px;
+    line-height: 30px;
+    font-size: 20px;
+    overflow-y: hidden;
+}
+.searchMovieSubline {
+    font-size: 15px;
+    line-height: 20px;
+    height: 60px;
+    overflow-y: hidden;
+}
+.searchMovieRating {
+    float: left;
+    width: 60px;
+    margin-top: 15px;
+}
+.searchMovieRatingValue {
+    position: absolute;
+    width: 60px;
+    color: #fff;
+    margin-top: 15px;
+    font-size: 16px;
+    text-align: center;
+}
+.searchMovieRating i {
+    font-size: 60px;
+    color: red;
+}
+
+.searchSerieImage {
+    height: 90px;
+    width: 60px;
+    float: left;
+}
+.searchSerieImage img {
+    width: 100%;
+    height: 100%;
+}
+.searchSerieDetail {
+    float: left;
+    width: calc(100% - 120px);
+    padding: 0 10px;
+}
+.searchSerieName {
+    height: 30px;
+    line-height: 30px;
+    font-size: 20px;
+    overflow-y: hidden;
+}
+.searchSerieYear {
+    font-size: 15px;
+    line-height: 20px;
+    height: 60px;
+    overflow-y: hidden;
+}
+.searchSerieRating {
+    float: left;
+    width: 60px;
+    margin-top: 15px;
+}
+.searchSerieRatingValue {
+    position: absolute;
+    width: 60px;
+    color: #fff;
+    margin-top: 15px;
+    font-size: 16px;
+    text-align: center;
+}
+.searchSerieRating i {
+    font-size: 60px;
+    color: red;
+}
+
+
+
+.seasonListDiv {
+    height: 110px;
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+    background-color: #ffffff;
+}
+.seasonListImage {
+    height: 90px;
+    width: 60px;
+    float: left;
+}
+.seasonListImage img {
+    width: 100%;
+    height: 100%;
+}
+.seasonListDetail {
+    float: left;
+    width: calc(100% - 120px);
+    padding: 0 10px;
+}
+.seasonListName {
+    height: 30px;
+    line-height: 30px;
+    font-size: 20px;
+    overflow-y: hidden;
+}
+.seasonListConsensus {
+    font-size: 15px;
+    line-height: 20px;
+    height: 40px;
+    overflow-y: hidden;
+}
+.seasonListInfo {
+    font-size: 15px;
+    line-height: 20px;
+    height: 20px;
+    overflow-y: hidden;
+}
+.seasonListRating {
+    float: left;
+    width: 60px;
+    margin-top: 15px;
+}
+.seasonListRatingValue {
+    position: absolute;
+    width: 60px;
+    color: #fff;
+    margin-top: 15px;
+    font-size: 16px;
+    text-align: center;
+}
+.seasonListRating i {
+    font-size: 60px;
+    color: red;
+}
+
+
+.episodeListDiv {
+    height: 110px;
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+    background-color: #ffffff;
+}
+.episodeListLeft {
+    height: 90px;
+    width: 60px;
+    float: left;
+}
+.episodeListNumber {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    font-size: 30px;
+    vertical-align: middle;
+    text-align: center;
+}
+.episodeListDate {
+    width: 100%;
+    height: 30px;
+    line-height: 15px;
+    font-size: 12px;
+    vertical-align: middle;
+    text-align: center;
+}
+.episodeListDetail {
+    float: left;
+    width: calc(100% - 120px);
+    padding: 0 10px;
+}
+.episodeListName {
+    height: 30px;
+    line-height: 30px;
+    font-size: 20px;
+    overflow-y: hidden;
+}
+.episodeListSynopsis {
+    font-size: 15px;
+    line-height: 20px;
+    height: 60px;
+    overflow-y: hidden;
+}
+.episodeListRating {
+    float: left;
+    width: 60px;
+    margin-top: 15px;
+}
+.episodeListRatingValue {
+    position: absolute;
+    width: 60px;
+    color: #fff;
+    margin-top: 15px;
+    font-size: 16px;
+    text-align: center;
+}
+.episodeListRating i {
+    font-size: 60px;
+    color: red;
+}
+
+/*************      MOVIE WRAPPER ****************/
+
+.movie-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.movie-top-section {
+    width: 100%;
+    clear: both;
+    margin-top: 10px;
+}
+.movie-data-section {
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+.movie-download-section {
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+.movie-poster {
+    float: left;
+    width: 130px;
+    height: 200px;
+}
+.movie-poster img {
+    width: 100%;
+    height: 100%;
+}
+.movie-info {
+    float:left;
+    width: calc(100% - 130px);
+    padding-left: 10px;
+}
+.movie-name-year {
+    height: 140px;
+    width:100%;
+    font-size: 20px;
+    line-height: 30px;
+}
+.movie-name {
+    max-height: 90px;
+    width:100%;
+}
+.movie-year {
+    height: 50px;
+    width:100%;
+}
+.movie-ratings {
+    width: 100%;
+    clear: both;
+    height: 60px;
+}
+.movie-rating-box {
+    float: left;
+    width: 50%;
+    padding: 10px;
+}
+.movie-rating-box img {
+    float: left;
+    width: 40px;
+    height: 40px;
+}
+.movie-rating {
+    font-size: 20px;
+    line-height: 40px;
+    margin-left: 10px;
+    float: left;
+}
+.movieActionButtons {
+    height: 200px;
+    width: 100%;
+}
+.movieLoader {
+    font-size: 40px;
+    text-align: center;
+    padding-top: 20px;
+}
+.movieActionButton {
+    width: 100%;
+    height: 60px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    line-height: 40px;
+    font-size: 20px;
+    vertical-align: middle;
+    overflow: hidden;
+    color: #ffffff;
+    cursor: pointer;
+}
+.movieActionButton i {
+    font-size: 40px;
+    float:left;
+}
+.feeling-lucky {
+    float: left;
+    padding: 9px;
+    width: calc(100% - 60px);
+}
+.movieActionName {
+    float:left;
+    margin-left: 10px;
+}
+.movieActionOption {
+    float: right;
+    padding: 10px;
+    width: 60px;
+    text-align: center;
+    border-left: 1px solid rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.5);
+}
+.movieActionOption i {
+    width: 100%;
+}
+#movieStreamButton {
+    background-color: #4cae4c;
+    margin-bottom: 10px;
+}
+#movieDownloadButton {
+    background-color: #1b6d85;
+    margin-bottom: 10px;
+}
+
+#movieSubtitleButton {
+    background-color: #d58512;
+}
+.section-header {
+    width: 100%;
+    clear: both;
+    padding: 5px 0 10px 15px;
+    font-size: 20px;
+    line-height: 32px;
+}
+.movieInfo-section {
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #fff;
+}
+.synopsis-section {
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #fff;
+}
+.movie-info-box {
+    margin: 4px 0;
+}
+.movie-info-label {
+    color: #333;
+}
+.cast-section {
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #fff;
+}
+.cast-member {
+    height: 60px;
+    padding: 5px;
+    overflow: hidden;
+}
+
+.cast-image {
+    height: 50px;
+    width: 50px;
+    float: left;
+}
+.cast-image img{
+    height: 50px;
+    width: 50px;
+}
+.cast-details {
+    float: left;
+    width: calc(100% - 60px);
+    line-height: 25px;
+    margin-left: 10px;
+}
+.cast-name {
+    font-size: 16px;
+}
+.cast-role {
+    color: #666;
+}
+
+
+/*************      SERIE WRAPPER ****************/
+
+.serie-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+#link-route {
+    width: 100%;
+    margin-top: 10px;
+    margin-left: 15px;
+}
+/*.route-box {
+    float: left;
+    position: relative;
+    line-height: 28px;
+    padding: 0 10px;
+    background-color: #fff;
+}
+.route-box {
+    float: left;
+    padding: 5px 10px;
+    background-color: #fff;
+}*/
+.serie-top-section {
+    width: 100%;
+    clear: both;
+    margin-top: 10px;
+}
+.serie-data-section {
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+.serie-download-section {
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+.serie-poster {
+    float: left;
+    width: 130px;
+    height: 200px;
+}
+.serie-poster img {
+    width: 100%;
+    height: 100%;
+}
+.serie-info {
+    float:left;
+    width: calc(100% - 130px);
+    padding-left: 10px;
+}
+.serie-name-year {
+    height: 140px;
+    width:100%;
+    font-size: 20px;
+    line-height: 30px;
+}
+.serie-name {
+    max-height: 90px;
+    width:100%;
+}
+.serie-year {
+    height: 50px;
+    width:100%;
+}
+.serie-ratings {
+    width: 100%;
+    clear: both;
+    height: 60px;
+}
+.serie-rating-box {
+    float: left;
+    width: 50%;
+    padding: 10px;
+}
+.serie-rating-box img {
+    float: left;
+    width: 40px;
+    height: 40px;
+}
+.serie-rating {
+    font-size: 20px;
+    line-height: 40px;
+    margin-left: 10px;
+    float: left;
+}
+.serieActionButtons {
+    height: 200px;
+    width: 100%;
+}
+.serieLoader {
+    font-size: 40px;
+    text-align: center;
+    padding-top: 20px;
+}
+.serieActionButton {
+    width: 100%;
+    height: 60px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    line-height: 40px;
+    font-size: 20px;
+    vertical-align: middle;
+    overflow: hidden;
+    color: #ffffff;
+    cursor: pointer;
+}
+.serieActionButton i {
+    font-size: 40px;
+    float:left;
+}
+.serieActionName {
+    float:left;
+    margin-left: 10px;
+}
+.serieActionOption {
+    float: right;
+    padding: 10px;
+    width: 60px;
+    text-align: center;
+    border-left: 1px solid rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.5);
+}
+.serieActionOption i {
+    width: 100%;
+}
+#serieStreamButton {
+    background-color: #4cae4c;
+    margin-bottom: 10px;
+}
+#serieDownloadButton {
+    background-color: #1b6d85;
+    margin-bottom: 10px;
+}
+
+#serieSubtitleButton {
+    background-color: #d58512;
+}
+.serieInfo-section {
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #fff;
+}
+.serie-info-box {
+    margin: 4px 0;
+}
+.serie-info-label {
+    color: #333;
+}
+
+
+.seasons-section {
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+.episodes-section {
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+.season-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.season-top-section {
+    width: 100%;
+    clear: both;
+    margin-top: 10px;
+}
+.season-data-section {
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+.season-poster {
+    float: left;
+    width: 130px;
+    height: 200px;
+}
+.season-poster img {
+    width: 100%;
+    height: 100%;
+}
+.season-info {
+    float:left;
+    width: calc(100% - 130px);
+    padding-left: 10px;
+}
+.season-name-year {
+    height: 140px;
+    width:100%;
+    font-size: 20px;
+    line-height: 30px;
+}
+.season-name {
+    max-height: 90px;
+    width:100%;
+}
+.season-year {
+    height: 50px;
+    width:100%;
+}
+.season-ratings {
+    width: 100%;
+    clear: both;
+    height: 60px;
+}
+.season-rating-box {
+    float: left;
+    width: 50%;
+    padding: 10px;
+}
+.season-rating-box img {
+    float: left;
+    width: 40px;
+    height: 40px;
+}
+.season-rating {
+    font-size: 20px;
+    line-height: 40px;
+    margin-left: 10px;
+    float: left;
+}
+.seasonInfo-section {
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #fff;
+}
+.season-info-box {
+    margin: 4px 0;
+}
+.season-info-label {
+    color: #333;
+}
+
+
+
+.episode-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.episode-top-section {
+    width: 100%;
+    clear: both;
+    margin-top: 10px;
+}
+.episode-data-section {
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+.episode-poster {
+    float: left;
+    width: 130px;
+    height: 200px;
+}
+.episode-poster img {
+    width: 100%;
+    height: 100%;
+}
+.episode-info {
+    float:left;
+    width: calc(100% - 130px);
+    padding-left: 10px;
+}
+.episode-name-year {
+    height: 140px;
+    width:100%;
+    font-size: 20px;
+    line-height: 30px;
+}
+.episode-name {
+    max-height: 90px;
+    width:100%;
+}
+.episode-year {
+    height: 50px;
+    width:100%;
+}
+.episode-ratings {
+    width: 100%;
+    clear: both;
+    height: 60px;
+}
+.episode-rating-box {
+    float: left;
+    width: 50%;
+    padding: 10px;
+}
+.episode-rating-box img {
+    float: left;
+    width: 40px;
+    height: 40px;
+}
+.episode-rating {
+    font-size: 20px;
+    line-height: 40px;
+    margin-left: 10px;
+    float: left;
+}
+.episodeInfo-section {
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #fff;
+}
+.episodeSynopsis-section {
+    padding: 10px;
+    margin-top: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #fff;
+}
+.episode-info-box {
+    margin: 4px 0;
+}
+.episode-info-label {
+    color: #333;
+}
+
+#episode-download-section {
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+#episodeStreamButton {
+    background-color: #4cae4c;
+    margin-bottom: 10px;
+}
+#episodeSubtitleButton {
+    background-color: #d58512;
+}
+
+/*****************  DOWNLOADS SECTION  ******************/
+
+.downloads-header {
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+    font-size: 18px;
+    background-color: cornflowerblue;
+    color: #fff;
+}
+.downloads-back {
+    float: left;
+    width: 50px;
+    border-right: 1px solid rgba(255,255,255,0.5);
+    cursor: pointer;
+}
+.downloads-back .fa {
+    width: 100%;
+    text-align: center;
+}
+.downloads-head {
+    width: calc(100% - 50px);
+    float: left;
+}
+.downloads-head-text {
+    max-width: 750px;
+    margin: 0 auto;
+    left: -25px;
+    position: relative;
+}
+
+.download-item {
+    padding: 15px;
+    margin: 15px auto;
+    max-width: 750px;
+    background-color: #fff;
+    box-shadow: 4px 4px 17px rgba(40,40,40,0.4);
+    position: relative;
+}
+.download-file-icon {
+    width: 70px;
+    float: left;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+.download-file-icon a {
+    width: 64px;
+    height: 64px;
+}
+.download-file-data {
+    float: right;
+    width: calc(100% - 70px);
+}
+.download-file-name {
+    color: cornflowerblue;
+    font-weight: bold;
+}
+.download-file-link {
+    height: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #888;
+    cursor: pointer;
+}
+.download-file-link:hover {
+    color: chocolate;
+}
+.download-progress-bar {
+    width: 100%;
+    background-color: #ddd;
+}
+.download-complete-part {
+    background-color: cornflowerblue;
+    width:0;
+    height: 100%;
+}
+.download-action-button {
+    float: left;
+    margin: 2px 15px 2px 0;
+    color: steelblue;
+    cursor: pointer;
+}
+.download-action-button:hover {
+    text-decoration: underline;
+}
+.download-file-remove {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    color: #bbb;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.route-box {
+    float:left;
+}
+.route-box:focus, .route-box:visited, .route-box:active {
+    outline: none !important;
+}
+.btn-arrow-right,
+.btn-arrow-left {
+    position: relative;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+.btn-arrow-right {
+    padding-left: 36px;
+}
+.btn-arrow-left {
+    padding-right: 36px;
+}
+.btn-arrow-right:before,
+.btn-arrow-right:after,
+.btn-arrow-left:before,
+.btn-arrow-left:after { /* make two squares (before and after), looking similar to the button */
+    content:"";
+    position: absolute;
+    top: 5px; /* move it down because of rounded corners */
+    width: 22px; /* same as height */
+    height: 22px; /* button_outer_height / sqrt(2) */
+    background: inherit; /* use parent background */
+    border: inherit; /* use parent border */
+    border-left-color: transparent; /* hide left border */
+    border-bottom-color: transparent; /* hide bottom border */
+    border-radius: 0px 4px 0px 0px; /* round arrow corner, the shorthand property doesn't accept "inherit" so it is set to 4px */
+    -webkit-border-radius: 0px 4px 0px 0px;
+    -moz-border-radius: 0px 4px 0px 0px;
+}
+.btn-arrow-right:before,
+.btn-arrow-right:after {
+    transform: rotate(45deg); /* rotate right arrow squares 45 deg to point right */
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+}
+.btn-arrow-left:before,
+.btn-arrow-left:after {
+    transform: rotate(225deg); /* rotate left arrow squares 225 deg to point left */
+    -webkit-transform: rotate(225deg);
+    -moz-transform: rotate(225deg);
+    -o-transform: rotate(225deg);
+    -ms-transform: rotate(225deg);
+}
+.btn-arrow-right:before,
+.btn-arrow-left:before { /* align the "before" square to the left */
+    left: -11px;
+}
+.btn-arrow-right:after,
+.btn-arrow-left:after { /* align the "after" square to the right */
+    right: -11px;
+}
+.btn-arrow-right:after,
+.btn-arrow-left:before { /* bring arrow pointers to front */
+    z-index: 1;
+}
+.btn-arrow-right:before,
+.btn-arrow-left:after { /* hide arrow tails background */
+    background-color: #f7f7f7;
+}
