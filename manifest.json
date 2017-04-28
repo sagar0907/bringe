@@ -1,13 +1,23 @@
 {
   "manifest_version": 2,
-
-  "name": "MovieMania",
-  "description": "This extension takes care of all your movie needs.",
+  "name": "Bringe",
+  "description": "This extension takes care of all your movie and tv series needs.",
   "version": "1.0",
-
   "browser_action": {
     "default_icon": "images/movie-icon-48.png",
-    "default_title": "MovieMania"
+    "default_title": "Bringe"
+  },
+  "omnibox": {
+    "keyword": "b"
+  },
+  "commands": {
+    "launch-bringe": {
+      "suggested_key": {
+        "default": "Ctrl+B",
+        "mac": "Command+B"
+      },
+      "description": "Launch Bringe"
+    }
   },
   "icons": {
     "16": "images/movie-icon-16.png",
@@ -25,7 +35,7 @@
     "downloads.shelf",
     "downloads.open"
   ],
-  "background" : {
+  "background": {
     "scripts": [
       "js/jquery.js",
       "js/background.js"
@@ -34,9 +44,16 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "css": ["css/pub.css"],
-      "js": ["js/jquery.js", "js/pub.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "css": [
+        "css/pub.css"
+      ],
+      "js": [
+        "js/jquery.js",
+        "js/pub.js"
+      ],
       "run_at": "document_start"
     }
   ]

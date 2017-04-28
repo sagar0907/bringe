@@ -1,4 +1,3 @@
-
 function layout() {
 
     function hideAllSection() {
@@ -19,6 +18,7 @@ function layout() {
     function showHome() {
         page = "home";
         $("#search-input").val("");
+        $("#search-input").focus();
         $(".search-wrapper").show();
         $(".results-wrapper").show();
     }
@@ -31,13 +31,14 @@ function layout() {
         page = "movie";
         $(".movie-wrapper").show();
     }
+
     function showSeriePart() {
         page = "serie";
         showActiveSerieLevel();
         $(".serie-wrapper").show();
     }
+
     function showActiveSerieLevel() {
-        $("#link-route").show();
         if (serieLevel === "serie") {
             showSerieLevel();
         } else if (serieLevel === "season") {
@@ -46,6 +47,7 @@ function layout() {
             showEpisodeLevel();
         }
     }
+
     function showSerieLevel() {
         page = "serie";
         serieLevel = "serie";
@@ -60,6 +62,7 @@ function layout() {
         $(".episode-level").hide();
         $(".serie-level").show();
     }
+
     function showSeasonLevel() {
         page = "serie";
         serieLevel = "season";
@@ -80,6 +83,7 @@ function layout() {
         $(".episode-level").hide();
         $(".season-level").show();
     }
+
     function showEpisodeLevel() {
         page = "serie";
         serieLevel = "episode";
@@ -130,13 +134,14 @@ function layout() {
         thisMovie = null;
         var movieWrapper = $(".movie-wrapper");
         var movieDataSection = $(".movie-data-section");
-        $("#imdb-movie-rating-box").hide();
+        $(".movie-rating-box").hide();
         $("#movieStreamButton").hide();
-        $("#movieDownloadButton").hide();
         $("#movieSubtitleButton").hide();
         movieWrapper.find(".cast-section").hide();
         movieWrapper.find(".synopsis-section").hide();
         movieWrapper.find(".movieInfo-section").hide();
+        movieDataSection.hide();
+        $(".movie-download-section").hide();
         movieWrapper.hide();
         movieWrapper.find(".cast-list").html("");
         $("#movie-synopsis").html("");
@@ -159,7 +164,7 @@ function layout() {
         thisSerie = null;
         var wrapper = $(".serie-level");
         var serieDataSection = $(".serie-data-section");
-        $("#imdb-serie-rating-box").hide();
+        wrapper.find(".serie-rating-box").hide();
         wrapper.find(".cast-section").hide();
         wrapper.find(".seasons-section").hide();
         wrapper.find(".synopsis-section").hide();
@@ -176,11 +181,12 @@ function layout() {
         serieDataSection.find(".serie-year").html("");
         serieDataSection.find(".serie-rating").html("");
     }
+
     function clearAllSeasonData() {
         thisSeason = null;
         var wrapper = $(".season-level");
         var serieDataSection = $(".season-data-section");
-        $("#imdb-season-rating-box").hide();
+        wrapper.find(".season-rating-box").hide();
         wrapper.find(".cast-section").hide();
         wrapper.find(".episodes-section").hide();
         wrapper.find(".synopsis-section").hide();
@@ -197,14 +203,15 @@ function layout() {
         serieDataSection.find(".season-year").html("");
         serieDataSection.find(".season-rating").html("");
     }
+
     function clearAllEpisodeData() {
         thisEpisode = null;
         var wrapper = $(".episode-level");
         var serieDataSection = $(".episode-data-section");
-        $("#imdb-episode-rating-box").hide();
         $("#episodeStreamButton").hide();
         $("#episodeDownloadButton").hide();
         $("#episodeSubtitleButton").hide();
+        wrapper.find(".episode-rating-box").hide();
         wrapper.find(".cast-section").hide();
         wrapper.find(".synopsis-section").hide();
         wrapper.find(".episode-data-section").hide();
@@ -228,17 +235,17 @@ function layout() {
 
     function resetDownloadItemBox(downloadItemBox, id) {
         downloads().getAndPlaceDownloadItemById(id, function (downloadItem) {
-            if(downloadItem.exists) {
+            if (downloadItem.exists) {
                 var fileProgressBar = downloadItemBox.find(".download-progress-bar");
                 var fileCompletePart = fileProgressBar.find(".download-complete-part");
                 var fileProgressDetail = downloadItemBox.find(".download-progress-detail");
                 var fileActionBox = downloadItemBox.find(".download-file-options");
                 var fileRemoveBox = downloadItemBox.find(".download-file-remove");
                 var detail = "";
-                if(downloadItem.state == "in_progress") {
+                if (downloadItem.state == "in_progress") {
                     var last = fileProgressDetail.data("completed");
                     fileProgressDetail.data("completed", downloadItem.bytesReceived);
-                    if(last && !downloadItem.paused) {
+                    if (last && !downloadItem.paused) {
                         detail += downloads().getSizeInWords(downloadItem.bytesReceived - last) + "/s - ";
                     }
                     detail += downloads().getSizeInWords(downloadItem.bytesReceived) + " of " + downloads().getSizeInWords(downloadItem.totalBytes) + ", ";
@@ -258,7 +265,7 @@ function layout() {
                         fileActionBox.html("");
                         fileActionBox.append(downloads().getPauseButton(downloadItem.id));
                         fileActionBox.append(downloads().getCancelButton(downloadItem.id));
-                    } else if(downloadItem.paused && fileActionBox.find(".resume-button").length == 0) {
+                    } else if (downloadItem.paused && fileActionBox.find(".resume-button").length == 0) {
                         fileActionBox.html("");
                         fileActionBox.append(downloads().getResumeButton(downloadItem.id));
                         fileActionBox.append(downloads().getCancelButton(downloadItem.id));
@@ -277,7 +284,7 @@ function layout() {
                     fileActionBox.append(downloads().getShowInFolderButton(downloadItem.id));
                     fileRemoveBox.html("x");
                 }
-                setTimeout(function() {
+                setTimeout(function () {
                     resetDownloadItemBox(downloadItemBox, id)
                 }, 1000);
             } else {
@@ -289,17 +296,17 @@ function layout() {
     function placeDownloadSection() {
         $("#download-list").html("");
         window.download_active = true;
-        chrome.downloads.search({filenameRegex: "movie mania", exists: true}, function (results) {
+        chrome.downloads.search({filenameRegex: "Bringe", exists: true}, function (results) {
             var downloadList = [];
-            for(var i=0; i<results.length; i++) {
+            for (var i = 0; i < results.length; i++) {
                 var item = results[i];
-                if (item.byExtensionId == "lgedmmicpaijipmjmdmcnpemdjikjmom") {
+                if (item.byExtensionId == "npppfccdplcbhbcnbdgchlnbfhmemfja") {
                     downloadList.push(item);
                 }
             }
             downloadList.sort(util().downloadComparator);
             var downloadListBox = $("#download-list");
-            for (var i=0; i<downloadList.length; i++) {
+            for (var i = 0; i < downloadList.length; i++) {
                 downloads().getAndPlaceDownloadItemById(downloadList[i].id, function (downloadItem) {
                     var downloadItemBox = downloadItemDivObj.clone();
                     downloadItemBox.find(".download-file-name").html(util().extractFileName(downloadItem.filename));
@@ -318,7 +325,7 @@ function layout() {
                     });
                     fileRemoveBox.click(function () {
                         window.download_active = false;
-                        chrome.downloads.erase({id: downloadItem.id}, function (){
+                        chrome.downloads.erase({id: downloadItem.id}, function () {
                             placeDownloadSection();
                         });
                     });
@@ -329,81 +336,84 @@ function layout() {
     }
 
     function placeMoviesList(movies) {
-        var movie,i,
-            moviesResultsList = $("#moviesResultsList");
+        var movie, i,
+            moviesResultsList = $("#moviesResultsList"),
+            placedAtleastOne = false;
         moviesResultsList.html("");
         for (i = 0; i < movies.length; i++) {
             movie = movies[i];
             if (!movie.meterScore) {
                 continue;
             }
+            placedAtleastOne = true;
             var searchMovieDiv = searchMovieDivObj.clone();
             searchMovieDiv.attr("id", "movieIndex_" + i);
-            if(movie.image) {
+            if (movie.image) {
                 movie.image = movie.image.replace("https", "http");
                 searchMovieDiv.find(".searchMovieImage").find("img").attr("src", movie.image);
             }
-            if(movie.name) {
+            if (movie.name) {
                 if (movie.year) {
                     searchMovieDiv.find(".searchMovieName").html(movie.name + " (" + movie.year + ")");
                 } else {
                     searchMovieDiv.find(".searchMovieName").html(movie.name);
                 }
             }
-            if(movie.subline) {
+            if (movie.subline) {
                 searchMovieDiv.find(".searchMovieSubline").html(movie.subline);
             }
-            if(movie.meterScore) {
+            if (movie.meterScore) {
                 searchMovieDiv.find(".searchMovieRatingValue").html(movie.meterScore);
             } else {
                 searchMovieDiv.find(".searchMovieRating").remove();
             }
-            if(moviesResultsList.find(".searchTypeTitle").length == 0) {
+            if (moviesResultsList.find(".searchTypeTitle").length == 0) {
                 moviesResultsList.append($('<div class="searchTypeTitle">Movies</div>'));
             }
             moviesResultsList.append(searchMovieDiv);
         }
-        $(".searchMovie").click(function(e) {
+        $(".searchMovie").click(function (e) {
             var movieId = $(this).attr("id");
             var movieIndex = movieId.split("_")[1];
             rottenTomatoes().getMovie(movieIndex);
         });
+        return placedAtleastOne;
     }
 
     function placeSeriesList(series) {
-        var serie,i,
+        var serie, i,
             seriesResultsList = $("#seriesResultsList");
         seriesResultsList.html("");
         for (i = 0; i < series.length; i++) {
             serie = series[i];
             var searchSerieDiv = searchSerieDivObj.clone();
             searchSerieDiv.attr("id", "serieIndex_" + i);
-            if(serie.image) {
+            if (serie.image) {
                 serie.image = serie.image.replace("https", "http");
                 searchSerieDiv.find(".searchSerieImage").find("img").attr("src", serie.image);
             }
-            if(serie.title) {
+            if (serie.title) {
                 searchSerieDiv.find(".searchSerieName").html(serie.title);
             }
-            if(serie.startYear) {
+            if (serie.startYear) {
                 var yearPart = serie.startYear;
-                if(serie.endYear) {
+                if (serie.endYear) {
                     yearPart += " - " + serie.endYear;
                 }
                 serie.year = yearPart;
                 searchSerieDiv.find(".searchSerieYear").html('(' + yearPart + ')');
             }
-            if(serie.meterValue) {
+            if (serie.meterValue) {
                 searchSerieDiv.find(".searchSerieRatingValue").html(serie.meterValue);
             } else {
                 searchSerieDiv.find(".searchSerieRating").remove();
             }
-            if(seriesResultsList.find(".searchTypeTitle").length == 0) {
+            if (seriesResultsList.find(".searchTypeTitle").length == 0) {
                 seriesResultsList.append($('<div class="searchTypeTitle">Series</div>'));
             }
             seriesResultsList.append(searchSerieDiv);
         }
-        $(".searchSerie").click(function(e) {
+        $(".searchSerie").click(function (e) {
             var serieId = $(this).attr("id");
             var serieIndex = serieId.split("_")[1];
             rottenTomatoes().getSerie(serieIndex);
@@ -414,10 +424,7 @@ function layout() {
         $("#movieStreamButton").show();
         $(".movieLoader").remove();
     }
-    function showMovieDownloadLink() {
-        $("#movieDownloadButton").show();
-        $(".movieLoader").remove();
-    }
+
     function showEpisodeStreamLink() {
         $("#episodeStreamButton").show();
     }
@@ -432,9 +439,10 @@ function layout() {
         var wrapper = $(".movie-wrapper"),
             watching = thisMovie,
             infoList;
+        removeRottenLoader();
         var castList = wrapper.find(".cast-list"),
             i;
-        for(i = 0; i < watching.cast.length; i++) {
+        for (i = 0; i < watching.cast.length; i++) {
             var person = watching.cast[i];
             var castMemberDiv = castMemberDivObj.clone();
             castMemberDiv.find("img").attr("src", person.image);
@@ -451,20 +459,37 @@ function layout() {
         infoList = $("#movieInfoList");
         wrapper.find(".synopsis-section").show();
         var infos = watching.infoList;
-        for (i=0; i<infos.length; i++) {
+        for (i = 0; i < infos.length; i++) {
             var serieInfoDiv = movieInfoDivObj.clone();
             serieInfoDiv.find(".movie-info-label").html(infos[i].label);
             serieInfoDiv.find(".movie-info-value").html(infos[i].value);
             infoList.append(serieInfoDiv);
         }
+
+        $(".movie-poster").find("img").attr("src", thisMovie.posterImage);
+        $(".movie-data-section").find(".movie-name").html(thisMovie.name);
+        $(".movie-data-section").find(".movie-year").html('(' + thisMovie.year + ')');
+        if (thisMovie.meterScore) {
+            $("#movie-rotten-rating").html(thisMovie.meterScore + "%");
+            $("#rotten-movie-rating-box").show();
+        }
+        if (watching.audienceScore) {
+            $(".movie-data-section").find("#movie-audience-rating").html(thisMovie.audienceScore);
+            $("#audience-movie-rating-box").show();
+        }
         $(".movieInfo-section").show();
+        $(".movie-data-section").show();
+        $(".movie-download-section").show();
+        $(".synopsis-section").show();
     }
+
     function showRTSerie() {
         var wrapper = $(".serie-level"),
             watching = thisSerie,
             infoList,
             dataSection = $(".serie-data-section");
         removeRottenLoader();
+        $("#link-route").show();
 
         dataSection.find(".serie-name").html(thisSerie.title);
         var year = thisSerie.startYear;
@@ -476,13 +501,20 @@ function layout() {
         if (thisSerie.ratings.rotten) {
             $("#serie-rotten-rating").html(thisSerie.ratings.rotten + "%");
             $("#rotten-serie-rating-box").show();
-        } else{
+        } else {
+            $("#serie-rotten-rating").html("");
+            $("#rotten-serie-rating-box").hide();
+        }
+        if (thisSerie.ratings.audienceScore) {
+            $("#serie-audience-rating").html(thisSerie.ratings.audienceScore);
+            $("#audience-serie-rating-box").show();
+        } else {
             $("#serie-rotten-rating").html("");
             $("#rotten-serie-rating-box").hide();
         }
         var castList = wrapper.find(".cast-list"),
             i;
-        for(i = 0; i < watching.cast.length; i++) {
+        for (i = 0; i < watching.cast.length; i++) {
             var person = watching.cast[i];
             var castMemberDiv = castMemberDivObj.clone();
             castMemberDiv.find("img").attr("src", person.image);
@@ -499,7 +531,7 @@ function layout() {
         infoList = $("#serieInfoList");
         wrapper.find(".synopsis-section").show();
         var infos = watching.infoList;
-        for (i=0; i<infos.length; i++) {
+        for (i = 0; i < infos.length; i++) {
             var serieInfoDiv = movieInfoDivObj.clone();
             serieInfoDiv.find(".movie-info-label").html(infos[i].label);
             serieInfoDiv.find(".movie-info-value").html(infos[i].value);
@@ -508,7 +540,7 @@ function layout() {
         dataSection.show();
         $(".serieInfo-section").show();
         var seasonsList = wrapper.find(".seasons-list");
-        for(i = watching.seasons.length - 1; i >= 0; i--) {
+        for (i = watching.seasons.length - 1; i >= 0; i--) {
             var season = watching.seasons[i];
             var seasonListDiv = seasonListDivObj.clone();
             seasonListDiv.attr("id", "season_" + i);
@@ -523,13 +555,14 @@ function layout() {
             }
             seasonsList.append(seasonListDiv);
         }
-        $(".seasonListDiv").click(function(e) {
+        $(".seasonListDiv").click(function (e) {
             var seasonId = $(this).attr("id");
             var seasonIndex = seasonId.split("_")[1];
             rottenTomatoes().getSeason(seasonIndex);
         });
         wrapper.find(".seasons-section").show();
     }
+
     function showRTSeasonData() {
         var wrapper = $(".season-level"),
             watching = thisSeason,
@@ -538,6 +571,7 @@ function layout() {
             dataSection = $(".season-data-section"),
             i;
         removeRottenLoader();
+        $("#link-route").show();
         $(".season-poster").find("img").attr("src", thisSeason.image);
         dataSection.find(".season-name").html(thisSeason.title);
         if (thisSeason.info) {
@@ -548,11 +582,18 @@ function layout() {
         if (thisSeason.ratings && thisSeason.ratings.rotten) {
             $("#season-rotten-rating").html(thisSeason.ratings.rotten);
             $("#rotten-season-rating-box").show();
-        } else{
+        } else {
             $("#season-rotten-rating").html("");
             $("#rotten-season-rating-box").hide();
         }
-        for(i = 0; i < watching.cast.length; i++) {
+        if (thisSeason.ratings && thisSeason.ratings.audienceScore) {
+            $("#season-audience-rating").html(thisSeason.ratings.audienceScore);
+            $("#audience-season-rating-box").show();
+        } else {
+            $("#season-audience-rating").html("");
+            $("#audience-season-rating-box").hide();
+        }
+        for (i = 0; i < watching.cast.length; i++) {
             var person = watching.cast[i];
             var castMemberDiv = castMemberDivObj.clone();
             castMemberDiv.find("img").attr("src", person.image);
@@ -569,7 +610,7 @@ function layout() {
         infoList = $("#seasonInfoList");
         wrapper.find(".synopsis-section").show();
         var infos = watching.infoList;
-        for (i=0; i<infos.length; i++) {
+        for (i = 0; i < infos.length; i++) {
             var serieInfoDiv = movieInfoDivObj.clone();
             serieInfoDiv.find(".movie-info-label").html(infos[i].label);
             serieInfoDiv.find(".movie-info-value").html(infos[i].value);
@@ -583,7 +624,7 @@ function layout() {
         var wrapper = $(".season-level"),
             watching = thisSeason,
             episodesList = wrapper.find(".episodes-list");
-        for(var i = 0; i < watching.episodes.length; i++) {
+        for (var i = 0; i < watching.episodes.length; i++) {
             var episode = watching.episodes[i];
             var episodeListDiv = episodeListDivObj.clone();
             episodeListDiv.attr("id", "episode_" + i);
@@ -598,7 +639,7 @@ function layout() {
             }
             episodesList.append(episodeListDiv);
         }
-        $(".episodeListDiv").click(function(e) {
+        $(".episodeListDiv").click(function (e) {
             var episodeId = $(this).attr("id");
             var episodeIndex = episodeId.split("_")[1];
             rottenTomatoes().getEpisode(episodeIndex);
@@ -614,18 +655,34 @@ function layout() {
             dataSection = $(".episode-data-section"),
             i;
         removeRottenLoader();
+        $("#link-route").show();
         $(".episode-poster img").attr("src", watching.image);
         dataSection.find(".episode-name").html(thisEpisode.title);
-        if (thisEpisode.date)
+        if (thisEpisode.date) {
             dataSection.find(".episode-year").html('(' + thisEpisode.date + ')');
+        }
         if (thisEpisode.ratings && thisEpisode.ratings.rotten) {
-            $("#episode-rotten-rating").html(thisEpisode.ratings.rotten);
+            $("#episode-rotten-rating").html(thisEpisode.ratings.rotten + "%");
             $("#rotten-episode-rating-box").show();
-        } else{
+        } else {
             $("#episode-rotten-rating").html("");
             $("#rotten-episode-rating-box").hide();
         }
-        for(i = 0; i < watching.cast.length; i++) {
+        if (thisEpisode.ratings && thisEpisode.ratings.audienceScore) {
+            $("#episode-audience-rating").html(thisEpisode.ratings.audienceScore);
+            $("#audience-episode-rating-box").show();
+        } else {
+            $("#episode-audience-rating").html("");
+            $("#audience-episode-rating-box").hide();
+        }
+        if (thisEpisode.ratings.imdb) {
+            $("#episode-imdb-rating").html(thisEpisode.ratings.imdb);
+            $("#imdb-episode-rating-box").show();
+        } else {
+            $("#episode-imdb-rating").html("");
+            $("#imdb-episode-rating-box").hide();
+        }
+        for (i = 0; i < watching.cast.length; i++) {
             var person = watching.cast[i];
             var castMemberDiv = castMemberDivObj.clone();
             castMemberDiv.find("img").attr("src", person.image);
@@ -642,7 +699,7 @@ function layout() {
         infoList = $("#episodeInfoList");
         wrapper.find(".synopsis-section").show();
         var infos = watching.infoList;
-        for (i=0; i<infos.length; i++) {
+        for (i = 0; i < infos.length; i++) {
             var serieInfoDiv = movieInfoDivObj.clone();
             serieInfoDiv.find(".movie-info-label").html(infos[i].label);
             serieInfoDiv.find(".movie-info-value").html(infos[i].value);
@@ -654,16 +711,26 @@ function layout() {
         $(".episodeSynopsis-section").show();
     }
 
-    function showMovieData() {
-        $(".movie-poster").find("img").attr("src", thisMovie.posterImage);
-        $(".movie-data-section").find(".movie-name").html(thisMovie.name);
-        $(".movie-data-section").find(".movie-year").html('(' + thisMovie.year + ')');
-        $(".movie-data-section").find("#movie-rotten-rating").html(thisMovie.meterScore + "%");
+    function placeImdbMovieRating() {
+        if (thisMovie.imdbRating) {
+            $("#movie-imdb-rating").html(thisMovie.imdbRating);
+            $("#imdb-movie-rating-box").show();
+        }
+        if (thisMovie.metaRating) {
+            $("#movie-metacritic-rating").html(thisMovie.metaRating);
+            $("#metacritic-movie-rating-box").show();
+        }
     }
 
-    function placeVumooImdbRating() {
-        $(".movie-info #movie-imdb-rating").html(thisMovie.vumooImdbRating + '/10');
-        $("#imdb-rating-box").show();
+    function placeImdbSerieRating() {
+        if (thisSerie.ratings.imdbRating) {
+            $("#serie-imdb-rating").html(thisSerie.ratings.imdbRating);
+            $("#imdb-serie-rating-box").show();
+        }
+        if (thisSerie.ratings.metaRating) {
+            $("#serie-metacritic-rating").html(thisSerie.ratings.metaRating);
+            $("#metacritic-serie-rating-box").show();
+        }
     }
 
     function showSubtitleLink() {
@@ -686,6 +753,7 @@ function layout() {
         $(".popup-wrapper").show();
         $("body").addClass("stop-scrolling");
     }
+
     function closePopup() {
         $(".popup-wrapper").hide();
         $("body").removeClass("stop-scrolling");
@@ -697,15 +765,19 @@ function layout() {
         $(".waiter-wrapper").show();
         $("body").addClass("stop-scrolling");
     }
+
     function closeWaiter() {
         $(".waiter-wrapper").hide();
         $(".waiter-text").find("p").html("");
         $("body").removeClass("stop-scrolling");
     }
+
     function showRottenLoader(obj) {
+        $('.rotten-buffer').remove();
         var buffer = $('<div class="rotten-buffer"><i class="fa fa-spinner fa-spin"></i></div>');
         obj.append(buffer);
     }
+
     function removeRottenLoader() {
         $('.rotten-buffer').remove();
     }
@@ -719,7 +791,7 @@ function layout() {
         thead.append('<tr> <td>Source</td> <td>Quality</td> <td>Format</td> </tr>');
         var tbody = table.find("tbody");
         var linksObj = thisMovie.streamLinkDetails;
-        for(var i=0; i<linksObj.length; i++) {
+        for (var i = 0; i < linksObj.length; i++) {
             var linkObj = linksObj[i];
             var ext = linkObj.type;
             var row = $('<tr class="' + linkObj.source + '"> <td class="' + linkObj.id + '">' + linkObj.source + '</td> <td class="' + linkObj.label + '">' + linkObj.label + '</td> <td>' + ext + '</td> </tr>');
@@ -737,6 +809,7 @@ function layout() {
         }
         openPopup();
     }
+
     function openEpisodesStreamPopup() {
         clearPopup();
         var popupBox = $(".popup-box");
@@ -745,10 +818,10 @@ function layout() {
         var thead = table.find("thead");
         //thead.append('<tr> <td>Source</td> <td>Quality</td> <td>Format</td> </tr>');
         var tbody = table.find("tbody");
-        var linksObj = watchseries().getStreamLinks();
-        for(var i=0; i<linksObj.length; i++) {
+        var linksObj = series().getStreamLinks();
+        for (var i = 0; i < linksObj.length; i++) {
             var link = linksObj[i];
-            var row = $('<tr> <td class="episodeStream_' + i + '">Server ' + (i+1) + '</td> <td class="streamEpisode">Stream Episode</td> <td class="downloadEpisode">Download</td> </tr>');
+            var row = $('<tr data-id="' + link.source + '"> <td data-id="' + link.id + '">Server ' + (i+1) + '</td> <td class="streamQuality">' + link.label + '</td> <td class="streamEpisode">Stream Episode</td> <td class="downloadEpisode">Download</td> </tr>');
             tbody.append(row);
             var downloadButton = row.find(".downloadEpisode");
             var streamButton = row.find(".streamEpisode");
@@ -756,19 +829,19 @@ function layout() {
                 closePopup();
                 var obj = $(this),
                     line = obj.parent(),
+                    source = line.attr("data-id"),
                     tds = line.find("td"),
-                    td0 = $(tds[0]).attr("class"),
-                    id = parseInt(td0.replace("episodeStream_",""));
-                watchseries().downloadEpisodeStreamLink({id: parseInt(id)});
+                    id = $(tds[0]).attr("data-id");
+                series().downloadEpisodeStreamLink({id: id, source: source});
             });
             streamButton.click(function (evt) {
                 closePopup();
                 var obj = $(this),
                     line = obj.parent(),
+                    source = line.attr("data-id"),
                     tds = line.find("td"),
-                    td0 = $(tds[0]).attr("class"),
-                    id = parseInt(td0.replace("episodeStream_",""));
-                watchseries().streamEpisodeStreamLink({id: parseInt(id)});
+                    id = $(tds[0]).attr("data-id");
+                series().streamEpisodeStreamLink({id: id, source: source});
             });
         }
         openPopup();
@@ -780,22 +853,32 @@ function layout() {
         popupBox.find(".popup-header").html("Stream Movie");
         var table = popupBox.find("table");
         var thead = table.find("thead");
-        thead.append('<tr> <td>Source</td> <td>Quality</td> <td>Format</td> </tr>');
+        //thead.append('<tr> <td>Source</td> <td>Quality</td> <td>Format</td> </tr>');
         var tbody = table.find("tbody");
         var linksObj = thisMovie.streamLinkDetails;
-        for(var i=0; i<linksObj.length; i++) {
+        for (var i = 0; i < linksObj.length; i++) {
             var linkObj = linksObj[i];
             var ext = linkObj.type;
-            var row = $('<tr class="' + linkObj.source + '"> <td class="' + linkObj.id + '">' + linkObj.source + '</td> <td class="' + linkObj.label + '">' + linkObj.label + '</td> <td>' + ext + '</td> </tr>');
+            var serverId = linkObj.id.split("*")[0];
+            var row = $('<tr class="' + linkObj.id + '"> <td>#' + serverId + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Stream</td> <td class="movieDownload">Download</td> </tr>');
             tbody.append(row);
-            row.click(function (evt) {
+            var stream = row.find(".movieStream");
+            var download = row.find(".movieDownload");
+            stream.click(function (evt) {
                 closePopup();
-                var obj = $(this),
-                    source = obj.attr("class"),
+                var obj = $(this).parent(),
+                    id = obj.attr("class"),
                     tds = obj.find("td"),
-                    id = $(tds[0]).attr("class"),
-                    label = $(tds[1]).attr("class");
-                movies().openMovieStreamLink({source: source, id: parseInt(id), label: label});
+                    label = $(tds[1]).html();
+                movies().openMovieStreamLink({id: id, label: label});
+            });
+            download.click(function (evt) {
+                closePopup();
+                var obj = $(this).parent(),
+                    id = obj.attr("class"),
+                    tds = obj.find("td"),
+                    label = $(tds[1]).html();
+                movies().downloadMovieStreamLink({id: id, label: label});
             });
         }
         openPopup();
@@ -810,16 +893,16 @@ function layout() {
         thead.append('<tr> <td>Source</td> <td>Rating</td> <td>Format</td> </tr>');
         var tbody = table.find("tbody");
         var linksObj = thisMovie.subtitleLinks;
-        for(var i=0; i<linksObj.length; i++) {
+        for (var i = 0; i < linksObj.length; i++) {
             var linkObj = linksObj[i];
             var ext = "srt";
-            var row = $('<tr> <td>' + 'subscene' + '</td> <td>' + linkObj.rating + '</td> <td>' + ext + '</td> </tr>');
-            row.data("index", linkObj.index);
+            var row = $('<tr class="' + linkObj.index + '"> <td><img src="../images/subscene.gif"/></td> <td>' + linkObj.rating + '</td> <td>' + ext + '</td> </tr>');
             tbody.append(row);
             row.click(function (evt) {
                 closePopup();
                 var obj = $(this);
-                subscene().startSubtitleDownload(obj.data("index"));
+                var id = obj.attr("class");
+                subscene().startSubtitleDownload(parseInt(id));
             });
         }
         openPopup();
@@ -839,13 +922,13 @@ function layout() {
             for (var i = 0; i < linksObj.length; i++) {
                 var linkObj = linksObj[i];
                 var ext = "srt";
-                var row = $('<tr> <td>' + 'subscene' + '</td> <td>' + linkObj.rating + '</td> <td>' + ext + '</td> </tr>');
-                row.data("index", linkObj.index);
+                var row = $('<tr class="' + linkObj.index + '"> <td><img src="../images/subscene.gif"/></td> <td>' + linkObj.rating + '</td> <td>' + ext + '</td> </tr>');
                 tbody.append(row);
                 row.click(function (evt) {
                     closePopup();
                     var obj = $(this);
-                    subscene().startSubtitleDownload(obj.data("index"));
+                    var id = obj.attr("class");
+                    subscene().startSubtitleDownload(parseInt(id));
                 });
             }
             openPopup();
@@ -853,28 +936,46 @@ function layout() {
     }
 
     function shineDownloadButton() {
-        $("#downloads-button").css("backgroundColor", "#ac2925");
+        $("#downloads-button").addClass("shine");
         setTimeout(function () {
-            $("#downloads-button").css("backgroundColor", "#FF9800");
+            $("#downloads-button").removeClass("shine");
         }, 500);
     }
+
     function searching() {
+        removeSearchBuffer();
+        removeSearchResultText();
         var buffer = $('<div class="search-buffer"><i class="fa fa-spinner fa-spin"></i></div>');
         $("#searchResultsList").append(buffer);
     }
+
     function removeSearchBuffer() {
         $("#searchResultsList").find(".search-buffer").remove();
     }
+
+    function showSearchResultText(text) {
+        removeSearchResultText();
+        var status = $('<div class="search-result-text">' + text + '</div>');
+        $("#searchResultsList").append(status);
+    }
+
+    function removeSearchResultText() {
+        $("#searchResultsList").find(".search-result-text").remove();
+    }
+
     function findingMovieLink() {
         var loader = $('<div class="movieLoader"><i class="fa fa-spinner fa-spin"></i></div>');
         $(".movieActionButtons").append(loader);
     }
+
     function couldnotFetchMovieLink() {
         $(".movieLoader").remove();
     }
+
     function movieLoadComplete() {
         $(".movieLoader").remove();
     }
+
     return {
         hideAllSection: hideAllSection,
         goToHome: goToHome,
@@ -882,7 +983,6 @@ function layout() {
         placeSeriesList: placeSeriesList,
         placeDownloadSection: placeDownloadSection,
         showMovieStreamLink: showMovieStreamLink,
-        showMovieDownloadLink: showMovieDownloadLink,
         showEpisodeStreamLink: showEpisodeStreamLink,
         clearSearchList: clearSearchList,
         showRTMovie: showRTMovie,
@@ -892,14 +992,14 @@ function layout() {
         showRTEpisodesList: showRTEpisodesList,
         showMoviePart: showMoviePart,
         showSeriePart: showSeriePart,
-        showMovieData: showMovieData,
         showSerieLevel: showSerieLevel,
         showSeasonLevel: showSeasonLevel,
         showEpisodeLevel: showEpisodeLevel,
         clearAllSerieData: clearAllSerieData,
         clearAllSeasonData: clearAllSeasonData,
         clearAllEpisodeData: clearAllEpisodeData,
-        placeVumooImdbRating: placeVumooImdbRating,
+        placeImdbMovieRating: placeImdbMovieRating,
+        placeImdbSerieRating: placeImdbSerieRating,
         showSubtitleLink: showSubtitleLink,
         showEpisodeSubtitleLink: showEpisodeSubtitleLink,
         goBackFromDownloads: goBackFromDownloads,
@@ -910,11 +1010,11 @@ function layout() {
         showRottenLoader: showRottenLoader,
         removeRottenLoader: removeRottenLoader,
         openStreamPopup: openStreamPopup,
-        openDownloadPopup: openDownloadPopup,
         openSubtitlePopup: openSubtitlePopup,
         openEpisodesStreamPopup: openEpisodesStreamPopup,
         openEpisodesSubtitlePopup: openEpisodeSubtitlePopup,
         shineDownloadButton: shineDownloadButton,
+        showSearchResultText: showSearchResultText,
         searching: searching,
         removeSearchBuffer: removeSearchBuffer,
         findingMovieLink: findingMovieLink,

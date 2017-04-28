@@ -11,7 +11,7 @@ function downloads() {
         if(ext) {
             name += ext;
         }
-        chrome.downloads.download({url: link, filename: "movie mania/" + name}, function (downloadId) {
+        chrome.downloads.download({url: link, filename: "Bringe/" + name}, function (downloadId) {
             if (callback) {
                 setTimeout(function() {
                     callback();

@@ -51,8 +51,8 @@ String.prototype.replaceAll = function(search, replacement) {
 function util() {
 
     function isSameMovieName(a, b) {
-        a = a.trim().toLowerCase().replace(/\(.*\)/,"").replaceAll(" ","").replaceAll(/:|,|-|'|"/, "").replace("the","");
-        b = b.trim().toLowerCase().replace(/\(.*\)/,"").replaceAll(" ","").replaceAll(/:|,|-|'|"/, "").replace("the","");
+        a = a.trim().toLowerCase().replace(/\(.*\)/,"").replaceAll(" ","").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the","");
+        b = b.trim().toLowerCase().replace(/\(.*\)/,"").replaceAll(" ","").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the","");
         return a==b;
     }
     function streamComparator(a, b) {
@@ -71,6 +71,12 @@ function util() {
         } else {
             return 1;
         }
+    }
+    function getSearchTerm(searchTerm) {
+        searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "").replace(/^the/, "").replaceAll(/,| -|- /, " ");
+        searchTerm = searchTerm.replace("part", "");
+        searchTerm = searchTerm.replace(/\d*$/, "").replaceAll(/\s\s+/, " ").trim().replaceAll(" ", "+");
+        return searchTerm;
     }
     function extractFileName(loc) {
         var name = loc.split("/");
@@ -106,6 +112,28 @@ function util() {
         });
     }
 
+    function isSet(val) {
+        switch (typeof val) {
+            case "string":
+                return val !== undefined && val !== "" && val !== null;
+            case "object":
+                return val !== null;
+            case "number":
+            case "boolean":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    function isFunction(reference) {
+        return typeof reference === "function";
+    }
+
+    function isArray(item) {
+        return Object.prototype.toString.call(item) === '[object Array]';
+    }
+
     function each(obj, callback) {
         var i, key;
         if (obj) {
@@ -134,15 +162,65 @@ function util() {
         return array;
     }
 
+    function any(obj, callback) {
+        if (!isSet(obj)) {
+            return;
+        }
+        if (!isFunction(callback)) {
+            callback = function (val, key) {
+                return !!val;
+            };
+        }
+        var i = 0,
+            length = obj.length,
+            returnValue;
+
+        if (isArray(obj)) {
+            for (; i < length; i++) {
+                returnValue = callback.call(obj[i], obj[i], i);
+                if (isSet(returnValue)) {
+                    return returnValue;
+                }
+            }
+        } else {
+            for (i in obj) {
+                if (obj.hasOwnProperty(i)) {
+                    returnValue = callback.call(obj[i], obj[i], i);
+                    if (isSet(returnValue)) {
+                        return returnValue;
+                    }
+                }
+            }
+        }
+    }
+
+    function getProxy(target, args, scope) {
+        scope = scope || null;
+        args = args || [];
+        return function () {
+            var argsCopy = args.slice(0);
+            if (arguments.length > 0) {
+                Array.prototype.push.apply(argsCopy, Array.prototype.slice.call(arguments));
+            }
+            target.apply(scope, argsCopy);
+        };
+    }
+
     return {
         isSameMovieName: isSameMovieName,
         streamComparator: streamComparator,
+        getSearchTerm: getSearchTerm,
         extractFileName: extractFileName,
         getTimeInWords: getTimeInWords,
         downloadComparator: downloadComparator,
         sendAjax: sendAjax,
+        isFunction: isFunction,
+        isSet: isSet,
+        isArray: isArray,
         each: each,
-        filter: filter
+        any: any,
+        filter: filter,
+        getProxy: getProxy
     }
 }
 
@@ -202,6 +280,10 @@ function google() {
             link = "https://www.google.co.in/search?q=" + thisMovie.name + "+" + thisMovie.year + "+english+-arabic+site:subscene.com/subtitles";
         } else if (page == "serie") {
             link = "https://www.google.co.in/search?q=" + thisSerie.title + "+" + getSeasonPart() + getEpisodePart() + "+english+-arabic+site:subscene.com/subtitles";
+            var episode = subscene().getSubtitleEpisode();
+            if (episode) {
+                delete episode.links;
+            }
         } else {
             return;
         }
@@ -213,7 +295,6 @@ function google() {
                     myDoc = $(doc);
                 var links = myDoc.find("a[onmousedown]");
                 var subsceneLinks = getSubsceneLinks(links);
-                console.log(subsceneLinks);
                 for(var i = 0; i < subsceneLinks.length; i++) {
                     subscene().getSubtitleDownloadLink(subsceneLinks[i]);
                 }
@@ -227,13 +308,16 @@ function google() {
 
 function subscene() {
     function getSubtitleSeason() {
-        var seasons = thisSerie.subtitles.seasons;
         var reqdSeason = null;
-        util().each(seasons, function (season) {
-            if (season.seasonNo == thisSerie.seasonNo) {
-                reqdSeason = season;
-            }
-        });
+        var seasons;
+        if (thisSerie.subtitles) {
+            seasons = thisSerie.subtitles.seasons;
+            util().each(seasons, function (season) {
+                if (season.seasonNo == thisSerie.seasonNo) {
+                    reqdSeason = season;
+                }
+            });
+        }
         return reqdSeason;
     }
     function getSubtitleEpisode() {
@@ -260,7 +344,7 @@ function subscene() {
                     myDoc = $(doc),
                     button = myDoc.find("#downloadButton"),
                     ratingBox = myDoc.find(".rating"),
-                    rating = "NA";
+                    rating = "-";
                 if(button.length > 0) {
                     var link = "https://subscene.com" + button.attr("href");
                     if(ratingBox.length > 0) {
@@ -284,7 +368,7 @@ function subscene() {
                         season.episodes = season.episodes || [];
                         var episode = getSubtitleEpisode();
                         if (!episode) {
-                            episode = {episodeNo: thisSerie.episodeNo, links: [{link: link, rating: rating, index: len}]};
+                            episode = {episodeNo: thisSerie.episodeNo, links: [{link: link, rating: rating, index: 0}]};
                             season.episodes.push(episode);
                         } else {
                             episode.links = episode.links || [];
@@ -298,7 +382,7 @@ function subscene() {
         });
     }
     function startSubtitleDownload(index) {
-        if (page != "movie" || page != "serie") return;
+        if (page != "movie" && page != "serie") return;
         layout().openWaiter("Adding Subtitle to Downloads");
         if (page == "movie") {
             if (index) {
@@ -328,6 +412,22 @@ function subscene() {
 
 $(document).ready(function () {
 
+    background.setSearchFunction(function (text) {
+        $("#search-input").val(text);
+        handleEvent().searchEntered();
+    });
+
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 80){
+            $('.header-wrapper').addClass("sticky");
+        }
+        else{
+            $('.header-wrapper').removeClass("sticky");
+        }
+    });
+
+    $("#search-input").focus();
+
     $(".header-logo").click(function () {
         layout().goToHome();
     });
@@ -350,30 +450,16 @@ $(document).ready(function () {
     $("#route-season").click(function () {
         layout().showSeasonLevel();
     });
-    $("#movieStreamButton").find(".feeling-lucky").click(function (evt) {
-        movies().openMovieStreamLink();
-    });
-    $("#movieDownloadButton").find(".feeling-lucky").click(function (evt) {
-        movies().downloadMovieStreamLink();
-    });
-    $("#movieSubtitleButton").find(".feeling-lucky").click(function (evt) {
-        if (thisMovie && thisMovie.subtitleLinks) {
-            subscene().startSubtitleDownload();
-        }
-    });
     $("#episodeStreamButton").find(".feeling-lucky").click(function (evt) {
         layout().openEpisodesStreamPopup();
     });
     $("#episodeSubtitleButton").find(".feeling-lucky").click(function (evt) {
         layout().openEpisodesSubtitlePopup();
     });
-    $("#movieDownloadButton").find(".movieActionOption").click(function (evt) {
-        layout().openDownloadPopup();
-    });
-    $("#movieStreamButton").find(".movieActionOption").click(function (evt) {
+    $("#movieStreamButton").find(".feeling-lucky").click(function (evt) {
         layout().openStreamPopup();
     });
-    $("#movieSubtitleButton").find(".movieActionOption").click(function (evt) {
+    $("#movieSubtitleButton").find(".feeling-lucky").click(function (evt) {
         layout().openSubtitlePopup();
     });
     $("#downloads-button").click(function (evt) {

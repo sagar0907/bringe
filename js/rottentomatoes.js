@@ -15,18 +15,31 @@ function rottenTomatoes() {
                         result = {};
                     }
                 }
-                if (result.movieCount) {
-                    var movies = result.movies;
-                    background.movies = movies;
-                    layout().placeMoviesList(movies);
+                var placedAtleastOne;
+                if (result.movieCount || result.tvCount) {
+                    if (result.movieCount) {
+                        var movies = result.movies;
+                        background.movies = movies;
+                        placedAtleastOne = layout().placeMoviesList(movies);
+                        layout().removeSearchBuffer();
+                        if(!placedAtleastOne && !result.tvCount) {
+                            layout().showSearchResultText("No results found.");
+                        }
+                    }
+                    if (result.tvCount) {
+                        var series = result.tvSeries;
+                        background.series = series;
+                        layout().placeSeriesList(series);
+                        layout().removeSearchBuffer();
+                    }
+                } else {
                     layout().removeSearchBuffer();
+                    layout().showSearchResultText("No results found.");
                 }
-                if (result.tvCount) {
-                    var series = result.tvSeries;
-                    background.series = series;
-                    layout().placeSeriesList(series);
-                    layout().removeSearchBuffer();
-                }
+            },
+            error: function (result) {
+                layout().removeSearchBuffer();
+                layout().showSearchResultText("Could not fetch search results.");
             }
         });
     }
@@ -68,6 +81,11 @@ function rottenTomatoes() {
                         synopsis: result[i].synopsis, links: {rotten: result[i].url}};
                     if (result[i].tomatometer && result[i].tomatometer.value) {
                         episode.ratings = {rotten: result[i].tomatometer.value};
+                    } else {
+                        episode.ratings = {};
+                    }
+                    if (thisSeason.imdbEpisodes) {
+                        episode.ratings.imdb = thisSeason.imdbEpisodes[result[i].episodeNumber];
                     }
                     episodes.push(episode);
                 }
@@ -115,6 +133,10 @@ function rottenTomatoes() {
                     }
                     thisMovie.infoList = infoList;
                 }
+                var audienceScore = myDoc.find(".audience-score .meter-value span").text().trim();
+                if (audienceScore) {
+                    thisMovie.audienceScore = audienceScore;
+                }
                 var movieSynopsis = myDoc.find("#movieSynopsis").text().trim();
                 thisMovie.movieSynopsis = movieSynopsis;
                 layout().showRTMovie();
@@ -151,6 +173,10 @@ function rottenTomatoes() {
                 var serieSynopsis = myDoc.find("#movieSynopsis").text().trim();
                 if (serieSynopsis) {
                     thisSerie.synopsis = serieSynopsis;
+                }
+                var audienceScore = myDoc.find(".audience-score .meter-value span").text().trim();
+                if (audienceScore) {
+                    thisSerie.ratings.audienceScore = audienceScore;
                 }
                 var serieInfoList, movieInfo, subtle, oneInfo, tds, label, value, infoList = [];
                 movieInfo = myDoc.find("#series_info .movie_info");
@@ -235,6 +261,10 @@ function rottenTomatoes() {
                 if (seasonSynopsis) {
                     thisSeason.synopsis = seasonSynopsis;
                 }
+                var audienceScore = myDoc.find(".audience-score .meter-value span").text().trim();
+                if (audienceScore) {
+                    thisSeason.ratings.audienceScore = audienceScore;
+                }
                 var seasonInfoList, oneInfo, label, value, infoList = [];
                 seasonInfoList = myDoc.find("section.movie_info li");
                 for(i=0; i<seasonInfoList.length; i++) {
@@ -267,6 +297,10 @@ function rottenTomatoes() {
                 var cast = myDoc.find(".cast-item");
                 thisEpisode.cast = [];
                 thisEpisode.image = myDoc.find('#tv-image-section img').attr("src");
+                var audienceScore = myDoc.find(".audience-score .meter-value span").text().trim();
+                if (audienceScore) {
+                    thisEpisode.ratings.audienceScore = audienceScore;
+                }
                 for (i = 0; i < cast.length && i < 12; i++) {
                     var member = cast[i];
                     img = $(member).find("img").attr("src");
@@ -295,14 +329,15 @@ function rottenTomatoes() {
     function getMovie(index) {
         if(background.movies[index]) {
             layout().hideAllSection();
-            layout().showMoviePart();
             var movie = background.movies[index];
             var rottenLink = "http://www.rottentomatoes.com" + movie.url;
             thisMovie = movie;
             thisMovie.rottenlink = rottenLink;
             thisMovie.movieRespones = {count:0, successCount:0};
-            layout().showMovieData();
+            layout().showRottenLoader($(".movie-wrapper"));
+            layout().showMoviePart();
             loadRottenTomatoesMovie(rottenLink);
+            imdb().searchMovie(thisMovie.name, thisMovie.year);
             movies().loadMovies();
             google().searchSubtitle();
         }
@@ -317,14 +352,13 @@ function rottenTomatoes() {
                 seasonNumber = getSeasonNumber(rottenLink);
             if(seasonNumber) {
                 getOnlySeason(index, seasonNumber);
-                watchseries().searchSerie();
                 return;
             }
             thisSerie = {};
             thisSerie.title = serie.title;
             thisSerie.startYear = serie.startYear;
             thisSerie.endYear = serie.endYear;
-            thisSerie.image = serie.image || serie.posterImage;
+            thisSerie.image = serie.posterImage || serie.image;
             thisSerie.ratings = thisSerie.ratings || {};
             thisSerie.ratings.rotten = serie.meterValue;
             thisSerie.links = thisSerie.links || {};
@@ -333,7 +367,8 @@ function rottenTomatoes() {
             layout().showRottenLoader($(".serie-wrapper"));
             layout().showSeriePart();
             loadRottenTomatoesSerie(rottenLink);
-            watchseries().searchSerie();
+            imdb().searchSerie(thisSerie.title);
+            series().loadSerie();
         }
     }
     function getSeason(index) {
@@ -346,6 +381,10 @@ function rottenTomatoes() {
             layout().showRottenLoader($(".serie-wrapper"));
             layout().showSeriePart();
             loadRottenTomatoesSeason(thisSeason.links.rotten);
+            if(thisSerie.metaData.imdbId) {
+                imdb().loadEpisodes(thisSerie.metaData.imdbId, thisSerie.seasonNo);
+            }
+            series().loadSeason();
         }
     }
     function getOnlySeason(index, seasonNumber) {
@@ -354,6 +393,7 @@ function rottenTomatoes() {
         serieLevel = "season";
         thisSerie = {};
         thisSerie.seasons = [];
+        thisSerie.seasonNo = 1;
         thisSerie.websites = {};
         var season = background.series[index];
         thisSeason = {};
@@ -370,6 +410,11 @@ function rottenTomatoes() {
         layout().showRottenLoader($(".serie-wrapper"));
         layout().showSeriePart();
         loadRottenTomatoesSeason(thisSeason.links.rotten);
+        if(thisSerie.metaData && thisSerie.metaData.imdbId) {
+            imdb().loadEpisodes(thisSerie.metaData.imdbId, thisSerie.seasonNo);
+        }
+        series().loadSerie();
+        series().loadSeason();
     }
     function getEpisode(index) {
         if (thisSeason.episodes && thisSeason.episodes[index]) {
@@ -381,7 +426,7 @@ function rottenTomatoes() {
             layout().showRottenLoader($(".serie-wrapper"));
             layout().showSeriePart();
             loadRottenTomatoesEpisode(thisEpisode.links.rotten);
-            watchseries().getEpisode(thisSeason.seasonNo, thisEpisode.episodeNo);
+            series().loadEpisode();
             google().searchSubtitle();
         }
     }

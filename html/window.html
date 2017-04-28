@@ -11,8 +11,11 @@
     <script src="../js/layout.js"></script>
     <script src="../js/movies.js"></script>
     <script src="../js/rottentomatoes.js"></script>
+    <script src="../js/imdb.js"></script>
     <script src="../js/vumoo.js"></script>
-    <script src="../js/movies123.js"></script>
+    <script src="../js/gomovies.js"></script>
+    <script src="../js/series.js"></script>
+    <script src="../js/goseries.js"></script>
     <script src="../js/watchseries.js"></script>
     <script src="../js/downloads.js"></script>
     <script src="../js/window.js"></script>
@@ -54,7 +57,7 @@
         <div class="header">
             <div class="row">
                 <div class="header-logo-part">
-                    <div class="header-logo"><img src="../images/bringe_black.png"></div>
+                    <div class="header-logo"><img src="../images/bringe_blue.png"></div>
                 </div>
                 <div class="header-right">
                     <div class="row">
@@ -69,13 +72,14 @@
             </div>
         </div>
     </div>
+    <div class="header-space-wrapper"></div>
     <div class="search-wrapper">
         <div class="search-section">
             <div class="form-group">
                 <form id="searchForm">
                     <div class="row">
                         <div class="search-input col-sm-8">
-                            <input id="search-input" type="text" class="form-control" autocomplete="off">
+                            <input id="search-input" type="text" class="form-control" placeholder="Inception, Sherlock ..." autocomplete="off">
                         </div>
                         <div class="search-button col-sm-4">
                             <button id="search-button" class="btn" type="submit">Search</button>
@@ -95,7 +99,7 @@
         <div class="movie-top-section">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="movie-data-section row">
+                    <div class="movie-data-section row" style="display: none;">
                         <div class="movie-poster">
                             <img>
                         </div>
@@ -106,13 +110,23 @@
                             </div>
                             <div class="movie-ratings">
                                 <div class="row">
-                                    <div class="movie-rating-box">
-                                        <img src="../images/rotten_icon.png">
-                                        <div id="movie-rotten-rating" class="movie-rating"></div>
-                                    </div>
                                     <div id="imdb-movie-rating-box" class="movie-rating-box" style="display: none;">
                                         <img src="../images/imdb_icon.png">
                                         <div id="movie-imdb-rating" class="movie-rating"></div>
+                                    </div>
+                                    <div id="metacritic-movie-rating-box" class="movie-rating-box" style="display: none;">
+                                        <img src="../images/metacritic.png">
+                                        <div id="movie-metacritic-rating" class="movie-rating"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="rotten-movie-rating-box" class="movie-rating-box" style="display: none;">
+                                        <img src="../images/rotten_icon.png">
+                                        <div id="movie-rotten-rating" class="movie-rating"></div>
+                                    </div>
+                                    <div id="audience-movie-rating-box" class="movie-rating-box" style="display: none;">
+                                        <img src="../images/audience_icon.png">
+                                        <div id="movie-audience-rating" class="movie-rating"></div>
                                     </div>
                                 </div>
                             </div>
@@ -120,27 +134,13 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="movie-download-section">
+                    <div class="movie-download-section" style="display: none;">
                         <div class="movieActionButtons">
                             <div id="movieStreamButton" class="movieActionButton" style="display:none">
                                 <div class="row">
                                     <div class="feeling-lucky">
                                         <i class="fa fa-play-circle" aria-hidden="true"></i>
                                         <span class="movieActionName">Stream Movie</span>
-                                    </div>
-                                    <div class="movieActionOption">
-                                        <i class="fa fa-angle-down"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="movieDownloadButton" class="movieActionButton" style="display:none">
-                                <div class="row">
-                                    <div class="feeling-lucky">
-                                        <i class="fa fa-download" aria-hidden="true"></i>
-                                        <span class="movieActionName">Download Movie</span>
-                                    </div>
-                                    <div class="movieActionOption">
-                                        <i class="fa fa-angle-down"></i>
                                     </div>
                                 </div>
                             </div>
@@ -149,9 +149,6 @@
                                     <div class="feeling-lucky">
                                         <i class="fa fa-creative-commons" aria-hidden="true"></i>
                                         <span class="movieActionName">Download Subtitles</span>
-                                    </div>
-                                    <div class="movieActionOption">
-                                        <i class="fa fa-angle-down"></i>
                                     </div>
                                 </div>
                             </div>
@@ -215,13 +212,23 @@
                                 </div>
                                 <div class="serie-ratings">
                                     <div class="row">
-                                        <div id="rotten-serie-rating-box" class="serie-rating-box">
-                                            <img src="../images/rotten_icon.png">
-                                            <div id="serie-rotten-rating" class="serie-rating"></div>
-                                        </div>
                                         <div id="imdb-serie-rating-box" class="serie-rating-box" style="display: none;">
                                             <img src="../images/imdb_icon.png">
                                             <div id="serie-imdb-rating" class="serie-rating"></div>
+                                        </div>
+                                        <div id="metacritic-serie-rating-box" class="serie-rating-box" style="display: none;">
+                                            <img src="../images/metacritic.png">
+                                            <div id="serie-metacritic-rating" class="serie-rating"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div id="rotten-serie-rating-box" class="serie-rating-box" style="display: none;">
+                                            <img src="../images/rotten_icon.png">
+                                            <div id="serie-rotten-rating" class="serie-rating"></div>
+                                        </div>
+                                        <div id="audience-serie-rating-box" class="serie-rating-box" style="display: none;">
+                                            <img src="../images/audience_icon.png">
+                                            <div id="serie-audience-rating" class="serie-rating"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -276,13 +283,23 @@
                                 </div>
                                 <div class="season-ratings">
                                     <div class="row">
-                                        <div id="rotten-season-rating-box" class="season-rating-box">
-                                            <img src="../images/rotten_icon.png">
-                                            <div id="season-rotten-rating" class="season-rating"></div>
-                                        </div>
                                         <div id="imdb-season-rating-box" class="season-rating-box" style="display: none;">
                                             <img src="../images/imdb_icon.png">
                                             <div id="season-imdb-rating" class="season-rating"></div>
+                                        </div>
+                                        <div id="metacritic-season-rating-box" class="season-rating-box" style="display: none;">
+                                            <img src="../images/metacritic.png">
+                                            <div id="season-metacritic-rating" class="season-rating"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div id="rotten-season-rating-box" class="season-rating-box" style="display: none;">
+                                            <img src="../images/rotten_icon.png">
+                                            <div id="season-rotten-rating" class="season-rating"></div>
+                                        </div>
+                                        <div id="audience-season-rating-box" class="season-rating-box" style="display: none;">
+                                            <img src="../images/audience_icon.png">
+                                            <div id="season-audience-rating" class="season-rating"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -337,13 +354,13 @@
                                 </div>
                                 <div class="episode-ratings">
                                     <div class="row">
-                                        <div id="rotten-episode-rating-box" class="season-rating-box">
+                                        <div id="rotten-episode-rating-box" class="episode-rating-box" style="display: none;">
                                             <img src="../images/rotten_icon.png">
-                                            <div id="episode-rotten-rating" class="season-rating"></div>
+                                            <div id="episode-rotten-rating" class="episode-rating"></div>
                                         </div>
-                                        <div id="imdb-episode-rating-box" class="season-rating-box" style="display: none;">
+                                        <div id="imdb-episode-rating-box" class="episode-rating-box" style="display: none;">
                                             <img src="../images/imdb_icon.png">
-                                            <div id="episode-imdb-rating" class="season-rating"></div>
+                                            <div id="episode-imdb-rating" class="episode-rating"></div>
                                         </div>
                                     </div>
                                 </div>

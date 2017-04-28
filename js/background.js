@@ -3,7 +3,8 @@
  */
 var windowId, movies,
     downloadIdList = [],
-    cookie = {};
+    cookie = {},
+    searchFunction;
 function util() {
 
     function getParameterByName(name, url) {
@@ -109,7 +110,7 @@ function downloadManager() {
         if(ext) {
             name += ext;
         }
-        chrome.downloads.download({url: link, filename: "movie mania/" + name}, function (downloadId) {
+        chrome.downloads.download({url: link, filename: "Bringe/" + name}, function (downloadId) {
             setTimeout(function() {
                 chrome.downloads.setShelfEnabled(true);
             }, 200);
@@ -150,14 +151,12 @@ function openLinkInBrowser(link) {
 }
 
 function getMovies123Details(link, theCookie, id, callback) {
-    console.log("mvback");
     cookie[id] = theCookie;
     $.ajax({
         url: link + "&cookiekey=" + theCookie.key + "&cookieval" + theCookie.val,
         method: 'GET',
         dataType: 'json',
         success: function(result) {
-            console.log(result);
             callback(result);
         }
     })
@@ -188,10 +187,39 @@ function webListener() {
         ["blocking", "requestHeaders"]
     );
 }
+
+function setSearchFunction(func) {
+    searchFunction = func;
+}
+
+function sendQueryMessage(text) {
+    if (searchFunction) {
+        searchFunction(text);
+    }
+}
+function omniboxListener() {
+    chrome.omnibox.onInputEntered.addListener(
+        function (text, disposition) {
+            openWindow();
+            if(text != "") {
+                setTimeout(function () {
+                    sendQueryMessage(text);
+                }, 1000);
+            }
+        });
+}
+function shortcutListener() {
+    chrome.commands.onCommand.addListener(function(command) {
+        if (command === 'launch-bringe') {
+            openWindow();
+        }
+    });
+}
 webListener();
+omniboxListener();
+shortcutListener();
 
 function sendMessage(tabId, msg) {
     chrome.tabs.sendMessage(tabId, msg, function (response) {
-        console.log(response);
     });
 }

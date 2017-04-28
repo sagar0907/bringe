@@ -6,7 +6,7 @@ function movies123() {
     var base_url = "http://123movies.org";
     function failFunction() {
         if (page != "movie") return;
-        callback({site:"vumoo", status: false});
+        callback({site:"movies123", status: false});
     }
     function successFunction(linkDetails) {
         if (page != "movie") return;
@@ -76,7 +76,6 @@ function movies123() {
         function cookieFunction() {
             var aa = getMerged();
             var bb = md5(second + superString.substring(46, 58));
-            console.log(bb,aa);
             cookie.key = bb;
             cookie.val = aa;
             return aa;
@@ -98,13 +97,11 @@ function movies123() {
             second = b;
             var aa = cookieFunction();
             var c = uncensored(second + superString.substring(8, 40), aa);
-            console.log(b, encodeURIComponent(c));
             var link = base_url + 'ajax/v2_get_sources/' + second + '?hash=' + encodeURIComponent(c);
             background.getMovies123Details(link, cookie, second, function (result) {
                 if(result && result.playlist && result.playlist[0] && result.playlist[0].sources && result.playlist[0].sources.length > 0) {
                     var sources = result.playlist[0].sources,
                         sourceList = [];
-                    console.log(sources);
                     for(var i=0; i < sources.length; i++) {
                         var source = sources[i];
                         source.src = source.file;
@@ -167,7 +164,6 @@ function movies123() {
             var link = $(server).find("a.btn-eps");
             var loadFunc = link.attr("onclick");
             var pair = extractPairFromFunc(loadFunc);
-            console.log(pair);
             if(pair) {
                 pairs.push(pair);
             }

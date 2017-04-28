@@ -107,7 +107,6 @@ function vumoo() {
                 var vumooImdbRating = $(movieItem).find(".rating-overlay").text().trim();
                 if (vumooImdbRating) {
                     thisMovie.vumooImdbRating = vumooImdbRating;
-                    layout().placeVumooImdbRating();
                 }
                 util().sendAjax(vumooMoviePageLink, "GET", {}, moviePageSuccessFunction, failFunction);
                 return;

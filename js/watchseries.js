@@ -3,37 +3,15 @@
  */
 function watchseries() {
     var base_url = 'http://mywatchseries.to';
-    function getWatchSeriesSearchTerm() {
-        var searchTerm = thisSerie.title;
-        searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/,"").replace(/^the/, "").replaceAll(/,| -|- /," ");
-        searchTerm = searchTerm.replace(/\d*$/,"").replaceAll(/\s\s+/," ").trim();
-        return searchTerm;
-    }
-    function getSearchedSerie(serieItems) {
-        if(serieItems.length == 0) {
-            return null;
-        }
-        if(serieItems.length == 1) {
-            if (serieItems[0].label === "More results...") return null;
-            return serieItems[0];
-        }
-        if(serieItems.length == 2) {
-            if (serieItems[1].label === "More results...") return serieItems[0];
-        }
-        for(var i=0; i<serieItems.length; i++) {
-            var serieItem = serieItems[i];
-            var serieName = serieItem.value;
-            if(util().isSameMovieName(serieName, thisSerie.title)) {
-                return serieItem;
-            }
-        }
-        return null;
-    }
+
+    thisSerie.websites.watchSeries = thisSerie.websites.watchSeries || {};
+    var watchSeries = thisSerie.websites.watchSeries;
+
     function getSeasonByNo(no) {
         var seasons = [],
             reqdSeason = null;
-        if (thisSerie.websites.watchSeries && thisSerie.websites.watchSeries.seasons)
-            seasons = thisSerie.websites.watchSeries.seasons;
+        if (watchSeries.seasons)
+            seasons = watchSeries.seasons;
         util().each(seasons, function (season) {
             if (season.seasonNo === no) {
                 reqdSeason = season;
@@ -41,7 +19,6 @@ function watchseries() {
         });
         return reqdSeason;
     }
-
     function getEpisodeByNo(season, no) {
         var episodes = season.episodes,
             reqdEpisode = null;
@@ -51,6 +28,29 @@ function watchseries() {
             }
         });
         return reqdEpisode;
+    }
+    function getEpisode(seasonNo, episodeNo) {
+        var season = getSeasonByNo(seasonNo);
+        if (season) {
+            return getEpisodeByNo(season, episodeNo);
+        }
+    }
+
+    function getLinkById(streams, id) {
+        var link = null;
+        link = util().any(streams, function (stream) {
+            if(stream.id === id) {
+                link = stream;
+                return link;
+            }
+        });
+        return link;
+    }
+
+    function getWatchSeriesSearchTerm(searchTerm) {
+        searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/,"").replace(/^the/, "").replaceAll(/,| -|- /," ");
+        searchTerm = searchTerm.replace(/\d*$/,"").replaceAll(/\s\s+/," ").trim();
+        return searchTerm;
     }
     function getWorthyRows(rows) {
         rows = util().filter(rows, function (row) {
@@ -67,33 +67,29 @@ function watchseries() {
             return arr[1].split("'")[0];
         }
     }
-    function searchSerie() {
-        var link = base_url + '/show/search-shows-json';
-        console.log("b");
-        $.ajax({
-            url: link,
-            data: {
-                term: getWatchSeriesSearchTerm()
-            },
-            method: 'POST',
-            success: function (result) {
-                if (page != "serie") return;
-                if (typeof result != "object") {
-                    try {
-                        result = JSON.parse(result);
-                    } catch (e) {
-                        result = {};
-                    }
-                }
-                thisSerie.websites = thisSerie.websites || {};
-                thisSerie.websites.watchSeries = getSearchedSerie(result);
-                getSeries();
+    function getSearchedSerie(serieItems) {
+        if(serieItems.length == 0) {
+            return null;
+        }
+        if(serieItems.length == 1) {
+            if (serieItems[0].label === "More results...") return null;
+            return serieItems[0].seo_url;
+        }
+        if(serieItems.length == 2) {
+            if (serieItems[1].label === "More results...") return serieItems[0].seo_url;
+        }
+        for(var i=0; i<serieItems.length; i++) {
+            var serieItem = serieItems[i];
+            var serieName = serieItem.value;
+            if(util().isSameMovieName(serieName, thisSerie.title)) {
+                return serieItem.seo_url;
             }
-        });
+        }
+        return null;
     }
     function getSeries() {
-        if (thisSerie.websites.watchSeries && thisSerie.websites.watchSeries.seo_url) {
-            var link = base_url + '/serie/' + thisSerie.websites.watchSeries.seo_url;
+        if (watchSeries.seo_url) {
+            var link = base_url + '/serie/' + watchSeries.seo_url;
             $.ajax({
                 url: link,
                 success: function (result) {
@@ -127,14 +123,14 @@ function watchseries() {
                             seasonsList.push(oneSeason);
                         }
                     }
-                    thisSerie.websites.watchSeries.seasons = seasonsList;
+                    watchSeries.seasons = seasonsList;
                 }
             });
         }
     }
-    function loadEpisodeLink(page, episode) {
-        delete episode.streams;
-        var link = "http://gorillavid.in/" + page.pageId;
+    function loadEpisodeLink(page, episode, id) {
+        var link = "http://gorillavid.in/" + page.pageId,
+            obj;
         $.ajax({
             url: link,
             data: {
@@ -153,25 +149,25 @@ function watchseries() {
                 if (arr && arr!= '') {
                     link = arr.split('"')[0];
                     episode.streams = episode.streams || [];
-                    episode.streams.push(link);
-                    console.log(link);
+                    obj = {src: link, res: "-", label: "-", source: "watchseries", id: id};
+                    episode.streams.push(obj);
                     layout().showEpisodeStreamLink();
                 }
             }
         });
     }
-    function loadEpisode(episode) {
+    function fetchEpisode(episode) {
         var link  = episode.link;
+        delete episode.streams;
         $.ajax({
             url: link,
             success: function (result) {
                 if (page != "serie") return;
                 var parser = new DOMParser(),
                     doc = parser.parseFromString(result, "text/html"),
-                    myDoc = $(doc),
-                    pageList = [],
-                    i, j;
-                var rows = myDoc.find("table#myTable tr");
+                    myDoc = $(doc);
+                var rows = myDoc.find("table#myTable tr"),
+                    id = 1;
                 rows = getWorthyRows(rows);
                 util().each(rows, function (row) {
                     var page = {};
@@ -180,43 +176,67 @@ function watchseries() {
                     page.pageId = $(row).find("td.deletelinks a").attr("onclick") + "";
                     page.pageId = getPageId(page.pageId);
                     if (page.pageId && page.pageId != '') {
-                        pageList.push(page);
-                        loadEpisodeLink(page, episode);
+                        loadEpisodeLink(page, episode, id + '');
+                        id++;
                     }
                 });
             }
         });
     }
-    function getEpisode(seasonNo, episodeNo) {
-        console.log(seasonNo, episodeNo);
+    function loadSerie(obj, callback) {
+        var serieName = obj.title;
+        var link = base_url + '/show/search-shows-json';
+        $.ajax({
+            url: link,
+            data: {
+                term: getWatchSeriesSearchTerm(serieName)
+            },
+            method: 'POST',
+            success: function (result) {
+                if (page != "serie") return;
+                if (typeof result != "object") {
+                    try {
+                        result = JSON.parse(result);
+                    } catch (e) {
+                        result = {};
+                    }
+                }
+                watchSeries.seo_url = getSearchedSerie(result);
+                getSeries();
+            }
+        });
+    }
+    function loadEpisode(obj) {
+        var seasonNo = obj.seasonNo,
+            episodeNo = obj.episodeNo;
         var season = getSeasonByNo(seasonNo);
         if (season) {
             var episode = getEpisodeByNo(season, episodeNo);
             if (episode) {
-                loadEpisode(episode);
+                fetchEpisode(episode);
             }
         }
     }
-    function fetchCurrentEpisode() {
-        if (thisSerie.seasonNo && thisSerie.episodeNo) {
-            var season = getSeasonByNo(thisSerie.seasonNo);
-            if (season) {
-                return getEpisodeByNo(season, thisSerie.episodeNo);
-            }
-        }
-    }
-    function getStreamLinks() {
-        var episode = fetchCurrentEpisode();
+    function getStreamLinks(obj) {
+        var seasonNo = obj.seasonNo,
+            episodeNo = obj.episodeNo;
+        var episode = getEpisode(seasonNo, episodeNo);
         if (episode && episode.streams) {
             return episode.streams;
+        } else {
+            return null;
         }
     }
     function downloadEpisodeStreamLink(obj) {
-        var id = obj.id;
-        var episode = fetchCurrentEpisode();
+        var id = obj.id,
+            seasonNo = obj.seasonNo,
+            episodeNo = obj.episodeNo;
+        var episode = getEpisode(seasonNo, episodeNo);
         if (episode && episode.streams) {
-            var link = episode.streams[id];
+            var link = getLinkById(episode.streams, id);
+            link = link.src;
             var name = thisEpisode.title;
+            layout().openWaiter("Adding Episode to Downloads");
             downloads().addToDownload(link, name, ".mp4", function () {
                 layout().closeWaiter();
                 layout().shineDownloadButton();
@@ -226,17 +246,19 @@ function watchseries() {
         layout().closeWaiter();
     }
     function streamEpisodeStreamLink(obj) {
-        var id = obj.id;
-        var episode = fetchCurrentEpisode(thisSerie.seasonNo, thisSerie.episodeNo);
+        var id = obj.id,
+            seasonNo = obj.seasonNo,
+            episodeNo = obj.episodeNo;
+        var episode = getEpisode(seasonNo, episodeNo);
         if (episode && episode.streams) {
-            var link = episode.streams[id];
+            var link = getLinkById(episode.streams, id);
+            link = link.src;
             chrome.tabs.create({'url': link}, function(tab) {});
         }
     }
     return {
-        searchSerie: searchSerie,
-        getSeries: getSeries,
-        getEpisode: getEpisode,
+        loadSerie: loadSerie,
+        loadEpisode: loadEpisode,
         getStreamLinks: getStreamLinks,
         downloadEpisodeStreamLink: downloadEpisodeStreamLink,
         streamEpisodeStreamLink: streamEpisodeStreamLink

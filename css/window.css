@@ -4,6 +4,9 @@ body{
     color: #555;
     word-wrap: break-word;
     background-color: #f7f7f7;
+    background: url(../images/deadpool2.jpg) no-repeat center center fixed;
+    background-size: cover;
+    margin-bottom: 20px;
 }
 /* hebrew */
 @font-face {
@@ -21,6 +24,14 @@ body{
     src: local('Varela Round'), local('VarelaRound-Regular'), url(https://fonts.gstatic.com/s/varelaround/v7/APH4jr0uSos5wiut5cpjrhampu5_7CjHW5spxoeN3Vs.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
+/* latin */
+@font-face {
+    font-family: 'Bungee Inline';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Bungee Inline'), local('BungeeInline-Regular'), url(https://fonts.gstatic.com/s/bungeeinline/v2/Tb-1914q4rFpjT-F66PLCQYWpCd0FFfjqwFBDnEN0bM.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
 .row {
     margin-left: 0;
     margin-right: 0;
@@ -32,22 +43,30 @@ body{
 .header-wrapper {
     height: 60px;
     width: 100%;
-    background-color: #1b6d85;
+    position: fixed;
+    z-index:10;
+    background-color: #f7f7f7;
+    background: url(../images/deadpool2.jpg) no-repeat center center fixed;
+    background-size: cover;
+    transition-duration: 0.5s;
+}
+.header-wrapper.sticky {
+    box-shadow: 0 4px 4px -4px #999;
+}
+.header-logo-part {
+    float:left;
+    margin-left: 20px;
+    width: 200px;
 }
 .header-logo {
     height: 60px;
-    width: 200px;
+    width: 120px;
     padding: 15px 0;
     cursor: pointer;
 }
 .header-logo img {
     height: 30px;
-    width: 240px;
-}
-.header-logo-part {
-    float:left;
-    margin-left: 20px;
-    width: 240px;
+    width: 120px;
 }
 .header-right {
     float:right;
@@ -55,7 +74,7 @@ body{
 #downloads-button {
     float: left;
     color: #ffffff;
-    background-color: #FF9800;
+    background-color: #f06292;
     font-size: 16px;
     line-height: 40px;
     margin-top: 10px;
@@ -65,8 +84,8 @@ body{
     margin-right: 20px;
     transition: 0.5s;
 }
-#downloads-button:hover {
-    background-color: #F57C00;
+#downloads-button.shine, #downloads-button:hover {
+    background-color: #ba2d65;
 }
 .header-close-part {
     float: right;
@@ -75,8 +94,13 @@ body{
     line-height: 60px;
 }
 .close-button {
-    color: #fff;
+    color: #555;
     cursor: pointer;
+}
+.header-space-wrapper{
+    height: 60px;
+    width:100%;
+    clear:both;
 }
 .popup-wrapper{
     position: fixed;
@@ -109,11 +133,15 @@ body{
 }
 .popup-box .popup-header {
     font-size: 24px;
-    color: coral;
+    color: #1e88e5;
     text-align: center;
     line-height: 30px;
     vertical-align: middle;
-    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+.popup-box img {
+    height: 100%;
 }
 .popup-main-part {
     overflow: scroll;
@@ -125,19 +153,33 @@ body{
     padding: 15px;
 }
 .popup-box thead {
-    background-color: cornflowerblue;
+    background-color: #1e88e5;
     padding: 4px 0;
     color: #fff;
 }
 .popup-box td {
     padding: 4px;
+    height: 40px;
 }
 .popup-box tbody tr {
     cursor: pointer;
+    border-bottom: 1px solid #ddd;
 }
 
 .popup-box tbody tr:hover {
     background-color: #f3f3f3;
+}
+td.streamEpisode {
+    color: #e53935;
+}
+td.downloadEpisode {
+    color: #f06292;
+}
+td.movieStream {
+    color: #f06292;
+}
+td.movieDownload {
+    color: #f06292;
 }
 .waiter-wrapper{
     position: fixed;
@@ -193,7 +235,7 @@ body{
 .search-wrapper {
 }
 .search-section {
-    max-width: 700px;
+    max-width: 800px;
     padding: 15px;
     margin: 0 auto;
 }
@@ -202,6 +244,12 @@ body{
 }
 .search-input {
     padding: 0;
+}
+#search-input {
+    font-size: 18px;
+    height: 42px;
+    background-color: rgba(255,255,255,0);
+    box-shadow: none;
 }
 .search-button {
     padding: 0;
@@ -214,30 +262,29 @@ body{
         border-radius: 0 4px 4px 0;
     }
 }
-/*button.btn{
-    font-size: 16px;
-    padding: 5px;
-    width:100%;
-    color: #ffffff;
-    background-color: #2e6da4;
-}
-button.btn:hover {
-    background-color: #1b6d85;
-    color: #ffffff;
-}*/
 
-#search-button{
-    font-size: 16px;
+#search-button {
+    font-size: 18px;
+    line-height: 30px;
     padding: 5px;
-    width:100%;
+    width: 100%;
     color: #ffffff;
-    background-color: #2e6da4;
+    background-color: #1e88e5;
 }
 #search-button:hover {
-    background-color: #1b6d85;
+    background-color: #005cb2;
     color: #ffffff;
 }
 
+.search-result-text {
+    text-align: center;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    color: #f06292;
+    font-size: 16px;
+    background-color: #fff;
+}
 .results {
     max-width: 800px;
     padding: 15px;
@@ -248,30 +295,37 @@ button.btn:hover {
     font-size: 40px;
     margin-top: 40px;
 }
+
+#moviesResultsList {
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    background-color: #fff;
+}
+#seriesResultsList {
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    background-color: #fff;
+    margin-top: 30px;
+}
 .searchTypeTitle {
-    margin: 20px 0;
-    font-size: 20px;
+    font-size: 24px;
     line-height: 40px;
     text-align: center;
-    background-color: #4cae4c;
-    color: #fff;
-    border-radius: 4px;
+    padding: 10px;
+    color: #005cb2;
+    border-bottom: 1px solid #ddd;
 }
 .searchMovie {
     height: 110px;
     padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
-    margin-top: 10px;
     cursor: pointer;
+    border-bottom: 1px solid #ddd;
 }
 .searchSerie {
     height: 110px;
     padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
-    margin-top: 10px;
     cursor: pointer;
+    border-bottom: 1px solid #ddd;
 }
 .searchMovieImage {
     height: 90px;
@@ -292,6 +346,7 @@ button.btn:hover {
     line-height: 30px;
     font-size: 20px;
     overflow-y: hidden;
+    color: #1e88e5;
 }
 .searchMovieSubline {
     font-size: 15px;
@@ -314,7 +369,7 @@ button.btn:hover {
 }
 .searchMovieRating i {
     font-size: 60px;
-    color: red;
+    color: #f06292;
 }
 
 .searchSerieImage {
@@ -336,6 +391,7 @@ button.btn:hover {
     line-height: 30px;
     font-size: 20px;
     overflow-y: hidden;
+    color: #1e88e5;
 }
 .searchSerieYear {
     font-size: 15px;
@@ -358,19 +414,17 @@ button.btn:hover {
 }
 .searchSerieRating i {
     font-size: 60px;
-    color: red;
+    color: #f06292;
 }
 
 
 
 .seasonListDiv {
     height: 110px;
-    padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
-    margin-top: 10px;
+    padding: 10px 10px 0 10px;
     cursor: pointer;
     background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
 }
 .seasonListImage {
     height: 90px;
@@ -391,6 +445,7 @@ button.btn:hover {
     line-height: 30px;
     font-size: 20px;
     overflow-y: hidden;
+    color: #1e88e5;
 }
 .seasonListConsensus {
     font-size: 15px;
@@ -419,18 +474,16 @@ button.btn:hover {
 }
 .seasonListRating i {
     font-size: 60px;
-    color: red;
+    color: #f06292;
 }
 
 
 .episodeListDiv {
     height: 110px;
-    padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
-    margin-top: 10px;
+    padding: 10px 10px 0 10px;
     cursor: pointer;
     background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
 }
 .episodeListLeft {
     height: 90px;
@@ -444,6 +497,7 @@ button.btn:hover {
     font-size: 30px;
     vertical-align: middle;
     text-align: center;
+    color: #1e88e5;
 }
 .episodeListDate {
     width: 100%;
@@ -463,6 +517,7 @@ button.btn:hover {
     line-height: 30px;
     font-size: 20px;
     overflow-y: hidden;
+    color: #1e88e5;
 }
 .episodeListSynopsis {
     font-size: 15px;
@@ -485,7 +540,7 @@ button.btn:hover {
 }
 .episodeListRating i {
     font-size: 60px;
-    color: red;
+    color: #f06292;
 }
 
 /*************      MOVIE WRAPPER ****************/
@@ -501,17 +556,15 @@ button.btn:hover {
 }
 .movie-data-section {
     padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #ffffff;
     margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .movie-download-section {
     padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #ffffff;
     margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .movie-poster {
     float: left;
@@ -528,22 +581,25 @@ button.btn:hover {
     padding-left: 10px;
 }
 .movie-name-year {
-    height: 140px;
+    height: 80px;
     width:100%;
     font-size: 20px;
     line-height: 30px;
 }
 .movie-name {
-    max-height: 90px;
+    max-height: 60px;
     width:100%;
 }
 .movie-year {
-    height: 50px;
+    height: 30px;
     width:100%;
 }
 .movie-ratings {
     width: 100%;
     clear: both;
+    height: 120px;
+}
+.movie-ratings .row {
     height: 60px;
 }
 .movie-rating-box {
@@ -566,6 +622,7 @@ button.btn:hover {
     height: 200px;
     width: 100%;
 }
+
 .movieLoader {
     font-size: 40px;
     text-align: center;
@@ -608,16 +665,17 @@ button.btn:hover {
     width: 100%;
 }
 #movieStreamButton {
-    background-color: #4cae4c;
+    background-color:  #1e88e5;
     margin-bottom: 10px;
 }
-#movieDownloadButton {
-    background-color: #1b6d85;
-    margin-bottom: 10px;
+#movieStreamButton:hover {
+    background-color: #005cb2;
 }
-
 #movieSubtitleButton {
-    background-color: #d58512;
+    background-color: #1e88e5;
+}
+#movieSubtitleButton:hover {
+    background-color: #005cb2;
 }
 .section-header {
     width: 100%;
@@ -625,20 +683,19 @@ button.btn:hover {
     padding: 5px 0 10px 15px;
     font-size: 20px;
     line-height: 32px;
+    color: #1e88e5;
 }
 .movieInfo-section {
     padding: 10px;
     margin-top: 20px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .synopsis-section {
     padding: 10px;
     margin-top: 20px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .movie-info-box {
     margin: 4px 0;
@@ -649,9 +706,8 @@ button.btn:hover {
 .cast-section {
     padding: 10px;
     margin-top: 20px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .cast-member {
     height: 60px;
@@ -712,17 +768,15 @@ button.btn:hover {
 }
 .serie-data-section {
     padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #ffffff;
     margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .serie-download-section {
     padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #ffffff;
     margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .serie-poster {
     float: left;
@@ -739,23 +793,24 @@ button.btn:hover {
     padding-left: 10px;
 }
 .serie-name-year {
-    height: 140px;
+    height: 80px;
     width:100%;
     font-size: 20px;
     line-height: 30px;
 }
 .serie-name {
-    max-height: 90px;
+    max-height: 60px;
     width:100%;
+    color: #1e88e5;
 }
 .serie-year {
-    height: 50px;
+    height: 30px;
     width:100%;
 }
 .serie-ratings {
     width: 100%;
     clear: both;
-    height: 60px;
+    height: 120px;
 }
 .serie-rating-box {
     float: left;
@@ -813,24 +868,12 @@ button.btn:hover {
 .serieActionOption i {
     width: 100%;
 }
-#serieStreamButton {
-    background-color: #4cae4c;
-    margin-bottom: 10px;
-}
-#serieDownloadButton {
-    background-color: #1b6d85;
-    margin-bottom: 10px;
-}
 
-#serieSubtitleButton {
-    background-color: #d58512;
-}
 .serieInfo-section {
     padding: 10px;
     margin-top: 20px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .serie-info-box {
     margin: 4px 0;
@@ -841,18 +884,22 @@ button.btn:hover {
 
 
 .seasons-section {
-    padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
+    padding: 10px 10px 0 10px;
     background-color: #ffffff;
     margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .episodes-section {
-    padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
+    padding: 10px 10px 0 10px;
     background-color: #ffffff;
     margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.seasons-section .section-header{
+    border-bottom: 1px solid #ddd;
+}
+.episodes-section .section-header{
+    border-bottom: 1px solid #ddd;
 }
 .season-wrapper {
     max-width: 1200px;
@@ -865,10 +912,9 @@ button.btn:hover {
 }
 .season-data-section {
     padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #ffffff;
     margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .season-poster {
     float: left;
@@ -893,6 +939,7 @@ button.btn:hover {
 .season-name {
     max-height: 90px;
     width:100%;
+    color: #1e88e5;
 }
 .season-year {
     height: 50px;
@@ -922,9 +969,8 @@ button.btn:hover {
 .seasonInfo-section {
     padding: 10px;
     margin-top: 20px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .season-info-box {
     margin: 4px 0;
@@ -946,10 +992,9 @@ button.btn:hover {
 }
 .episode-data-section {
     padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #ffffff;
     margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .episode-poster {
     float: left;
@@ -974,6 +1019,7 @@ button.btn:hover {
 .episode-name {
     max-height: 90px;
     width:100%;
+    color: #1e88e5;
 }
 .episode-year {
     height: 50px;
@@ -1003,16 +1049,14 @@ button.btn:hover {
 .episodeInfo-section {
     padding: 10px;
     margin-top: 20px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .episodeSynopsis-section {
     padding: 10px;
     margin-top: 20px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
     background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .episode-info-box {
     margin: 4px 0;
@@ -1023,17 +1067,22 @@ button.btn:hover {
 
 #episode-download-section {
     padding: 10px;
-    border: 1px solid #e5e5e5;
-    border-radius: 4px;
-    background-color: #ffffff;
     margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 #episodeStreamButton {
-    background-color: #4cae4c;
+    background-color: #1e88e5;
     margin-bottom: 10px;
 }
+#episodeStreamButton:hover {
+    background-color: #005cb2;
+}
 #episodeSubtitleButton {
-    background-color: #d58512;
+    background-color: #1e88e5;
+}
+#episodeSubtitleButton:hover {
+    background-color: #005cb2;
 }
 
 /*****************  DOWNLOADS SECTION  ******************/
@@ -1043,7 +1092,7 @@ button.btn:hover {
     line-height: 40px;
     vertical-align: middle;
     font-size: 18px;
-    background-color: cornflowerblue;
+    background-color: #1e88e5;
     color: #fff;
 }
 .downloads-back {
@@ -1091,7 +1140,7 @@ button.btn:hover {
     width: calc(100% - 70px);
 }
 .download-file-name {
-    color: cornflowerblue;
+    color: #1e88e5;
     font-weight: bold;
 }
 .download-file-link {
@@ -1102,21 +1151,21 @@ button.btn:hover {
     cursor: pointer;
 }
 .download-file-link:hover {
-    color: chocolate;
+    color: #f06292;
 }
 .download-progress-bar {
     width: 100%;
     background-color: #ddd;
 }
 .download-complete-part {
-    background-color: cornflowerblue;
+    background-color: #1e88e5;
     width:0;
     height: 100%;
 }
 .download-action-button {
     float: left;
     margin: 2px 15px 2px 0;
-    color: steelblue;
+    color: #1e88e5;
     cursor: pointer;
 }
 .download-action-button:hover {
@@ -1197,4 +1246,19 @@ button.btn:hover {
 .btn-arrow-right:before,
 .btn-arrow-left:after { /* hide arrow tails background */
     background-color: #f7f7f7;
+    background: url(../images/deadpool2.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+.btn-info {
+    color: #fff;
+    background-color: #1e88e5;
+    border-color: #1e88e5;
+}
+.btn-info:hover, .btn-info:active, .btn-info:focus {
+    background-color: #005cb2;
+    border-color: #1e88e5;
+}
+.btn-info.active.focus, .btn-info.active:focus, .btn-info.active:hover, .btn-info:active.focus, .btn-info:active:focus, .btn-info:active:hover, .open>.dropdown-toggle.btn-info.focus, .open>.dropdown-toggle.btn-info:focus, .open>.dropdown-toggle.btn-info:hover {
+    background-color: #005cb2;
+    border-color: #1e88e5;
 }
