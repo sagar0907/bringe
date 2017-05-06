@@ -220,7 +220,6 @@ function goseries() {
                         var server = servers[i],
                             serverId = $(server).attr("data-id");
                         var title = $(server).find(".les-title").text();
-                        console.log(title);
                         if (title.indexOf("OpenLoad") !== -1) {
                             continue;
                         }

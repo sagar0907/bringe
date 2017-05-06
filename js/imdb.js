@@ -46,7 +46,7 @@ function imdb() {
         }
         return movieDetails;
     }
-    function searchMovieSuccess(result) {
+    function searchMovieSuccess(func, result) {
         if (page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
@@ -61,9 +61,9 @@ function imdb() {
         if (movieDetails.imdbId) {
             thisMovie.imdbId = movieDetails.imdbId;
         }
-        layout().placeImdbMovieRating();
+        func(true);
     }
-    function searchSerieSuccess(result) {
+    function searchSerieSuccess(func, result) {
         if (page != "serie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
@@ -79,9 +79,9 @@ function imdb() {
             thisSerie.metaData = thisSerie.metaData || {};
             thisSerie.metaData.imdbId = serieDetails.imdbId;
         }
-        layout().placeImdbSerieRating();
+        func(true);
     }
-    function searchMovie(q, year) {
+    function searchMovie(q, year, func) {
         q = getSearchTerm(q);
         var url;
         if (year) {
@@ -89,13 +89,13 @@ function imdb() {
         } else {
             url = encodeURI('http://www.imdb.com/search/title?title=' + q + '&title_type=feature&view=advanced');
         }
-        util().sendAjax(url, "GET", {}, searchMovieSuccess, failFunction);
+        util().sendAjax(url, "GET", {}, util().getProxy(searchMovieSuccess, [func]), failFunction);
     }
 
-    function searchSerie(q) {
+    function searchSerie(q, func) {
         q = util().getSearchTerm(q);
         var url = encodeURI('http://www.imdb.com/search/title?title=' + q + '&title_type=tv_series&view=advanced');
-        util().sendAjax(url, "GET", {}, searchSerieSuccess, failFunction);
+        util().sendAjax(url, "GET", {}, util().getProxy(searchSerieSuccess, [func]), failFunction);
     }
     function episodeSuccess(result) {
         if (page != "serie") return;

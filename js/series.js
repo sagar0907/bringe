@@ -119,7 +119,6 @@ function series() {
         return streamLinks;
     }
     function downloadEpisodeStreamLink(arg) {
-        console.log(arg);
         if (page != "serie") return;
         var id = arg.id,
             source = arg.source;
@@ -131,7 +130,6 @@ function series() {
         }
     }
     function streamEpisodeStreamLink(arg) {
-        console.log(arg);
         if (page != "serie") return;
         var id = arg.id,
             source = arg.source;
