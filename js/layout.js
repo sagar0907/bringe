@@ -145,6 +145,7 @@ function layout() {
         movieWrapper.hide();
         movieWrapper.find(".cast-list").html("");
         $("#movie-synopsis").html("");
+        $("#movie-reviews").html("");
         $("#movieInfoList").html("");
         $(".movie-poster").find("img").attr("src", "");
         $(".movieLoader").remove();
@@ -727,6 +728,27 @@ function layout() {
         }
     }
 
+    function placeGoogleMovieData() {
+        if (thisMovie.reviews) {
+            var reviewsDiv = $("#movie-reviews");
+            util().each(thisMovie.reviews, function(review) {
+                var reviewDiv = reviewDivObj.clone();
+                reviewDiv.find(".review-text").html(review.text);
+                if (review.source.name) {
+                    reviewDiv.find(".review-source-person").html(review.source.name);
+                }
+                if (review.source.sourceSite) {
+                    reviewDiv.find(".review-source-website").html('(' + review.source.sourceSite + ')');
+                }
+                reviewsDiv.append(reviewDiv);
+            });
+        }
+        if (thisMovie.metaRating) {
+            $("#movie-metacritic-rating").html(thisMovie.metaRating);
+            $("#metacritic-movie-rating-box").show();
+        }
+    }
+
     function showSubtitleLink() {
         $("#movieSubtitleButton").show();
     }
@@ -964,6 +986,7 @@ function layout() {
         clearAllEpisodeData: clearAllEpisodeData,
         placeImdbMovieRating: placeImdbMovieRating,
         placeImdbSerieRating: placeImdbSerieRating,
+        placeGoogleMovieData: placeGoogleMovieData,
         showSubtitleLink: showSubtitleLink,
         showEpisodeSubtitleLink: showEpisodeSubtitleLink,
         goBackFromDownloads: goBackFromDownloads,

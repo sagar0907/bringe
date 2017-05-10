@@ -40,6 +40,9 @@ var castMemberDivObj = $('<div class="col-lg-3 col-md-4 col-sm-6"><div class="ca
     '<div class="cast-name"></div> <div class="cast-role"></div></div></div> </div></div>');
 var movieInfoDivObj =$('<div class="movie-info-box row"> <div class="col-xs-4"> <div class="movie-info-label"></div>' +
     '</div> <div class="col-xs-8"> <div class="movie-info-value"></div> </div> </div>');
+var reviewDivObj = $('<div class="movie-review"> <div class="review-text"> </div>' +
+    '<div class="review-source"><div class="review-source-person"> </div>' +
+    '<div class="review-source-website"> </div></div> </div>');
 var downloadItemDivObj = $('<div class="download-item"> <div class="row"> <div class="download-file-icon"><img></div>' +
     '<div class="download-file-data"> <div class="download-file-name"></div> <div class="download-file-link"><a></a></div>' +
     '<div class="download-progress-detail"></div> <div class="download-progress-bar"><div class="download-complete-part"></div></div>' +

@@ -52,6 +52,12 @@ function manager() {
             }
         }
 
+        function handleGoogleLoaded(success) {
+            if (success) {
+                layout().placeGoogleMovieData();
+            }
+        }
+
         if (searchResults.movies[index]) {
             layout().hideAllSection();
             thisMovie = searchResults.movies[index];
@@ -59,6 +65,7 @@ function manager() {
             layout().showMoviePart();
             rottenTomatoes().getMovie(thisMovie, handleRottenLoaded);
             imdb().searchMovie(thisMovie.name, thisMovie.year, handleImdbLoaded);
+            google.searchMovie(thisMovie.name, thisMovie.year, handleGoogleLoaded);
             movies().loadMovies();
             subscene().searchSubtitle(handleSubtitleLoad);
         }
