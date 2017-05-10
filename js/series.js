@@ -140,11 +140,22 @@ function series() {
             watchseries().streamEpisodeStreamLink(obj, handleStreamResponse);
         }
     }
+    function getEpisodeBySelector(selector) {
+        var id = selector.id,
+            source = selector.source;
+        var obj = {seasonNo: thisSerie.seasonNo, episodeNo: thisSerie.episodeNo, id: id};
+        if (source === "goseries") {
+            return goseries().getEpisodeBySelector(obj);
+        } else if (source === "watchseries") {
+            return watchseries().getEpisodeBySelector(obj);
+        }
+    }
     return {
         loadSerie: loadSerie,
         loadSeason: loadSeason,
         loadEpisode: loadEpisode,
         getStreamLinks: getStreamLinks,
+        getEpisodeBySelector: getEpisodeBySelector,
         downloadEpisodeStreamLink: downloadEpisodeStreamLink,
         streamEpisodeStreamLink: streamEpisodeStreamLink
     }

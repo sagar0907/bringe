@@ -161,7 +161,7 @@ function goseries() {
     }
 
     function getMovies123MovieLinks(eids, seasonNo, episodeNo) {
-        if (eids.length > 0) {
+        if (eids && eids.length > 0) {
             for (var i = 0; i < eids.length; i++) {
                 var eid = eids[i];
                 var link = 'https://gomovies.to/ajax/movie_token?eid=' + eid + '&mid=' + getSeasonData(seasonNo).seasonId;
@@ -327,10 +327,21 @@ function goseries() {
         }
     }
 
+    function getEpisodeBySelector(selector) {
+        var id = selector.id,
+            seasonNo = selector.seasonNo,
+            episodeNo = selector.episodeNo;
+        var episode = getEpisodeData(seasonNo, episodeNo);
+        if (episode && episode.streams) {
+            return getLinkById(episode.streams, id);
+        }
+    }
+
     return {
         loadSeason: loadSeason,
         loadEpisode: loadEpisode,
         getStreamLinks: getStreamLinks,
+        getEpisodeBySelector: getEpisodeBySelector,
         downloadEpisodeStreamLink: downloadEpisodeStreamLink,
         streamEpisodeStreamLink: streamEpisodeStreamLink
     }

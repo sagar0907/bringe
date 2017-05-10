@@ -673,8 +673,16 @@ td.movieDownload {
 }
 #movieSubtitleButton {
     background-color: #1e88e5;
+    margin-bottom: 10px;
 }
 #movieSubtitleButton:hover {
+    background-color: #005cb2;
+}
+#movieTrailerButton {
+    background-color: #1e88e5;
+    margin-bottom: 10px;
+}
+#movieTrailerButton:hover {
     background-color: #005cb2;
 }
 .section-header {
@@ -1071,6 +1079,13 @@ td.movieDownload {
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
+#episodeTrailerButton {
+    background-color: #1e88e5;
+    margin-bottom: 10px;
+}
+#episodeTrailerButton:hover {
+    background-color: #005cb2;
+}
 #episodeStreamButton {
     background-color: #1e88e5;
     margin-bottom: 10px;
@@ -1261,4 +1276,293 @@ td.movieDownload {
 .btn-info.active.focus, .btn-info.active:focus, .btn-info.active:hover, .btn-info:active.focus, .btn-info:active:focus, .btn-info:active:hover, .open>.dropdown-toggle.btn-info.focus, .open>.dropdown-toggle.btn-info:focus, .open>.dropdown-toggle.btn-info:hover {
     background-color: #005cb2;
     border-color: #1e88e5;
+}
+
+
+video::-webkit-media-controls-overlay-enclosure {
+    display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+    display: none !important;
+}
+
+video::-webkit-media-controls {
+    display: none !important;
+}
+
+.video-wrapper {
+    background-color: rgba(50,50,50,0.9);
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 15;
+}
+.youtube-wrapper {
+    background-color: rgba(50,50,50,0.9);
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 15;
+}
+
+.video-box {
+    position: absolute;
+    height: 450px;
+    width: 800px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #000;
+}
+.video-closer, .youtube-closer {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    right: -30px;
+    text-align: center;
+    font-size: 30px;
+    line-height: 30px;
+    color: rgba(255,255,255,0.9);
+    vertical-align: top;
+    cursor: pointer;
+}
+
+#bringePlayer {
+    width: 800px;
+    height: 450px;
+    position: relative;
+    background-color: #010001;
+}
+
+#bringePlayer.fullScreen {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#playerControls {
+    position: absolute;
+    width: 800px;
+    z-index: 2147483648;
+    bottom: 0;
+    padding: 0 10px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.5); /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.8)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.8)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.8)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.8)); /* Standard syntax */
+}
+
+.fullScreen #playerControls {
+    position: absolute;
+    height: 60px;
+    width: 100%;
+    z-index: 2147483648;
+    bottom: 0;
+    left: 0;
+}
+
+#seekGroup {
+    position: relative;
+    width: 100%;
+    height: 14px;
+    cursor: pointer;
+    clear: both;
+    display: block;
+}
+
+#loadedRange {
+    position: absolute;
+    top: 0;
+    height: 4px;
+    margin: 5px 0;
+    width: 0;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+#seenRange {
+    position: absolute;
+    top: 0;
+    height: 4px;
+    margin: 5px 0;
+    width: 0;
+    background-color: #f12b24;
+}
+
+#seekbar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+#peekTimeText {
+    display: none;
+    background-color: #222;
+    color: #fff;
+    position: absolute;
+}
+
+#playerButtons {
+    height: 36px;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.playerButton {
+    float: left;
+    width: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+#playpause {
+    width: 50px;
+    font-size: 20px;
+}
+.fullScreen #playerButtons {
+    height: 46px;
+    font-size: 20px;
+}
+.fullScreen .playerButton {
+    width: 50px;
+}
+.fullScreen #playpause {
+    font-size: 24px;
+    width: 80px;
+}
+#fullscr {
+    float: right;
+}
+
+#volumeGroup {
+    width: 60px;
+    margin: 11px 0;
+    height: 14px;
+    cursor: pointer;
+    position: relative;
+}
+.fullScreen #volumeGroup {
+    margin: 16px 10px 16px 0;
+}
+
+.playerControlPart {
+    float: left;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 5px;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: lighter;
+}
+.fullScreen .playerControlPart {
+    line-height: 46px;
+    height: 46px;
+    padding: 0 10px 0 0;
+}
+
+#volumeSet {
+    position: absolute;
+    top: 0;
+    height: 4px;
+    margin: 5px 0;
+    width: 0;
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+#volumecontrol {
+    position: absolute;
+    padding: 5px 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    cursor: pointer;
+}
+
+.playerButton i.fa {
+    line-height: 36px;
+}
+.fullScreen .playerButton i.fa {
+    line-height: 46px;
+}
+
+#playerPopup {
+    width: 100%;
+    height: calc(100% - 50px);
+    position: absolute;
+    top: 0;
+    z-index: 2147483648;
+}
+
+#playerPlay {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+}
+
+#playerLoader {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    top: calc(50% - 30px);
+    left: calc(50% - 30px);
+}
+
+#playerPlay i, #playerLoader i {
+    color: rgba(255, 255, 255, 0.95);
+    text-align: center;
+    width: 100px;
+    line-height: 100px;
+    font-size: 100px;
+    cursor: pointer;
+}
+#playerLoader i {
+    color: rgba(255, 255, 255, 0.75);
+    text-align: center;
+    width: 60px;
+    line-height: 60px;
+    font-size: 60px;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    margin: 0;
+    background: rgba(0, 0, 0, 0);
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: rgba(255, 255, 255, .2);
+    border: none;
+    border-radius: 3px;
+}
+
+input[type=range]#seekbar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    visibility: hidden;
+    border: none;
+    height: 4px;
+    width: 4px;
+    background: #1e88e5;
+    margin-top: 0px;
+}
+input[type=range]#volumecontrol::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #fff;
+    margin-top: -4px;
+}
+
+input[type=range]:focus {
+    outline: none;
 }

@@ -136,6 +136,7 @@ function layout() {
         var movieDataSection = $(".movie-data-section");
         $(".movie-rating-box").hide();
         $("#movieStreamButton").hide();
+        $("#movieTrailerButton").hide();
         $("#movieSubtitleButton").hide();
         movieWrapper.find(".cast-section").hide();
         movieWrapper.find(".synopsis-section").hide();
@@ -209,7 +210,7 @@ function layout() {
         var wrapper = $(".episode-level");
         var serieDataSection = $(".episode-data-section");
         $("#episodeStreamButton").hide();
-        $("#episodeDownloadButton").hide();
+        $("#episodeTrailerButton").hide();
         $("#episodeSubtitleButton").hide();
         wrapper.find(".episode-rating-box").hide();
         wrapper.find(".cast-section").hide();
@@ -418,6 +419,14 @@ function layout() {
         $(".movieLoader").remove();
     }
 
+    function showMovieTrailerLink() {
+        $("#movieTrailerButton").show();
+    }
+
+    function showEpisodeTrailerLink() {
+        $("#episodeTrailerButton").show();
+    }
+
     function showEpisodeStreamLink() {
         $("#episodeStreamButton").show();
     }
@@ -460,7 +469,7 @@ function layout() {
             infoList.append(serieInfoDiv);
         }
 
-        $(".movie-poster").find("img").attr("src", thisMovie.posterImage);
+        $(".movie-poster").find("img").attr("src", thisMovie.image);
         $(".movie-data-section").find(".movie-name").html(thisMovie.name);
         $(".movie-data-section").find(".movie-year").html('(' + thisMovie.year + ')');
         if (thisMovie.meterScore) {
@@ -899,6 +908,19 @@ function layout() {
         }
     }
 
+    function openVideoPopup() {
+        $(".video-wrapper").show();
+    }
+    function closeVideoPopup() {
+        $(".video-wrapper").hide();
+    }
+    function openTrailerPopup() {
+        $(".youtube-wrapper").show();
+    }
+    function closeTrailerPopup() {
+        $(".youtube-wrapper").hide();
+    }
+
     function shineDownloadButton() {
         $("#downloads-button").addClass("shine");
         setTimeout(function () {
@@ -948,6 +970,8 @@ function layout() {
         placeDownloadSection: placeDownloadSection,
         showMovieStreamLink: showMovieStreamLink,
         showEpisodeStreamLink: showEpisodeStreamLink,
+        showMovieTrailerLink: showMovieTrailerLink,
+        showEpisodeTrailerLink: showEpisodeTrailerLink,
         clearSearchList: clearSearchList,
         showRTMovie: showRTMovie,
         showRTSerie: showRTSerie,
@@ -977,6 +1001,10 @@ function layout() {
         openMovieSubtitlePopup: openMovieSubtitlePopup,
         openEpisodesStreamPopup: openEpisodesStreamPopup,
         openEpisodesSubtitlePopup: openEpisodeSubtitlePopup,
+        openVideoPopup: openVideoPopup,
+        closeVideoPopup: closeVideoPopup,
+        openTrailerPopup: openTrailerPopup,
+        closeTrailerPopup: closeTrailerPopup,
         shineDownloadButton: shineDownloadButton,
         showSearchResultText: showSearchResultText,
         searching: searching,

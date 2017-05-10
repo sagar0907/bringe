@@ -290,11 +290,24 @@ $(document).ready(function () {
     $("#episodeSubtitleButton").find(".feeling-lucky").click(function (evt) {
         manager().openEpisodesSubtitlePopup();
     });
+    $("#episodeTrailerButton").find(".feeling-lucky").click(function (evt) {
+        manager().openSeasonTrailer();
+    });
+
+    $("#movieTrailerButton").find(".feeling-lucky").click(function (evt) {
+        manager().openMovieTrailer();
+    });
     $("#movieStreamButton").find(".feeling-lucky").click(function (evt) {
         manager().openMovieStreamPopup();
     });
     $("#movieSubtitleButton").find(".feeling-lucky").click(function (evt) {
         manager().openMovieSubtitlePopup();
+    });
+    $(".video-closer").click(function (evt) {
+        manager().closeVideo();
+    });
+    $(".youtube-closer").click(function (evt) {
+        manager().closeYoutube();
     });
     $("#downloads-button").click(function (evt) {
         downloads().setupDownloadsSection();
