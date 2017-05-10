@@ -46,6 +46,13 @@ function manager() {
             }
         }
 
+        function handleTrailerLoad(success, id) {
+            if (success) {
+                thisMovie.youtubeId = id;
+                layout().showMovieTrailerLink();
+            }
+        }
+
         function handleImdbLoaded(success) {
             if (success) {
                 layout().placeImdbMovieRating();
@@ -66,6 +73,7 @@ function manager() {
             rottenTomatoes().getMovie(thisMovie, handleRottenLoaded);
             imdb().searchMovie(thisMovie.name, thisMovie.year, handleImdbLoaded);
             google.searchMovie(thisMovie.name, thisMovie.year, handleGoogleLoaded);
+            trailer.fetchMovieTrailer(thisMovie, handleTrailerLoad);
             movies().loadMovies();
             subscene().searchSubtitle(handleSubtitleLoad);
         }
@@ -156,6 +164,12 @@ function manager() {
             }
         }
 
+        function handleTrailerLoad(success, id) {
+            if (success) {
+                thisSeason.youtubeId = id;
+            }
+        }
+
         if (thisSerie.seasons && thisSerie.seasons[index]) {
             layout().hideAllSection();
             layout().clearAllSeasonData();
@@ -165,6 +179,7 @@ function manager() {
             layout().showRottenLoader($(".serie-wrapper"));
             layout().showSeriePart();
             rottenTomatoes().getSeason(thisSeason, handleRottenLoaded, handleEpisodesLoaded);
+            trailer.fetchSeasonTrailer(thisSerie, thisSerie.seasonNo, handleTrailerLoad);
             if (thisSerie.metaData && thisSerie.metaData.imdbId) {
                 imdb().loadEpisodes(thisSerie.metaData.imdbId, thisSerie.seasonNo);
             }
@@ -196,11 +211,24 @@ function manager() {
             rottenTomatoes().getEpisode(thisEpisode, handleRottenLoaded);
             series().loadEpisode();
             subscene().searchSubtitle(handleSubtitleLoad);
+            if (thisSeason.youtubeId) {
+                layout().showEpisodeTrailerLink();
+            }
         }
     }
 
-    function openMovieStreamLink(obj) {
-        movies().openMovieStreamLink(obj);
+    function openMovieStreamLink(selector) {
+        if(selector && selector.id) {
+            var movie = movies().getMovieBySelector(selector);
+            if(movie) {
+                var obj = {src: movie.src};
+                if (thisMovie.coverImage && thisMovie.coverImage != "") {
+                    obj.poster = thisMovie.coverImage;
+                }
+                player.setupVideo(obj);
+                layout().openVideoPopup();
+            }
+        }
     }
 
     function downloadMovieStreamLink(obj) {
@@ -223,8 +251,17 @@ function manager() {
         });
     }
 
-    function openSerieStreamLink(obj) {
-        series().streamEpisodeStreamLink(obj);
+    function openSerieStreamLink(selector) {
+        if (selector && selector.id && selector.source)
+        var episode = series().getEpisodeBySelector(selector);
+        if(episode) {
+            var obj = {src: episode.src};
+            if (thisSerie.coverImage && thisSerie.coverImage != "") {
+                obj.poster = thisSerie.coverImage;
+            }
+            player.setupVideo(obj);
+            layout().openVideoPopup();
+        }
     }
 
     function downloadSerieStreamLink(obj) {
@@ -249,6 +286,30 @@ function manager() {
         layout().openEpisodesSubtitlePopup(episode);
     }
 
+    function openMovieTrailer() {
+        if (thisMovie.youtubeId) {
+            layout().openTrailerPopup();
+            trailer.setupYoutube(thisMovie.youtubeId);
+        }
+    }
+
+    function openSeasonTrailer() {
+        if (thisSeason.youtubeId) {
+            layout().openTrailerPopup();
+            trailer.setupYoutube(thisSeason.youtubeId);
+        }
+    }
+
+    function closeVideo() {
+        layout().closeVideoPopup();
+        player.removeVideo();
+    }
+
+    function closeYoutube() {
+        layout().closeTrailerPopup();
+        trailer.removeYoutube();
+    }
+
     return {
         searchEntered: searchEntered,
         getMovie: getMovie,
@@ -256,6 +317,8 @@ function manager() {
         getSeason: getSeason,
         getEpisode: getEpisode,
         openMovieStreamLink: openMovieStreamLink,
+        openMovieTrailer: openMovieTrailer,
+        openSeasonTrailer: openSeasonTrailer,
         downloadMovieStreamLink: downloadMovieStreamLink,
         downloadMovieSubtitle: downloadMovieSubtitle,
         downloadEpisodeSubtitle: downloadEpisodeSubtitle,
@@ -264,6 +327,8 @@ function manager() {
         openMovieStreamPopup: openMovieStreamPopup,
         openMovieSubtitlePopup: openMovieSubtitlePopup,
         openEpisodesStreamPopup: openEpisodesStreamPopup,
-        openEpisodesSubtitlePopup: openEpisodesSubtitlePopup
+        openEpisodesSubtitlePopup: openEpisodesSubtitlePopup,
+        closeVideo: closeVideo,
+        closeYoutube: closeYoutube
     }
 }

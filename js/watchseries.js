@@ -256,10 +256,20 @@ function watchseries() {
             chrome.tabs.create({'url': link}, function(tab) {});
         }
     }
+    function getEpisodeBySelector(selector) {
+        var id = selector.id,
+            seasonNo = selector.seasonNo,
+            episodeNo = selector.episodeNo;
+        var episode = getEpisode(seasonNo, episodeNo);
+        if (episode && episode.streams) {
+            return getLinkById(episode.streams, id);
+        }
+    }
     return {
         loadSerie: loadSerie,
         loadEpisode: loadEpisode,
         getStreamLinks: getStreamLinks,
+        getEpisodeBySelector: getEpisodeBySelector,
         downloadEpisodeStreamLink: downloadEpisodeStreamLink,
         streamEpisodeStreamLink: streamEpisodeStreamLink
     }

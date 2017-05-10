@@ -80,6 +80,7 @@ function movies() {
     }
     return {
         loadMovies: loadMovies,
+        getMovieBySelector: getMovieBySelector,
         downloadMovieStreamLink: downloadMovieStreamLink,
         openMovieStreamLink: openMovieStreamLink
     }

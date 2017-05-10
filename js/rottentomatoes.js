@@ -4,7 +4,7 @@
 
 function rottenTomatoes() {
     function searchMovie(q, callback) {
-        var url = "http://www.rottentomatoes.com/api/private/v1.0/search/?catCount=10&q=" + q;
+        var url = "https://www.rottentomatoes.com/api/private/v2.0/search/?limit=10&q=" + q;
         $.ajax({
             url: url,
             success: function (result) {
@@ -110,6 +110,12 @@ function rottenTomatoes() {
                     var person = {name: name || '', role: role || '', image: img};
                     movie.cast.push(person);
                 }
+                var coverImageDiv = myDoc.find(".heroImage");
+                if (coverImageDiv.length > 0) {
+                    var coverImage = coverImageDiv[0].style.backgroundImage;
+                    coverImage = coverImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+                }
+                movie.coverImage = coverImage || "";
                 var movieInfoList = myDoc.find("ul.content-meta.info"),
                     oneInfo, label, value, infoList = [];
                 if (movieInfoList) {
@@ -162,6 +168,12 @@ function rottenTomatoes() {
                     var person = {name: name || '', role: role || '', image: img};
                     serie.cast.push(person);
                 }
+                var coverImageDiv = myDoc.find(".heroImage");
+                if (coverImageDiv.length > 0) {
+                    var coverImage = coverImageDiv[0].style.backgroundImage;
+                    coverImage = coverImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+                }
+                serie.coverImage = coverImage || "";
                 var serieSynopsis = myDoc.find("#movieSynopsis").text().trim();
                 if (serieSynopsis) {
                     serie.synopsis = serieSynopsis;

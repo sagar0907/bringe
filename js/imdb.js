@@ -52,6 +52,10 @@ function imdb() {
             myDoc = $(doc),
             movieDivList = myDoc.find(".lister-item"),
             movieDetails = getRequiredMovie(movieDivList, thisMovie.name);
+        if (!movieDetails) {
+            func(false);
+            return;
+        }
         if (movieDetails.imdbRating) {
             thisMovie.imdbRating = movieDetails.imdbRating;
         }
