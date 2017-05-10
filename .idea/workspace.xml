@@ -2,16 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b0deef5a-5c45-4c2c-8634-10185b5536a6" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/manager.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/subtitles.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/window.html" afterPath="$PROJECT_DIR$/html/window.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/goseries.js" afterPath="$PROJECT_DIR$/js/goseries.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/imdb.js" afterPath="$PROJECT_DIR$/js/imdb.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/layout.js" afterPath="$PROJECT_DIR$/js/layout.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/rottentomatoes.js" afterPath="$PROJECT_DIR$/js/rottentomatoes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/series.js" afterPath="$PROJECT_DIR$/js/series.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/window.js" afterPath="$PROJECT_DIR$/js/window.js" />
     </list>
     <ignored path="MovieMania.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,8 +26,8 @@
       <file leaf-file-name="window.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/window.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3570">
-              <caret line="240" column="14" selection-start-line="240" selection-start-column="14" selection-end-line="240" selection-end-column="14" />
+            <state relative-caret-position="435">
+              <caret line="44" column="51" selection-start-line="44" selection-start-column="51" selection-end-line="44" selection-end-column="51" />
               <folding>
                 <element signature="e#0#43#0" expanded="false" />
               </folding>
@@ -47,20 +38,42 @@
       <file leaf-file-name="movies.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/movies.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1245">
+            <state relative-caret-position="556">
               <caret line="83" column="48" selection-start-line="83" selection-start-column="48" selection-end-line="83" selection-end-column="48" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="manager.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="manager.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/manager.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2205">
-              <caret line="149" column="9" selection-start-line="149" selection-start-column="9" selection-end-line="149" selection-end-column="9" />
+            <state relative-caret-position="363">
+              <caret line="64" column="37" selection-start-line="64" selection-start-column="37" selection-end-line="64" selection-end-column="37" />
               <folding>
                 <element signature="n#!!doc;n#manager#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="imdb.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/imdb.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="48" column="13" selection-start-line="48" selection-start-column="13" selection-end-line="48" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="google.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/google.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="333">
+              <caret line="35" column="45" selection-start-line="35" selection-start-column="45" selection-end-line="35" selection-end-column="45" />
+              <folding>
+                <element signature="n#!!doc;n#Google#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -69,7 +82,7 @@
       <file leaf-file-name="rottentomatoes.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/rottentomatoes.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5205">
+            <state relative-caret-position="646">
               <caret line="347" column="61" selection-start-line="347" selection-start-column="61" selection-end-line="347" selection-end-column="61" />
               <folding />
             </state>
@@ -79,18 +92,18 @@
       <file leaf-file-name="layout.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/layout.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="834" column="40" selection-start-line="834" selection-start-column="40" selection-end-line="834" selection-end-column="40" />
+            <state relative-caret-position="375">
+              <caret line="740" column="101" selection-start-line="740" selection-start-column="101" selection-end-line="740" selection-end-column="101" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="test.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/html/test.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-218">
-              <caret line="14" column="12" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="35" />
+            <state relative-caret-position="480">
+              <caret line="45" column="24" selection-start-line="45" selection-start-column="24" selection-end-line="45" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -99,22 +112,10 @@
       <file leaf-file-name="subtitles.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/subtitles.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1275">
-              <caret line="87" column="19" selection-start-line="87" selection-start-column="16" selection-end-line="87" selection-end-column="19" />
+            <state relative-caret-position="630">
+              <caret line="66" column="13" selection-start-line="40" selection-start-column="8" selection-end-line="66" selection-end-column="13" />
               <folding>
                 <element signature="n#!!doc;n#subscene#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="series.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/series.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2055">
-              <caret line="139" column="26" selection-start-line="139" selection-start-column="23" selection-end-line="139" selection-end-column="26" />
-              <folding>
-                <element signature="n#!!doc;n#series#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -123,8 +124,8 @@
       <file leaf-file-name="window.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/html/window.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="21" column="44" selection-start-line="21" selection-start-column="44" selection-end-line="21" selection-end-column="44" />
+            <state relative-caret-position="360">
+              <caret line="194" column="38" selection-start-line="184" selection-start-column="32" selection-end-line="194" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -172,14 +173,15 @@
         <option value="$PROJECT_DIR$/css/window.css" />
         <option value="$PROJECT_DIR$/manifest.json" />
         <option value="$PROJECT_DIR$/js/background.js" />
-        <option value="$PROJECT_DIR$/html/window.html" />
         <option value="$PROJECT_DIR$/js/goseries.js" />
         <option value="$PROJECT_DIR$/js/rottentomatoes.js" />
-        <option value="$PROJECT_DIR$/js/window.js" />
         <option value="$PROJECT_DIR$/js/subtitles.js" />
         <option value="$PROJECT_DIR$/js/series.js" />
         <option value="$PROJECT_DIR$/js/imdb.js" />
         <option value="$PROJECT_DIR$/js/manager.js" />
+        <option value="$PROJECT_DIR$/html/window.html" />
+        <option value="$PROJECT_DIR$/js/window.js" />
+        <option value="$PROJECT_DIR$/js/google.js" />
         <option value="$PROJECT_DIR$/js/layout.js" />
       </list>
     </option>
@@ -220,6 +222,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -296,8 +300,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -410,6 +412,7 @@
       <workItem from="1493398727240" duration="18029000" />
       <workItem from="1493737148096" duration="63000" />
       <workItem from="1494073754006" duration="41000" />
+      <workItem from="1494434045448" duration="5033000" />
     </task>
     <task id="LOCAL-00001" summary="MVP">
       <created>1493402506784</created>
@@ -418,11 +421,18 @@
       <option name="project" value="LOCAL" />
       <updated>1493402506784</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="google">
+      <created>1494448485859</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1494448485861</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="342504000" />
+    <option name="totallyTimeSpent" value="347537000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -437,7 +447,7 @@
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18497577" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18739903" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -469,7 +479,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="MVP" />
-    <option name="LAST_COMMIT_MESSAGE" value="MVP" />
+    <MESSAGE value="google" />
+    <option name="LAST_COMMIT_MESSAGE" value="google" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -478,13 +489,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/css/window.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3795">
-          <caret line="253" column="30" selection-start-line="253" selection-start-column="30" selection-end-line="253" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/pub.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="585">
@@ -718,46 +722,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/html/window.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="44" selection-start-line="21" selection-start-column="44" selection-end-line="21" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/goseries.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="228">
           <caret line="221" column="72" selection-start-line="221" selection-start-column="72" selection-end-line="221" selection-end-column="72" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/series.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2055">
-          <caret line="139" column="26" selection-start-line="139" selection-start-column="23" selection-end-line="139" selection-end-column="26" />
-          <folding>
-            <element signature="n#!!doc;n#series#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/subtitles.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1275">
-          <caret line="87" column="19" selection-start-line="87" selection-start-column="16" selection-end-line="87" selection-end-column="19" />
-          <folding>
-            <element signature="n#!!doc;n#subscene#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/rottentomatoes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5205">
-          <caret line="347" column="61" selection-start-line="347" selection-start-column="61" selection-end-line="347" selection-end-column="61" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -768,13 +736,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/imdb.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1815">
-          <caret line="121" column="5" selection-start-line="121" selection-start-column="5" selection-end-line="121" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/metacritic.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -782,28 +743,80 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/manager.js">
+    <entry file="file://$PROJECT_DIR$/js/series.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2205">
-          <caret line="149" column="9" selection-start-line="149" selection-start-column="9" selection-end-line="149" selection-end-column="9" />
+        <state relative-caret-position="646">
+          <caret line="139" column="26" selection-start-line="139" selection-start-column="23" selection-end-line="139" selection-end-column="26" />
           <folding>
-            <element signature="n#!!doc;n#manager#0" expanded="false" />
+            <element signature="n#!!doc;n#series#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/subtitles.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="66" column="13" selection-start-line="40" selection-start-column="8" selection-end-line="66" selection-end-column="13" />
+          <folding>
+            <element signature="n#!!doc;n#subscene#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/html/test.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="45" column="24" selection-start-line="45" selection-start-column="24" selection-end-line="45" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/rottentomatoes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="646">
+          <caret line="347" column="61" selection-start-line="347" selection-start-column="61" selection-end-line="347" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/imdb.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="48" column="13" selection-start-line="48" selection-start-column="13" selection-end-line="48" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/movies.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1245">
+        <state relative-caret-position="556">
           <caret line="83" column="48" selection-start-line="83" selection-start-column="48" selection-end-line="83" selection-end-column="48" />
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/html/window.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="194" column="38" selection-start-line="184" selection-start-column="32" selection-end-line="194" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/google.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="333">
+          <caret line="35" column="45" selection-start-line="35" selection-start-column="45" selection-end-line="35" selection-end-column="45" />
+          <folding>
+            <element signature="n#!!doc;n#Google#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/js/window.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3570">
-          <caret line="240" column="14" selection-start-line="240" selection-start-column="14" selection-end-line="240" selection-end-column="14" />
+        <state relative-caret-position="435">
+          <caret line="44" column="51" selection-start-line="44" selection-start-column="51" selection-end-line="44" selection-end-column="51" />
           <folding>
             <element signature="e#0#43#0" expanded="false" />
           </folding>
@@ -812,17 +825,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/layout.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="834" column="40" selection-start-line="834" selection-start-column="40" selection-end-line="834" selection-end-column="40" />
+        <state relative-caret-position="375">
+          <caret line="740" column="101" selection-start-line="740" selection-start-column="101" selection-end-line="740" selection-end-column="101" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/html/test.html">
+    <entry file="file://$PROJECT_DIR$/js/manager.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-218">
-          <caret line="14" column="12" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="35" />
-          <folding />
+        <state relative-caret-position="363">
+          <caret line="64" column="37" selection-start-line="64" selection-start-column="37" selection-end-line="64" selection-end-column="37" />
+          <folding>
+            <element signature="n#!!doc;n#manager#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
