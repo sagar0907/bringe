@@ -15,16 +15,12 @@ function Trailers() {
                 if (links.length > 0) {
                     var link = $(links[0]).html();
                     var id = background.util().getParameterByName("v", link);
-                    console.log(id);
-                    window.yt = id;
                     if (id && id != "") {
                         func(true, id);
-                    } else {
-                        func(false);
+                        return;
                     }
-                } else {
-                    func(false);
                 }
+                func(false);
             },
             error: function () {
                 func(false);
@@ -32,9 +28,7 @@ function Trailers() {
         });
     }
 
-    function fetchMovieTrailer(movie, callback) {
-        var name = movie.name;
-        var year = movie.year;
+    function fetchMovieTrailer(name, year, callback) {
         var searchTerm = name + "+" + year + "+" + "trailer";
         searchGoogle(searchTerm, callback);
     }

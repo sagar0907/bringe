@@ -3,8 +3,19 @@
  */
 
 function Google() {
+    function getSiteName(link) {
+        var start = link.indexOf(".");
+        start ++;
+        var end = link.indexOf(".com");
+        return link.substring(start, end);
+    }
+    function getMovieSearchName(searchTerm) {
+        searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "");
+        return searchTerm;
+    }
     function searchMovie(name, year, callback) {
-        var link = "https://www.google.co.in/search?q=" + name + "+" + year;
+        var q = getMovieSearchName(name);
+        var link = "https://www.google.co.in/search?q=" + q + "+" + year;
         $.ajax({
             url: link,
             success: function (result) {
@@ -39,16 +50,21 @@ function Google() {
                 }
                 var socialLinks = myDoc.find("._Ugf g-link a");
                 for (i = 0; i < socialLinks.length; i++) {
-                    var socialLink = $(socialLinks[0]);
+                    var socialLink = $(socialLinks[i]);
                     var link = socialLink.attr("href");
-                    var img = socialLink.find("g-img img").attr("src");
-                    if (link && img) {
-                        social.push({link: link, img: img});
+                    var site = getSiteName(link);
+                    if (link && site && site != "") {
+                        social.push({link: link, site: site});
                     }
                 }
-                thisMovie.reviews = reviews;
-                thisMovie.social = social;
-                callback(true);
+                var movie = {};
+                if (reviews.length > 0) {
+                    movie.reviews = reviews;
+                }
+                if (social.length) {
+                    movie.social = social;
+                }
+                callback(true, movie);
             },
             error: function () {
                 callback(false);

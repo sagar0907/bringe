@@ -143,9 +143,45 @@ function subscene() {
             }
         });
     }
+    function subtitleSuccessFunction(func, result) {
+        var parser = new DOMParser(),
+            doc = parser.parseFromString(result, "text/html"),
+            myDoc = $(doc),
+            button = myDoc.find("#downloadButton"),
+            ratingBox = myDoc.find(".rating"),
+            rating = "-";
+        if(button.length > 0) {
+            var link = "https://subscene.com" + button.attr("href");
+            if(ratingBox.length > 0) {
+                ratingBox = ratingBox.find("span");
+                if(ratingBox.length > 0)
+                    rating = ratingBox.html();
+            }
+            func(true, {link: link, rating: rating});
+        }
+    }
+    function searchMovieSubtitle(name, year, func) {
+        function failFunction() {
+            func(false);
+        }
+        function movieSuccessFunction(result) {
+            if (page != "movie") return;
+            var parser = new DOMParser(),
+                doc = parser.parseFromString(result, "text/html"),
+                myDoc = $(doc);
+            var links = myDoc.find("a[onmousedown]");
+            var subsceneLinks = getSubsceneLinks(links);
+            for(var i = 0; i < subsceneLinks.length; i++) {
+                util().sendAjax(subsceneLinks[i], "GET", {}, util().getProxy(subtitleSuccessFunction, [func]), failFunction);
+            }
+        }
+        var link = "https://www.google.co.in/search?q=" + name + "+" + year + "+english+-arabic+site:subscene.com/subtitles";
+        util().sendAjax(link, "GET", {}, movieSuccessFunction, failFunction);
+    }
     return {
         getSubtitleEpisode: getSubtitleEpisode,
-        searchSubtitle: searchSubtitle
+        searchSubtitle: searchSubtitle,
+        searchMovieSubtitle: searchMovieSubtitle
     }
 }
 

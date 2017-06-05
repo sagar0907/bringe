@@ -16,7 +16,7 @@ function movies() {
                 }
             }
             thisMovie.streamLinkDetails = thisMovie.streamLinkDetails || [];
-            for (var i=0; i<object.linkDetails.length; i++) {
+            for (var i = 0; i < object.linkDetails.length; i++) {
                 thisMovie.streamLinkDetails.push(object.linkDetails[i]);
             }
         }
@@ -24,6 +24,24 @@ function movies() {
             layout().movieLoadComplete();
         }
         layout().movieLoadComplete();
+    }
+    function handleWatchItResponse(object) {
+        if (object.status) {
+            if (object.youtubeId) {
+                thisMovie.trailer = thisMovie.trailer || {};
+                thisMovie.trailer.youtube = thisMovie.trailer.youtube || {};
+                thisMovie.trailer.youtube.id = thisMovie.trailer.youtube.id || {};
+                thisMovie.trailer.youtube.id.watchit = object.youtubeId;
+                layout().showMovieTrailerLink();
+            }
+            thisMovie.externalStreams = thisMovie.externalStreams || [];
+            for (var i = 0; i < object.linkDetails.length; i++) {
+                thisMovie.externalStreams.push(object.linkDetails[i]);
+            }
+            if (object.linkDetails.length > 0) {
+                layout().showExternalStreaming();
+            }
+        }
     }
     function getMovieBySelector(selector) {
         var sourceList = thisMovie.streamLinkDetails,
@@ -74,9 +92,11 @@ function movies() {
     function loadMovies() {
         if (page != "movie") return;
         layout().findingMovieLink();
+        thisMovie.movieRespones = {count: 0, successCount: 0};
         //vumoo().loadVumoo(handleResponse);
         //movies123().loadMovies123(handleResponse);
-        gomovies().loadMovie(handleResponse)
+        gomovies().loadMovie(thisMovie.name, thisMovie.year, handleResponse);
+        watchit().loadMovie(thisMovie.name, thisMovie.year, handleWatchItResponse);
     }
     return {
         loadMovies: loadMovies,

@@ -34,48 +34,79 @@ function manager() {
     }
 
     function getMovie(index) {
-        function handleRottenLoaded(success) {
+        function setupThisMovie(movie) {
+            var theMovie = {name: movie.name, title: movie.name, subline: movie.subline, year: movie.year};
+            theMovie.ratings = {meterScore: movie.meterScore};
+            theMovie.images = {thumbnail: movie.image};
+            return theMovie;
+        }
+        function handleRottenLoaded(success, movie) {
             if (success) {
+                thisMovie = thisMovie || {};
+                thisMovie.rotten = {link: movie.rottenlink};
+                thisMovie.cast = movie.cast;
+                thisMovie.images.coverImage = movie.coverImage;
+                thisMovie.images.image = movie.image;
+                thisMovie.infoList = movie.infoList;
+                thisMovie.ratings.audienceScore = movie.audienceScore;
+                thisMovie.synopsis = movie.movieSynopsis;
                 layout().showRTMovie();
             }
         }
 
-        function handleSubtitleLoad(success) {
+        function handleSubtitleLoad(success, subtitle) {
             if (success) {
-                layout().showSubtitleLink();
+                thisMovie = thisMovie || {};
+                thisMovie.subtitleLinks = thisMovie.subtitleLinks || [];
+                var len = thisMovie.subtitleLinks.length;
+                subtitle.index = len;
+                thisMovie.subtitleLinks.push(subtitle);
+                if (len == 0) {
+                    layout().showSubtitleLink();
+                }
             }
         }
 
         function handleTrailerLoad(success, id) {
             if (success) {
-                thisMovie.youtubeId = id;
+                thisMovie.trailer = thisMovie.trailer || {};
+                thisMovie.trailer.youtube = thisMovie.trailer.youtube || {};
+                thisMovie.trailer.youtube.id = thisMovie.trailer.youtube.id || {};
+                thisMovie.trailer.youtube.id.google = id;
                 layout().showMovieTrailerLink();
             }
         }
 
-        function handleImdbLoaded(success) {
+        function handleImdbLoaded(success, movie) {
+            thisMovie = thisMovie || {};
+            thisMovie.ratings.imdbRating = movie.imdbRating;
+            thisMovie.ratings.metaRating = movie.metaRating;
+            thisMovie.imdb = {id: movie.imdbId};
             if (success) {
                 layout().placeImdbMovieRating();
             }
         }
 
-        function handleGoogleLoaded(success) {
+        function handleGoogleLoaded(success, movie) {
             if (success) {
+                thisMovie.reviews = movie.reviews;
+                thisMovie.social = movie.social;
                 layout().placeGoogleMovieData();
             }
         }
 
         if (searchResults.movies[index]) {
             layout().hideAllSection();
-            thisMovie = searchResults.movies[index];
+            var movie = searchResults.movies[index];
+            thisMovie = setupThisMovie(movie);
             layout().showRottenLoader($(".movie-wrapper"));
             layout().showMoviePart();
-            rottenTomatoes().getMovie(thisMovie, handleRottenLoaded);
-            imdb().searchMovie(thisMovie.name, thisMovie.year, handleImdbLoaded);
-            google.searchMovie(thisMovie.name, thisMovie.year, handleGoogleLoaded);
-            trailer.fetchMovieTrailer(thisMovie, handleTrailerLoad);
+            rottenTomatoes().getMovie(movie, handleRottenLoaded);
+            imdb().searchMovie(movie.name, movie.year, handleImdbLoaded);
+            google.searchMovie(movie.name, movie.year, handleGoogleLoaded);
+            trailer.fetchMovieTrailer(movie.name, movie.year, handleTrailerLoad);
             movies().loadMovies();
-            subscene().searchSubtitle(handleSubtitleLoad);
+            subscene().searchMovieSubtitle(movie.name, movie.year, handleSubtitleLoad);
         }
     }
 
@@ -287,9 +318,14 @@ function manager() {
     }
 
     function openMovieTrailer() {
-        if (thisMovie.youtubeId) {
-            layout().openTrailerPopup();
-            trailer.setupYoutube(thisMovie.youtubeId);
+        if (thisMovie.trailer && thisMovie.trailer.youtube && thisMovie.trailer.youtube.id) {
+            if (thisMovie.trailer.youtube.id.watchit) {
+                layout().openTrailerPopup();
+                trailer.setupYoutube(thisMovie.trailer.youtube.id.watchit);
+            } else if (thisMovie.trailer.youtube.id.google) {
+                layout().openTrailerPopup();
+                trailer.setupYoutube(thisMovie.trailer.youtube.id.google);
+            }
         }
     }
 

@@ -46,26 +46,27 @@ function imdb() {
         }
         return movieDetails;
     }
-    function searchMovieSuccess(func, result) {
+    function searchMovieSuccess(name, func, result) {
         if (page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             movieDivList = myDoc.find(".lister-item"),
-            movieDetails = getRequiredMovie(movieDivList, thisMovie.name);
+            movieDetails = getRequiredMovie(movieDivList, name);
         if (!movieDetails) {
             func(false);
             return;
         }
+        var movie = {};
         if (movieDetails.imdbRating) {
-            thisMovie.imdbRating = movieDetails.imdbRating;
+            movie.imdbRating = movieDetails.imdbRating;
         }
         if (movieDetails.metaRating) {
-            thisMovie.metaRating = movieDetails.metaRating;
+            movie.metaRating = movieDetails.metaRating;
         }
         if (movieDetails.imdbId) {
-            thisMovie.imdbId = movieDetails.imdbId;
+            movie.imdbId = movieDetails.imdbId;
         }
-        func(true);
+        func(true, movie);
     }
     function searchSerieSuccess(func, result) {
         if (page != "serie") return;
@@ -85,15 +86,15 @@ function imdb() {
         }
         func(true);
     }
-    function searchMovie(q, year, func) {
-        q = getSearchTerm(q);
+    function searchMovie(name, year, func) {
+        var q = getSearchTerm(name);
         var url;
         if (year) {
             url = encodeURI('http://www.imdb.com/search/title?title=' + q + '&release_date=' + year + ',' + year + '&title_type=feature&view=advanced');
         } else {
             url = encodeURI('http://www.imdb.com/search/title?title=' + q + '&title_type=feature&view=advanced');
         }
-        util().sendAjax(url, "GET", {}, util().getProxy(searchMovieSuccess, [func]), failFunction);
+        util().sendAjax(url, "GET", {}, util().getProxy(searchMovieSuccess, [name, func]), failFunction);
     }
 
     function searchSerie(q, func) {

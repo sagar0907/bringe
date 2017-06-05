@@ -115,7 +115,16 @@ function rottenTomatoes() {
                     var coverImage = coverImageDiv[0].style.backgroundImage;
                     coverImage = coverImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
                 }
-                movie.coverImage = coverImage || "";
+                if (util().isSet(coverImage)) {
+                    movie.coverImage = coverImage || "";
+                }
+                var mainImageDiv = myDoc.find("#movie-image-section img");
+                if (mainImageDiv.length > 0) {
+                    var mainImage = mainImageDiv.attr("src");
+                }
+                if (util().isSet(coverImage)) {
+                    movie.image = mainImage || "";
+                }
                 var movieInfoList = myDoc.find("ul.content-meta.info"),
                     oneInfo, label, value, infoList = [];
                 if (movieInfoList) {
@@ -134,7 +143,7 @@ function rottenTomatoes() {
                 }
                 var movieSynopsis = myDoc.find("#movieSynopsis").text().trim();
                 movie.movieSynopsis = movieSynopsis;
-                func(true);
+                func(true, movie);
             },
             error: function () {
                 func(false);
@@ -345,7 +354,6 @@ function rottenTomatoes() {
     function getMovie(movie, func) {
         var rottenLink = "http://www.rottentomatoes.com" + movie.url;
         movie.rottenlink = rottenLink;
-        movie.movieRespones = {count: 0, successCount: 0};
         loadRottenTomatoesMovie(movie, rottenLink, func);
     }
 

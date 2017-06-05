@@ -38,6 +38,7 @@ var episodeListDivObj = $('<div class="episodeListDiv">' +
 var castMemberDivObj = $('<div class="col-lg-3 col-md-4 col-sm-6"><div class="cast-member"><div class="row">' +
     '<div class="cast-image"> <img></div><div class="cast-details">' +
     '<div class="cast-name"></div> <div class="cast-role"></div></div></div> </div></div>');
+var watchItemDivObj = $('<div class="watch-item"><div class="watch-box"><img></div></div>');
 var movieInfoDivObj =$('<div class="movie-info-box row"> <div class="col-xs-4"> <div class="movie-info-label"></div>' +
     '</div> <div class="col-xs-8"> <div class="movie-info-value"></div> </div> </div>');
 var reviewDivObj = $('<div class="movie-review"> <div class="review-text"> </div>' +
@@ -103,11 +104,13 @@ function util() {
         return 0;
     }
 
-    function sendAjax(link, type, data, successFunction, errorFunction) {
+    function sendAjax(link, type, data, successFunction, errorFunction, headers) {
+        headers = headers || {};
         $.ajax({
             url: link,
             type: type,
             data: data,
+            headers: headers,
             success: function (result) {
                 successFunction(result);
             },

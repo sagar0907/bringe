@@ -1,5 +1,14 @@
 function layout() {
 
+    var iconMap = {
+        facebook: "fa-facebook-square",
+        twitter: "fa-twitter-square",
+        google: "fa-google-plus-square",
+        instagram: "fa-instagram",
+        snapchat: "fa-snapchat-square",
+        youtube: "fa-youtube-square",
+        tumblr: "fa-tumblr-square"
+    };
     function hideAllSection() {
         $(".search-wrapper").hide();
         $(".results-wrapper").hide();
@@ -135,18 +144,23 @@ function layout() {
         var movieWrapper = $(".movie-wrapper");
         var movieDataSection = $(".movie-data-section");
         $(".movie-rating-box").hide();
+        $("#movie-reviews-header").hide();
+        $("#movie-social-header").hide();
         $("#movieStreamButton").hide();
         $("#movieTrailerButton").hide();
         $("#movieSubtitleButton").hide();
         movieWrapper.find(".cast-section").hide();
+        movieWrapper.find(".watch-section").hide();
         movieWrapper.find(".synopsis-section").hide();
         movieWrapper.find(".movieInfo-section").hide();
         movieDataSection.hide();
         $(".movie-download-section").hide();
         movieWrapper.hide();
         movieWrapper.find(".cast-list").html("");
+        movieWrapper.find(".watch-list").html("");
         $("#movie-synopsis").html("");
         $("#movie-reviews").html("");
+        $("#movieSocialList").html("");
         $("#movieInfoList").html("");
         $(".movie-poster").find("img").attr("src", "");
         $(".movieLoader").remove();
@@ -441,48 +455,53 @@ function layout() {
 
     function showRTMovie() {
         var wrapper = $(".movie-wrapper"),
-            watching = thisMovie,
             infoList;
         removeRottenLoader();
         var castList = wrapper.find(".cast-list"),
+            movieDataSection = $(".movie-data-section"),
             i;
-        for (i = 0; i < watching.cast.length; i++) {
-            var person = watching.cast[i];
+        for (i = 0; i < thisMovie.cast.length; i++) {
+            var person = thisMovie.cast[i];
             var castMemberDiv = castMemberDivObj.clone();
             castMemberDiv.find("img").attr("src", person.image);
             castMemberDiv.find(".cast-name").html(person.name);
             castMemberDiv.find(".cast-role").html(person.role);
             castList.append(castMemberDiv);
         }
-        if (watching.cast.length) {
+        if (thisMovie.cast.length) {
             wrapper.find(".cast-section").show();
         } else {
             wrapper.find(".cast-section").hide();
         }
-        $("#movie-synopsis").html(watching.movieSynopsis);
+        $("#movie-synopsis").html(thisMovie.synopsis);
         infoList = $("#movieInfoList");
         wrapper.find(".synopsis-section").show();
-        var infos = watching.infoList;
+        var infos = thisMovie.infoList;
         for (i = 0; i < infos.length; i++) {
             var serieInfoDiv = movieInfoDivObj.clone();
             serieInfoDiv.find(".movie-info-label").html(infos[i].label);
             serieInfoDiv.find(".movie-info-value").html(infos[i].value);
             infoList.append(serieInfoDiv);
         }
-
-        $(".movie-poster").find("img").attr("src", thisMovie.image);
-        $(".movie-data-section").find(".movie-name").html(thisMovie.name);
-        $(".movie-data-section").find(".movie-year").html('(' + thisMovie.year + ')');
-        if (thisMovie.meterScore) {
-            $("#movie-rotten-rating").html(thisMovie.meterScore + "%");
+        if (thisMovie.images && thisMovie.images.thumbnail || thisMovie.images.coverImage) {
+            if (thisMovie.images.image) {
+                $(".movie-poster").find("img").attr("src", thisMovie.images.image);
+            } else {
+                $(".movie-poster").find("img").attr("src", thisMovie.images.thumbnail);
+            }
+        }
+        movieDataSection.find(".movie-name").html(thisMovie.title);
+        movieDataSection.find(".movie-year").html('(' + thisMovie.year + ')');
+        if (thisMovie.ratings && thisMovie.ratings.meterScore) {
+            $("#movie-rotten-rating").html(thisMovie.ratings.meterScore + "%");
             $("#rotten-movie-rating-box").show();
         }
-        if (watching.audienceScore) {
-            $(".movie-data-section").find("#movie-audience-rating").html(thisMovie.audienceScore);
+        if (thisMovie.ratings && thisMovie.ratings.audienceScore) {
+            $(".movie-data-section").find("#movie-audience-rating").html(thisMovie.ratings.audienceScore);
             $("#audience-movie-rating-box").show();
         }
         $(".movieInfo-section").show();
-        $(".movie-data-section").show();
+        movieDataSection.show();
         $(".movie-download-section").show();
         $(".synopsis-section").show();
     }
@@ -716,12 +735,12 @@ function layout() {
     }
 
     function placeImdbMovieRating() {
-        if (thisMovie.imdbRating) {
-            $("#movie-imdb-rating").html(thisMovie.imdbRating);
+        if (thisMovie.ratings && thisMovie.ratings.imdbRating) {
+            $("#movie-imdb-rating").html(thisMovie.ratings.imdbRating);
             $("#imdb-movie-rating-box").show();
         }
-        if (thisMovie.metaRating) {
-            $("#movie-metacritic-rating").html(thisMovie.metaRating);
+        if (thisMovie.ratings && thisMovie.ratings.metaRating) {
+            $("#movie-metacritic-rating").html(thisMovie.ratings.metaRating);
             $("#metacritic-movie-rating-box").show();
         }
     }
@@ -739,12 +758,13 @@ function layout() {
 
     function placeGoogleMovieData() {
         if (thisMovie.reviews) {
+            $("#movie-reviews-header").show();
             var reviewsDiv = $("#movie-reviews");
-            util().each(thisMovie.reviews, function(review) {
+            util().each(thisMovie.reviews, function (review) {
                 var reviewDiv = reviewDivObj.clone();
                 reviewDiv.find(".review-text").html(review.text);
                 if (review.source.name) {
-                    reviewDiv.find(".review-source-person").html(review.source.name);
+                    reviewDiv.find(".review-source-person").html("-" + review.source.name);
                 }
                 if (review.source.sourceSite) {
                     reviewDiv.find(".review-source-website").html('(' + review.source.sourceSite + ')');
@@ -752,9 +772,35 @@ function layout() {
                 reviewsDiv.append(reviewDiv);
             });
         }
-        if (thisMovie.metaRating) {
-            $("#movie-metacritic-rating").html(thisMovie.metaRating);
-            $("#metacritic-movie-rating-box").show();
+        if (thisMovie.social) {
+            $("#movie-social-header").show();
+            var socialList = $("#movieSocialList");
+            util().each(thisMovie.social, function(social) {
+                var socialDiv = $('<div class="socialBox"><div class="socialImg"><i class="fa fa-fw" aria-hidden="true"></i></div>');
+                socialDiv.attr("data-href", social.link);
+                socialDiv.find("i").addClass(iconMap[social.site]);
+                socialList.append(socialDiv);
+                socialDiv.click(function (evt) {
+                    background.openLinkInBrowser(this.getAttribute("data-href"));
+                });
+            });
+        }
+    }
+
+    function showExternalStreaming() {
+        if (thisMovie && thisMovie.externalStreams && thisMovie.externalStreams.length > 0) {
+            $(".watch-section").show();
+            var list = $(".watch-list");
+            for (var i = 0; i < thisMovie.externalStreams.length; i++) {
+                var stream = thisMovie.externalStreams[i];
+                var watchItem = watchItemDivObj.clone();
+                watchItem.find("img").attr("src", stream.image);
+                watchItem.find(".watch-box").attr("data-href", stream.link);
+                list.append(watchItem);
+            }
+            list.find(".watch-box").click(function () {
+                background.openLinkInBrowser(this.getAttribute("data-href"));
+            });
         }
     }
 
@@ -1011,6 +1057,7 @@ function layout() {
         placeImdbMovieRating: placeImdbMovieRating,
         placeImdbSerieRating: placeImdbSerieRating,
         placeGoogleMovieData: placeGoogleMovieData,
+        showExternalStreaming: showExternalStreaming,
         showSubtitleLink: showSubtitleLink,
         showEpisodeSubtitleLink: showEpisodeSubtitleLink,
         goBackFromDownloads: goBackFromDownloads,
