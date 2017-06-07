@@ -122,7 +122,7 @@ function rottenTomatoes() {
                 if (mainImageDiv.length > 0) {
                     var mainImage = mainImageDiv.attr("src");
                 }
-                if (util().isSet(coverImage)) {
+                if (util().isSet(mainImage)) {
                     movie.image = mainImage || "";
                 }
                 var movieInfoList = myDoc.find("ul.content-meta.info"),
@@ -183,6 +183,13 @@ function rottenTomatoes() {
                     coverImage = coverImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
                 }
                 serie.coverImage = coverImage || "";
+                var mainImageDiv = myDoc.find("#tv-image-section img");
+                if (mainImageDiv.length > 0) {
+                    var mainImage = mainImageDiv.attr("src");
+                }
+                if (util().isSet(mainImage)) {
+                    serie.image = mainImage || "";
+                }
                 var serieSynopsis = myDoc.find("#movieSynopsis").text().trim();
                 if (serieSynopsis) {
                     serie.synopsis = serieSynopsis;
@@ -275,6 +282,13 @@ function rottenTomatoes() {
                         role = spans[1].textContent.trim();
                     var person = {name: name || '', role: role || '', image: img};
                     season.cast.push(person);
+                }
+                var mainImageDiv = myDoc.find("#tvPosterLink img");
+                if (mainImageDiv.length > 0) {
+                    var mainImage = mainImageDiv.attr("src");
+                }
+                if (util().isSet(mainImage)) {
+                    season.image = mainImage || season.image || "";
                 }
                 var seasonSynopsis = myDoc.find("#movieSynopsis").text().trim();
                 if (seasonSynopsis) {

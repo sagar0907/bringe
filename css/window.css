@@ -762,7 +762,10 @@ td.movieDownload {
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
-.watch-list {
+#movie-watch-list {
+    margin-bottom: 15px;
+}
+#episode-watch-list {
     margin-bottom: 15px;
 }
 .watch-item {

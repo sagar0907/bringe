@@ -75,12 +75,12 @@ function layout() {
     function showSeasonLevel() {
         page = "serie";
         serieLevel = "season";
-        if (thisSerie && thisSerie.startYear) {
-            $("#route-serie").html(thisSerie.title);
-            $("#route-serie").show();
-        } else {
+        if (thisSerie && thisSerie.onlySeason) {
             $("#route-serie").html('');
             $("#route-serie").hide();
+        } else {
+            $("#route-serie").html(thisSerie.title);
+            $("#route-serie").show();
         }
         $("#route-season").html(thisSeason.title);
         $("#route-episode").html("");
@@ -96,12 +96,12 @@ function layout() {
     function showEpisodeLevel() {
         page = "serie";
         serieLevel = "episode";
-        if (thisSerie && thisSerie.startYear) {
-            $("#route-serie").html(thisSerie.title);
-            $("#route-serie").show();
-        } else {
+        if (thisSerie && thisSerie.onlySeason) {
             $("#route-serie").html('');
             $("#route-serie").hide();
+        } else {
+            $("#route-serie").html(thisSerie.title);
+            $("#route-serie").show();
         }
         $("#route-season").html(thisSeason.title);
         $("#route-episode").html(thisEpisode.title);
@@ -157,7 +157,7 @@ function layout() {
         $(".movie-download-section").hide();
         movieWrapper.hide();
         movieWrapper.find(".cast-list").html("");
-        movieWrapper.find(".watch-list").html("");
+        movieWrapper.find("#movie-watch-list").html("");
         $("#movie-synopsis").html("");
         $("#movie-reviews").html("");
         $("#movieSocialList").html("");
@@ -234,10 +234,12 @@ function layout() {
         wrapper.find("#episode-download-section").hide();
         wrapper.find(".episodeInfo-section").hide();
         wrapper.find(".episodeSynopsis-section").hide();
+        wrapper.find(".watch-section").hide();
         wrapper.hide();
         wrapper.find(".cast-list").html("");
         $("#episode-synopsis").html("");
         $("#episodeInfoList").html("");
+        $("#episode-watch-list").html("");
         $(".episode-poster").find("img").attr("src", "");
         $(".episodeLoader").remove();
         serieDataSection.find(".episode-name").html("");
@@ -519,7 +521,8 @@ function layout() {
         if (thisSerie.endYear) {
             year += ' - ' + thisSerie.endYear;
         }
-        $(".serie-poster").find("img").attr("src", thisSerie.image);
+        var image = thisSerie.image || thisSerie.thumbnail;
+        $(".serie-poster").find("img").attr("src", image);
         dataSection.find(".serie-year").html('(' + year + ')');
         if (thisSerie.ratings.rotten) {
             $("#serie-rotten-rating").html(thisSerie.ratings.rotten + "%");
@@ -732,6 +735,7 @@ function layout() {
         $("#episode-download-section").show();
         $(".episodeInfo-section").show();
         $(".episodeSynopsis-section").show();
+        showExternalEpisodeStreaming();
     }
 
     function placeImdbMovieRating() {
@@ -787,12 +791,30 @@ function layout() {
         }
     }
 
-    function showExternalStreaming() {
+    function showExternalMovieStreaming() {
         if (thisMovie && thisMovie.externalStreams && thisMovie.externalStreams.length > 0) {
-            $(".watch-section").show();
-            var list = $(".watch-list");
+            $(".movie-wrapper .watch-section").show();
+            var list = $("#movie-watch-list");
             for (var i = 0; i < thisMovie.externalStreams.length; i++) {
                 var stream = thisMovie.externalStreams[i];
+                var watchItem = watchItemDivObj.clone();
+                watchItem.find("img").attr("src", stream.image);
+                watchItem.find(".watch-box").attr("data-href", stream.link);
+                list.append(watchItem);
+            }
+            list.find(".watch-box").click(function () {
+                background.openLinkInBrowser(this.getAttribute("data-href"));
+            });
+        }
+    }
+
+    function showExternalEpisodeStreaming() {
+        if (thisSerie && thisSerie.websites && thisSerie.websites.watchit && thisSerie.websites.watchit.seasons && thisSerie.websites.watchit.seasons[thisSeason.seasonNo + ''] && thisSerie.websites.watchit.seasons[thisSerie.seasonNo + ''].externalStreams && thisSerie.websites.watchit.seasons[thisSerie.seasonNo + ''].externalStreams.length > 0) {
+            var externalStreams = thisSerie.websites.watchit.seasons[thisSeason.seasonNo + ''].externalStreams;
+            $(".serie-wrapper .watch-section").show();
+            var list = $("#episode-watch-list");
+            for (var i = 0; i < externalStreams.length; i++) {
+                var stream = externalStreams[i];
                 var watchItem = watchItemDivObj.clone();
                 watchItem.find("img").attr("src", stream.image);
                 watchItem.find(".watch-box").attr("data-href", stream.link);
@@ -1057,7 +1079,8 @@ function layout() {
         placeImdbMovieRating: placeImdbMovieRating,
         placeImdbSerieRating: placeImdbSerieRating,
         placeGoogleMovieData: placeGoogleMovieData,
-        showExternalStreaming: showExternalStreaming,
+        showExternalMovieStreaming: showExternalMovieStreaming,
+        showExternalEpisodeStreaming: showExternalEpisodeStreaming,
         showSubtitleLink: showSubtitleLink,
         showEpisodeSubtitleLink: showEpisodeSubtitleLink,
         goBackFromDownloads: goBackFromDownloads,

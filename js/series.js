@@ -41,6 +41,42 @@ function series() {
     function handleStreamResponse() {
 
     }
+
+    function handleWatchitSeason(object) {
+        if (object.status) {
+            var season;
+            if (thisSerie.websites && thisSerie.websites.watchit && thisSerie.websites.watchit.seasons) {
+                var seasons = thisSerie.websites.watchit.seasons;
+                if (seasons[thisSeason.seasonNo + '']) {
+                    season = seasons[thisSeason.seasonNo + ''];
+                }
+            }
+            if (season) {
+                season.externalStreams = [];
+                for (var i = 0; i < object.linkDetails.length; i++) {
+                    season.externalStreams.push(object.linkDetails[i]);
+                }
+            }
+        }
+    }
+
+    function handleWatchitSerie(result) {
+        if (result.status) {
+            thisSerie.websites = thisSerie.websites || {};
+            thisSerie.websites.watchit = thisSerie.websites.watchit || {};
+            thisSerie.websites.watchit.seasons = result.seasons;
+        }
+    }
+
+    function getWatchitSeason() {
+        if (thisSerie.websites && thisSerie.websites.watchit && thisSerie.websites.watchit.seasons) {
+            var seasons = thisSerie.websites.watchit.seasons;
+            if (seasons[thisSeason.seasonNo + '']) {
+                return seasons[thisSeason.seasonNo + ''];
+            }
+        }
+    }
+
     function getMovieBySelector(selector) {
         var sourceList = thisMovie.streamLinkDetails,
             source;
@@ -91,11 +127,16 @@ function series() {
         if (page != "serie") return;
         var obj = {title: thisSerie.title};
         watchseries().loadSerie(obj, handleSerieResponse);
+        watchit().loadSerie(thisSerie.title, thisSerie.startYear, handleWatchitSerie);
     }
     function loadSeason() {
         if (page != "serie") return;
         var obj = {title: thisSerie.title, seasonNo: thisSerie.seasonNo};
         goseries().loadSeason(obj, handleSeasonResponse);
+        var season = getWatchitSeason();
+        if (season) {
+            watchit().loadSeason(season.pageLink, season.seasonId, handleWatchitSeason);
+        }
     }
     function loadEpisode() {
         if (page != "serie") return;

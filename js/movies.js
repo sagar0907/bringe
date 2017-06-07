@@ -39,7 +39,7 @@ function movies() {
                 thisMovie.externalStreams.push(object.linkDetails[i]);
             }
             if (object.linkDetails.length > 0) {
-                layout().showExternalStreaming();
+                layout().showExternalMovieStreaming();
             }
         }
     }

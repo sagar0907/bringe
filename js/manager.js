@@ -149,6 +149,8 @@ function manager() {
                 thisSerie = {};
                 thisSerie.seasons = [];
                 thisSerie.websites = {};
+                thisSerie.startYear = serie.startYear;
+                thisSerie.onlySeason = true;
                 var season = {};
                 season.seasonNo = seasonNumber;
                 thisSerie.title = serie.title;
@@ -168,7 +170,7 @@ function manager() {
             thisSerie.title = serie.title;
             thisSerie.startYear = serie.startYear;
             thisSerie.endYear = serie.endYear;
-            thisSerie.image = serie.posterImage || serie.image;
+            thisSerie.thumbnail = serie.image;
             thisSerie.ratings = thisSerie.ratings || {};
             thisSerie.ratings.rotten = serie.meterValue;
             thisSerie.links = thisSerie.links || {};
