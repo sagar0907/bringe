@@ -12,6 +12,7 @@ function layout() {
     function hideAllSection() {
         $(".search-wrapper").hide();
         $(".results-wrapper").hide();
+        $(".trending-wrapper").hide();
         $(".movie-wrapper").hide();
         $(".serie-wrapper").hide();
         $(".downloads-wrapper").hide();
@@ -29,7 +30,12 @@ function layout() {
         $("#search-input").val("");
         $("#search-input").focus();
         $(".search-wrapper").show();
+        $(".trending-wrapper").show();
         $(".results-wrapper").show();
+    }
+
+    function hideTrending() {
+        $(".trending-wrapper").hide();
     }
 
     function showDownloadSection() {
@@ -116,6 +122,7 @@ function layout() {
     function goToHome() {
         hideAllSection();
         clearAllData();
+        removeSearchResultText();
         showHome();
     }
 
@@ -353,6 +360,25 @@ function layout() {
         });
     }
 
+    function showTrendingMovies(movies) {
+        var trendingList = $("#trendingList"),
+            trendingMovieDiv;
+        util().each(movies, function (movie, i) {
+            if (i < 15) {
+                trendingMovieDiv = treandingMovieObj.clone();
+                trendingMovieDiv.find('.tr-movie-img img').attr("src", movie.posters.primary);
+                trendingMovieDiv.find('.tr-name').html(movie.title);
+                trendingMovieDiv.find('.tr-rate').html(movie.tomatoScore);
+                trendingMovieDiv.attr("data-index", i);
+                trendingMovieDiv.click(function () {
+                    var box = $(this);
+                    manager().getTrendingMovie(box.attr("data-index"));
+                });
+                trendingList.append(trendingMovieDiv);
+            }
+        });
+    }
+
     function placeMoviesList(movies) {
         var movie, i,
             moviesResultsList = $("#moviesResultsList");
@@ -472,6 +498,11 @@ function layout() {
         }
         if (thisMovie.cast.length) {
             wrapper.find(".cast-section").show();
+            castList.find(".cast-member").click(function (evt) {
+                var obj = $(this);
+                var name = obj.find(".cast-name").html();
+                manager().searchOnGoogle(name);
+            });
         } else {
             wrapper.find(".cast-section").hide();
         }
@@ -550,6 +581,12 @@ function layout() {
         }
         if (watching.cast.length) {
             wrapper.find(".cast-section").show();
+            wrapper.find(".cast-section").show();
+            castList.find(".cast-member").click(function (evt) {
+                var obj = $(this);
+                var name = obj.find(".cast-name").html();
+                manager().searchOnGoogle(name);
+            });
         } else {
             wrapper.find(".cast-section").hide();
         }
@@ -629,6 +666,12 @@ function layout() {
         }
         if (watching.cast.length) {
             wrapper.find(".cast-section").show();
+            wrapper.find(".cast-section").show();
+            castList.find(".cast-member").click(function (evt) {
+                var obj = $(this);
+                var name = obj.find(".cast-name").html();
+                manager().searchOnGoogle(name);
+            });
         } else {
             wrapper.find(".cast-section").hide();
         }
@@ -718,6 +761,12 @@ function layout() {
         }
         if (watching.cast.length) {
             wrapper.find(".cast-section").show();
+            wrapper.find(".cast-section").show();
+            castList.find(".cast-member").click(function (evt) {
+                var obj = $(this);
+                var name = obj.find(".cast-name").html();
+                manager().searchOnGoogle(name);
+            });
         } else {
             wrapper.find(".cast-section").hide();
         }
@@ -1022,21 +1071,21 @@ function layout() {
         removeSearchBuffer();
         removeSearchResultText();
         var buffer = $('<div class="search-buffer"><i class="fa fa-spinner fa-spin"></i></div>');
-        $("#searchResultsList").append(buffer);
+        $(".search-result-wrapper").append(buffer);
     }
 
     function removeSearchBuffer() {
-        $("#searchResultsList").find(".search-buffer").remove();
+        $(".search-result-wrapper").find(".search-buffer").remove();
     }
 
     function showSearchResultText(text) {
         removeSearchResultText();
         var status = $('<div class="search-result-text">' + text + '</div>');
-        $("#searchResultsList").append(status);
+        $(".search-result-wrapper").append(status);
     }
 
     function removeSearchResultText() {
-        $("#searchResultsList").find(".search-result-text").remove();
+        $(".search-result-wrapper").find(".search-result-text").remove();
     }
 
     function findingMovieLink() {
@@ -1055,6 +1104,8 @@ function layout() {
     return {
         hideAllSection: hideAllSection,
         goToHome: goToHome,
+        hideTrending: hideTrending,
+        showTrendingMovies: showTrendingMovies,
         placeMoviesList: placeMoviesList,
         placeSeriesList: placeSeriesList,
         placeDownloadSection: placeDownloadSection,

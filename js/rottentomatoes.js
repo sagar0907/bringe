@@ -125,6 +125,11 @@ function rottenTomatoes() {
                 if (util().isSet(mainImage)) {
                     movie.image = mainImage || "";
                 }
+                var year = myDoc.find("#heroImageContainer .year");
+                if (year.length) {
+                    year = year.html().trim().replace(/\(|\)/g, "");
+                    movie.year = parseInt(year);
+                }
                 var movieInfoList = myDoc.find("ul.content-meta.info"),
                     oneInfo, label, value, infoList = [];
                 if (movieInfoList) {
@@ -366,7 +371,7 @@ function rottenTomatoes() {
     }
 
     function getMovie(movie, func) {
-        var rottenLink = "http://www.rottentomatoes.com" + movie.url;
+        var rottenLink = "https://www.rottentomatoes.com" + movie.url;
         movie.rottenlink = rottenLink;
         loadRottenTomatoesMovie(movie, rottenLink, func);
     }

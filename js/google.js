@@ -15,7 +15,9 @@ function Google() {
     }
     function searchMovie(name, year, callback) {
         var q = getMovieSearchName(name);
-        var link = "https://www.google.co.in/search?q=" + q + "+" + year;
+        var link = "https://www.google.com/search?q=" + q + "+" + year;
+        link = link.replace(/ /g, '+');
+        link = encodeURIComponent(link);
         $.ajax({
             url: link,
             success: function (result) {

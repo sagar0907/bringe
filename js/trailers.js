@@ -4,7 +4,7 @@
 
 function Trailers() {
     function searchGoogle(searchTerm, func) {
-        var link = "https://www.google.co.in/search?q=" + searchTerm;
+        var link = "https://www.google.com/search?q=" + searchTerm;
         $.ajax({
             url: link,
             success: function (result) {

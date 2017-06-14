@@ -40,9 +40,9 @@ function subscene() {
     function searchSubtitle(func) {
         var link;
         if (page == "movie") {
-            link = "https://www.google.co.in/search?q=" + thisMovie.name + "+" + thisMovie.year + "+english+-arabic+site:subscene.com/subtitles";
+            link = "https://www.google.com/search?q=" + thisMovie.name + "+" + thisMovie.year + "+english+-arabic+site:subscene.com/subtitles";
         } else if (page == "serie") {
-            link = "https://www.google.co.in/search?q=" + thisSerie.title + "+" + getSeasonPart() + getEpisodePart() + "+english+-arabic+site:subscene.com/subtitles";
+            link = "https://www.google.com/search?q=" + thisSerie.title + "+" + getSeasonPart() + getEpisodePart() + "+english+-arabic+site:subscene.com/subtitles";
             var episode = getSubtitleEpisode();
             if (episode) {
                 delete episode.links;
@@ -175,7 +175,7 @@ function subscene() {
                 util().sendAjax(subsceneLinks[i], "GET", {}, util().getProxy(subtitleSuccessFunction, [func]), failFunction);
             }
         }
-        var link = "https://www.google.co.in/search?q=" + name + "+" + year + "+english+-arabic+site:subscene.com/subtitles";
+        var link = "https://www.google.com/search?q=" + name + "+" + year + "+english+-arabic+site:subscene.com/subtitles";
         util().sendAjax(link, "GET", {}, movieSuccessFunction, failFunction);
     }
     return {

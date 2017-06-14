@@ -18,19 +18,42 @@ function manager() {
                         searchResults.series = series;
                         layout().placeSeriesList(series);
                     }
+                    layout().hideTrending();
                 } else {
+                    layout().hideTrending();
                     layout().showSearchResultText("No results found.");
                 }
             } else {
+                layout().hideTrending();
                 layout().showSearchResultText("Could not fetch search results.");
             }
         };
         layout().clearSearchList();
-        layout().searching();
         var q = $("#search-input").val();
         if (q != "") {
             rottenTomatoes().searchMovie(q, handleSearchResult);
+            layout().searching();
         }
+    }
+
+    function fetchTrendingMovies() {
+        function fetchSuccessFunction(result) {
+            console.log(result);
+            try {
+                result = JSON.parse(result);
+            } catch(ignore) {}
+            if (result.results && result.results.length > 0) {
+                window.trending = window.trending || {};
+                window.trending.movies = result.results;
+                layout().showTrendingMovies(window.trending.movies);
+            }
+        }
+        function failFunction() {
+
+        }
+        var url = "https://www.rottentomatoes.com/api/private/v2.0/browse";
+        var params = {maxTomato: 100, maxPopcorn: 100,certified: 'true',sortBy: 'popularity', type: 'cf-in-theaters'};
+        util().sendAjax(url, "GET", params, fetchSuccessFunction, failFunction);
     }
 
     function getMovie(index) {
@@ -51,6 +74,9 @@ function manager() {
                 thisMovie.ratings.audienceScore = movie.audienceScore;
                 thisMovie.synopsis = movie.movieSynopsis;
                 layout().showRTMovie();
+            } else {
+                layout().goToHome();
+                layout().showSearchResultText("Couldn't fetch data.");
             }
         }
 
@@ -107,6 +133,86 @@ function manager() {
             trailer.fetchMovieTrailer(movie.name, movie.year, handleTrailerLoad);
             movies().loadMovies();
             subscene().searchMovieSubtitle(movie.name, movie.year, handleSubtitleLoad);
+        }
+    }
+
+    function getTrendingMovie(index) {
+        function setupThisMovie(movie) {
+            var theMovie = {name: movie.title, title: movie.title};
+            theMovie.ratings = {meterScore: movie.tomatoScore};
+            var image = movie.posters.primary;
+            theMovie.images = {thumbnail: image};
+            return theMovie;
+        }
+        function handleRottenLoaded(success, movie) {
+            if (success) {
+                thisMovie = thisMovie || {};
+                thisMovie.rotten = {link: movie.rottenlink};
+                thisMovie.cast = movie.cast;
+                thisMovie.images.coverImage = movie.coverImage;
+                thisMovie.images.image = movie.image;
+                thisMovie.infoList = movie.infoList;
+                thisMovie.ratings.audienceScore = movie.audienceScore;
+                thisMovie.synopsis = movie.movieSynopsis;
+                thisMovie.year = movie.year;
+                imdb().searchMovie(thisMovie.name, thisMovie.year, handleImdbLoaded);
+                google.searchMovie(thisMovie.name, thisMovie.year, handleGoogleLoaded);
+                trailer.fetchMovieTrailer(thisMovie.name, thisMovie.year, handleTrailerLoad);
+                movies().loadMovies();
+                subscene().searchMovieSubtitle(thisMovie.name, thisMovie.year, handleSubtitleLoad);
+                layout().showRTMovie();
+            } else {
+                layout().goToHome();
+                layout().showSearchResultText("Couldn't fetch data.");
+            }
+        }
+        function handleSubtitleLoad(success, subtitle) {
+            if (success) {
+                thisMovie = thisMovie || {};
+                thisMovie.subtitleLinks = thisMovie.subtitleLinks || [];
+                var len = thisMovie.subtitleLinks.length;
+                subtitle.index = len;
+                thisMovie.subtitleLinks.push(subtitle);
+                if (len == 0) {
+                    layout().showSubtitleLink();
+                }
+            }
+        }
+
+        function handleTrailerLoad(success, id) {
+            if (success) {
+                thisMovie.trailer = thisMovie.trailer || {};
+                thisMovie.trailer.youtube = thisMovie.trailer.youtube || {};
+                thisMovie.trailer.youtube.id = thisMovie.trailer.youtube.id || {};
+                thisMovie.trailer.youtube.id.google = id;
+                layout().showMovieTrailerLink();
+            }
+        }
+
+        function handleImdbLoaded(success, movie) {
+            thisMovie = thisMovie || {};
+            thisMovie.ratings.imdbRating = movie.imdbRating;
+            thisMovie.ratings.metaRating = movie.metaRating;
+            thisMovie.imdb = {id: movie.imdbId};
+            if (success) {
+                layout().placeImdbMovieRating();
+            }
+        }
+
+        function handleGoogleLoaded(success, movie) {
+            if (success) {
+                thisMovie.reviews = movie.reviews;
+                thisMovie.social = movie.social;
+                layout().placeGoogleMovieData();
+            }
+        }
+        if (window.trending.movies[index]) {
+            layout().hideAllSection();
+            var movie = window.trending.movies[index];
+            thisMovie = setupThisMovie(movie);
+            layout().showRottenLoader($(".movie-wrapper"));
+            layout().showMoviePart();
+            rottenTomatoes().getMovie(movie, handleRottenLoaded);
         }
     }
 
@@ -338,6 +444,12 @@ function manager() {
         }
     }
 
+    function searchOnGoogle(q) {
+        q = q.replace(/ /g, '+');
+        var url = "https://www.google.com/search?q=" + q;
+        background.openLinkInBrowser(url);
+    }
+
     function closeVideo() {
         layout().closeVideoPopup();
         player.removeVideo();
@@ -350,7 +462,9 @@ function manager() {
 
     return {
         searchEntered: searchEntered,
+        fetchTrendingMovies: fetchTrendingMovies,
         getMovie: getMovie,
+        getTrendingMovie: getTrendingMovie,
         getSerie: getSerie,
         getSeason: getSeason,
         getEpisode: getEpisode,
@@ -366,6 +480,7 @@ function manager() {
         openMovieSubtitlePopup: openMovieSubtitlePopup,
         openEpisodesStreamPopup: openEpisodesStreamPopup,
         openEpisodesSubtitlePopup: openEpisodesSubtitlePopup,
+        searchOnGoogle: searchOnGoogle,
         closeVideo: closeVideo,
         closeYoutube: closeYoutube
     }

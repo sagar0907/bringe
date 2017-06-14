@@ -85,6 +85,21 @@ function util() {
                 return false;
         }
     }
+    function sendAjax(link, type, data, successFunction, errorFunction, headers) {
+        headers = headers || {};
+        $.ajax({
+            url: link,
+            type: type,
+            data: data,
+            headers: headers,
+            success: function (result) {
+                successFunction(result);
+            },
+            error: function (result) {
+                errorFunction(result);
+            }
+        });
+    }
 
     return {
         getParameterByName: getParameterByName,

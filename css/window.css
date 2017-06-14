@@ -69,6 +69,10 @@ body{
 .header-wrapper.sticky {
     box-shadow: 0 4px 4px -4px #999;
 }
+.header {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 .header-logo-part {
     float:left;
     margin-left: 20px;
@@ -292,6 +296,12 @@ td.movieDownload {
     color: #ffffff;
 }
 
+.search-result-wrapper {
+    max-width: 800px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
 .search-result-text {
     text-align: center;
     padding: 20px;
@@ -299,17 +309,78 @@ td.movieDownload {
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     color: #f06292;
     font-size: 16px;
+    line-height: 20px;
     background-color: #fff;
-}
-.results {
-    max-width: 800px;
-    padding: 15px;
-    margin: 0 auto;
 }
 .search-buffer {
     text-align: center;
     font-size: 40px;
-    margin-top: 40px;
+    line-height: 40px;
+}
+
+.trending-section {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.trending-movie-box {
+    position: relative;
+    float: left;
+    width: 150px;
+    height: 253px;
+    padding: 10px;
+    margin: 25px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+.tr-movie-img {
+    height: 193px;
+    width: 130px;
+}
+.tr-movie-img img {
+    width: 130px;
+    height: 193px;
+}
+.tr-bottom {
+    width: 130px;
+    height: 40px;
+    overflow: hidden;
+}
+.tr-details {
+    text-align: center;
+    height: 40px;
+    vertical-align: middle;
+    width: 130px;
+    display: table-cell;
+}
+.tr-name {
+    display: inline-block;
+    vertical-align: top;
+}
+.tr-rate-box {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+}
+.tr-rate {
+    position: absolute;
+    color: #fff;
+    right: -10px;
+    width: 40px;
+    height: 36px;
+    text-align: center;
+    line-height: 36px;
+}
+.tr-rate-box i {
+    font-size: 40px;
+    color: #f06292;
+}
+.results {
+    max-width: 800px;
+    padding: 0 15px;
+    margin: 0 auto;
 }
 
 #moviesResultsList {
@@ -321,14 +392,13 @@ td.movieDownload {
     border-radius: 3px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     background-color: #fff;
-    margin-top: 30px;
 }
 .searchTypeTitle {
     font-size: 24px;
     line-height: 40px;
     text-align: center;
     padding: 10px;
-    color: #005cb2;
+    color: #f06292;
     border-bottom: 1px solid #ddd;
 }
 .searchMovie {
@@ -794,6 +864,7 @@ td.movieDownload {
     height: 60px;
     padding: 5px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .cast-image {

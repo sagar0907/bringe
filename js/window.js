@@ -11,6 +11,9 @@ var thisMovie,
     eventsRegistered = {};
 var download_active = true;
 var page = "home";
+var treandingMovieObj = $('<div class="trending-movie-box"> <div class="tr-movie-img"> <img> </div>' +
+    '<div class="tr-bottom"> <div class="tr-details"><div class="tr-name"></div></div> </div> <div class="tr-rate-box">' +
+    '<div class="tr-rate"></div><i class="fa fa-heart" aria-hidden="true"></i> </div> </div>');
 var searchMovieDivObj = $('<div class="searchMovie">' +
     '<div class="searchMovieImage"> <img> </div>' +
     '<div class="searchMovieDetail"> <div class="searchMovieName"></div> <div class="searchMovieSubline"></div> </div> ' +
@@ -322,6 +325,8 @@ $(document).ready(function () {
     $(".downloads-back").click(function (evt) {
         layout().goBackFromDownloads();
     });
+
+    manager().fetchTrendingMovies();
 
     util().listenEvent("getMovie", manager().getMovie);
     util().listenEvent("getSerie", manager().getSerie);
