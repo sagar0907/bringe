@@ -381,9 +381,10 @@ function layout() {
 
     function placeMoviesList(movies) {
         var movie, i,
+            resultOptionBar = $(".resultOptionBar"),
             moviesResultsList = $("#moviesResultsList");
         moviesResultsList.html("");
-        moviesResultsList.append($('<div class="searchTypeTitle">Movies</div>'));
+        resultOptionBar.find('#moviesResultsButton').show();
         for (i = 0; i < movies.length; i++) {
             movie = movies[i];
             if (!movie.meterScore) {
@@ -421,9 +422,10 @@ function layout() {
 
     function placeSeriesList(series) {
         var serie, i,
+            resultOptionBar = $(".resultOptionBar"),
             seriesResultsList = $("#seriesResultsList");
         seriesResultsList.html("");
-        seriesResultsList.append($('<div class="searchTypeTitle">Series</div>'));
+        resultOptionBar.find('#seriesResultsButton').show();
         for (i = 0; i < series.length; i++) {
             serie = series[i];
             var searchSerieDiv = searchSerieDivObj.clone();
@@ -443,8 +445,8 @@ function layout() {
                 serie.year = yearPart;
                 searchSerieDiv.find(".searchSerieYear").html('(' + yearPart + ')');
             }
-            if (serie.meterValue) {
-                searchSerieDiv.find(".searchSerieRatingValue").html(serie.meterValue);
+            if (serie.meterScore) {
+                searchSerieDiv.find(".searchSerieRatingValue").html(serie.meterScore);
             } else {
                 searchSerieDiv.find(".searchSerieRating").remove();
             }
@@ -455,6 +457,19 @@ function layout() {
             var serieIndex = serieId.split("_")[1];
             util().fireEvent("getSerie", [serieIndex]);
         });
+    }
+
+    function setMovieListVisible() {
+        $("#seriesResultsButton").removeClass("activeTab");
+        $("#moviesResultsButton").addClass("activeTab");
+        $("#seriesResultsList").hide();
+        $("#moviesResultsList").show();
+    }
+    function setSerieListVisible() {
+        $("#moviesResultsButton").removeClass("activeTab");
+        $("#seriesResultsButton").addClass("activeTab");
+        $("#moviesResultsList").hide();
+        $("#seriesResultsList").show();
     }
 
     function showMovieStreamLink() {
@@ -477,8 +492,10 @@ function layout() {
     function clearSearchList() {
         searchResults.movies = null;
         searchResults.series = null;
-        $("#moviesResultsList").html("");
-        $("#seriesResultsList").html("");
+        $(".searchResultList").html("");
+        $(".searchResultList").hide();
+        $('.resultOptionButton').hide();
+        $(".resultOptionButton").removeClass("activeTab");
     }
 
     function showRTMovie() {
@@ -916,7 +933,7 @@ function layout() {
 
     function showRottenLoader(obj) {
         $('.rotten-buffer').remove();
-        var buffer = $('<div class="rotten-buffer"><i class="fa fa-spinner fa-spin"></i></div>');
+        var buffer = $('<div class="rotten-buffer"><img class="fa-spin" src="../images/bringe-cd-blue-48.png"></div>');
         obj.append(buffer);
     }
 
@@ -1070,7 +1087,7 @@ function layout() {
     function searching() {
         removeSearchBuffer();
         removeSearchResultText();
-        var buffer = $('<div class="search-buffer"><i class="fa fa-spinner fa-spin"></i></div>');
+        var buffer = $('<div class="search-buffer"><img class="fa-spin" src="../images/bringe-cd-blue-48.png"></div>');
         $(".search-result-wrapper").append(buffer);
     }
 
@@ -1108,6 +1125,8 @@ function layout() {
         showTrendingMovies: showTrendingMovies,
         placeMoviesList: placeMoviesList,
         placeSeriesList: placeSeriesList,
+        setMovieListVisible: setMovieListVisible,
+        setSerieListVisible: setSerieListVisible,
         placeDownloadSection: placeDownloadSection,
         showMovieStreamLink: showMovieStreamLink,
         showEpisodeStreamLink: showEpisodeStreamLink,

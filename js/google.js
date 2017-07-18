@@ -10,14 +10,12 @@ function Google() {
         return link.substring(start, end);
     }
     function getMovieSearchName(searchTerm) {
-        searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "");
+        searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "").replace(/ /g, '+');
         return searchTerm;
     }
     function searchMovie(name, year, callback) {
         var q = getMovieSearchName(name);
-        var link = "https://www.google.com/search?q=" + q + "+" + year;
-        link = link.replace(/ /g, '+');
-        link = encodeURIComponent(link);
+        var link = "https://www.google.com/search?q=" + encodeURIComponent(q) + "+" + year;
         $.ajax({
             url: link,
             success: function (result) {

@@ -4,7 +4,7 @@
   "description": "This extension takes care of all your movie and tv series needs.",
   "version": "1.0",
   "browser_action": {
-    "default_icon": "images/movie-icon-48.png",
+    "default_icon": "images/bringe-cd-blue-48.png",
     "default_title": "Bringe"
   },
   "omnibox": {
@@ -20,9 +20,8 @@
     }
   },
   "icons": {
-    "16": "images/movie-icon-16.png",
-    "48": "images/movie-icon-48.png",
-    "128": "images/movie-icon-128.png"
+    "16": "images/bringe-cd-blue-16.png",
+    "48": "images/bringe-cd-blue-48.png"
   },
   "permissions": [
     "tabs",

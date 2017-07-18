@@ -12,6 +12,9 @@ function manager() {
                         var movies = result.movies;
                         searchResults.movies = movies;
                         layout().placeMoviesList(movies);
+                        layout().setMovieListVisible();
+                    } else {
+                        layout().setSerieListVisible();
                     }
                     if (result.tvCount) {
                         var series = result.tvSeries;

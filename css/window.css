@@ -298,8 +298,31 @@ td.movieDownload {
 
 .search-result-wrapper {
     max-width: 800px;
-    padding: 15px;
     margin: 0 auto;
+}
+.resultOptionTable {
+    display: table;
+    width: 100%;
+    font-size: 24px;
+    line-height: 40px;
+    text-align: center;
+    color: #f06292;
+    border-radius: 3px 3px 0 0;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.resultOptionBar {
+    display: table-row;
+    width: 100%;
+}
+.resultOptionButton {
+    display: table-cell;
+    box-sizing: border-box;
+    padding: 10px;
+    cursor: pointer;
+}
+.activeTab {
+    border-bottom: 4px solid #f06292;
 }
 
 .search-result-text {
@@ -384,22 +407,14 @@ td.movieDownload {
 }
 
 #moviesResultsList {
-    border-radius: 3px;
+    border-radius: 0 0 3px 3px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     background-color: #fff;
 }
 #seriesResultsList {
-    border-radius: 3px;
+    border-radius: 0 0 3px 3px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     background-color: #fff;
-}
-.searchTypeTitle {
-    font-size: 24px;
-    line-height: 40px;
-    text-align: center;
-    padding: 10px;
-    color: #f06292;
-    border-bottom: 1px solid #ddd;
 }
 .searchMovie {
     height: 110px;

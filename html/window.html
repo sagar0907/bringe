@@ -54,7 +54,7 @@
                 <p></p>
             </div>
             <div class="waiter-loader">
-                <i class="fa fa-spinner fa-spin"></i>
+                <img class="fa-spin" src="../images/bringe-cd-blue-48.png">
             </div>
         </div>
     </div>
@@ -99,8 +99,14 @@
 <div class="search-result-wrapper"></div>
 <div class="results-wrapper">
     <div class="results" id="searchResultsList">
-        <div id="moviesResultsList"></div>
-        <div id="seriesResultsList"></div>
+        <div class="resultOptionTable">
+            <div class="resultOptionBar">
+                <div id="moviesResultsButton" class="resultOptionButton" style="display: none">Movies</div>
+                <div id="seriesResultsButton" class="resultOptionButton" style="display: none">Series</div>
+            </div>
+        </div>
+        <div id="moviesResultsList" class="searchResultList" style="display: none"></div>
+        <div id="seriesResultsList" class="searchResultList" style="display: none"></div>
     </div>
 </div>
 <div class="trending-wrapper">

@@ -287,6 +287,12 @@ $(document).ready(function () {
     $(".popup-close").click(function () {
         layout().closePopup();
     });
+    $("#moviesResultsButton").click(function () {
+        layout().setMovieListVisible();
+    });
+    $("#seriesResultsButton").click(function () {
+        layout().setSerieListVisible();
+    });
     $("#route-serie").click(function () {
         layout().showSerieLevel();
     });
