@@ -2,7 +2,7 @@
  * Created by sagar.ja on 24/02/17.
  */
 function movies() {
-    var totalSites = 1;
+    var totalSites = 2;
     function handleResponse(object) {
         thisMovie.movieRespones.count++;
         if (object.status) {
@@ -96,6 +96,7 @@ function movies() {
         //vumoo().loadVumoo(handleResponse);
         //movies123().loadMovies123(handleResponse);
         gomovies().loadMovie(thisMovie.name, thisMovie.year, handleResponse);
+        fmovies().loadMovie(thisMovie.name, thisMovie.year, handleResponse);
         watchit().loadMovie(thisMovie.name, thisMovie.year, handleWatchItResponse);
     }
     return {

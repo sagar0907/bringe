@@ -133,6 +133,7 @@ function series() {
         if (page != "serie") return;
         var obj = {title: thisSerie.title, seasonNo: thisSerie.seasonNo};
         goseries().loadSeason(obj, handleSeasonResponse);
+        fseries().loadSeason(obj, handleSeasonResponse);
         var season = getWatchitSeason();
         if (season) {
             watchit().loadSeason(season.pageLink, season.seasonId, handleWatchitSeason);
@@ -142,6 +143,7 @@ function series() {
         if (page != "serie") return;
         var obj = {title: thisSerie.title, seasonNo: thisSerie.seasonNo, episodeNo: thisSerie.episodeNo};
         goseries().loadEpisode(obj, handleEpisodeResponse);
+        fseries().loadEpisode(obj, handleEpisodeResponse);
         watchseries().loadEpisode(obj ,handleEpisodeResponse);
     }
     function getStreamLinks() {
@@ -152,6 +154,10 @@ function series() {
         links = goseries().getStreamLinks(obj);
         if (links && util().isArray(links) && links.length > 0) {
             Array.prototype.push.apply(streamLinks, links);
+        }
+        links = fseries().getStreamLinks(obj);
+        if (links && util().isArray(links) && links.length > 0) {
+            Array.prototype.push.apply(streamLinks, links)
         }
         links = watchseries().getStreamLinks(obj);
         if (links && util().isArray(links) && links.length > 0) {
@@ -166,6 +172,8 @@ function series() {
         var obj = {seasonNo: thisSerie.seasonNo, episodeNo: thisSerie.episodeNo, id: id};
         if (source === "goseries") {
             goseries().downloadEpisodeStreamLink(obj, handleDownloadResponse);
+        } else if (source === "fseries") {
+            fseries().downloadEpisodeStreamLink(obj, handleDownloadResponse);
         } else if (source === "watchseries") {
             watchseries().downloadEpisodeStreamLink(obj, handleDownloadResponse);
         }
@@ -177,6 +185,8 @@ function series() {
         var obj = {seasonNo: thisSerie.seasonNo, episodeNo: thisSerie.episodeNo, id: id};
         if (source === "goseries") {
             goseries().streamEpisodeStreamLink(obj, handleStreamResponse);
+        } else if (source === "fseries") {
+            fseries().streamEpisodeStreamLink(obj, handleStreamResponse);
         } else if (source === "watchseries") {
             watchseries().streamEpisodeStreamLink(obj, handleStreamResponse);
         }
@@ -187,6 +197,8 @@ function series() {
         var obj = {seasonNo: thisSerie.seasonNo, episodeNo: thisSerie.episodeNo, id: id};
         if (source === "goseries") {
             return goseries().getEpisodeBySelector(obj);
+        } else if (source === "fseries") {
+            return fseries().getEpisodeBySelector(obj);
         } else if (source === "watchseries") {
             return watchseries().getEpisodeBySelector(obj);
         }
