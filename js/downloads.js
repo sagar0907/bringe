@@ -1,10 +1,9 @@
 /**
  * Created by sagar.ja on 21/02/17.
  */
-
-function downloads() {
+_define('downloads', [window, 'util', 'layout', 'bringe'], function (window, util, layout, bringe) {
     function setupDownloadsSection() {
-        layout().setupDownloadSection();
+        layout.setupDownloadSection();
     }
     function addToDownload(link, name, ext, callback) {
         chrome.downloads.setShelfEnabled(false);
@@ -24,7 +23,7 @@ function downloads() {
     }
     function reStartDownload(link, name) {
         addToDownload(link, name, "", function () {
-            layout().placeDownloadSection();
+            layout.placeDownloadSection();
         });
     }
     function getAndPlaceDownloadItemById(id, callback) {
@@ -50,7 +49,7 @@ function downloads() {
         button.click(function () {
             chrome.downloads.pause(id, function () {
                 //reShowDownloadItem(id);
-                //layout().placeDownloadSection();
+                //layout.placeDownloadSection();
             })
         });
         return button;
@@ -59,8 +58,6 @@ function downloads() {
         var button = $('<div class="download-action-button resume-button">Resume</div>');
         button.click(function () {
             chrome.downloads.resume(id, function () {
-                //reShowDownloadItem(id);
-                //layout().placeDownloadSection();
             })
         });
         return button;
@@ -69,8 +66,6 @@ function downloads() {
         var button = $('<div class="download-action-button cancel-button">Cancel</div>');
         button.click(function () {
             chrome.downloads.cancel(id, function () {
-                //reShowDownloadItem(id);
-                //layout().placeDownloadSection();
             })
         });
         return button;
@@ -78,11 +73,11 @@ function downloads() {
     function getRetryButton(item) {
         var button = $('<div class="download-action-button retry-button">Retry</div>');
         button.click(function () {
-            if(download_active) {
-                download_active = false;
+            if(bringe.downloadActive) {
+                bringe.downloadActive = false;
                 chrome.downloads.erase({id: item.id}, function (){
                 });
-                reStartDownload(item.url, util().extractFileName(item.filename))
+                reStartDownload(item.url, util.extractFileName(item.filename))
             }
         });
         return button;
@@ -156,4 +151,4 @@ function downloads() {
         getCompletedPercentage: getCompletedPercentage,
         getSizeInWords: getSizeInWords
     }
-}
+});

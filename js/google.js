@@ -1,18 +1,19 @@
 /**
  * Created by sagar.ja on 10/05/17.
  */
-
-function Google() {
+_define('google', [window], function (window) {
     function getSiteName(link) {
         var start = link.indexOf(".");
-        start ++;
+        start++;
         var end = link.indexOf(".com");
         return link.substring(start, end);
     }
+
     function getMovieSearchName(searchTerm) {
         searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "").replace(/ /g, '+');
         return searchTerm;
     }
+
     function searchMovie(name, year, callback) {
         var q = getMovieSearchName(name);
         var link = "https://www.google.com/search?q=" + encodeURIComponent(q) + "+" + year;
@@ -71,8 +72,8 @@ function Google() {
             }
         });
     }
+
     return {
         searchMovie: searchMovie
     }
-}
-var google = Google();
+});

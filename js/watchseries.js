@@ -1,18 +1,17 @@
 /**
  * Created by sagar.ja on 26/03/17.
  */
-function watchseries() {
+_define('watchseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (window, util, bringe, downloads, layout) {
     var base_url = 'http://mywatchseries.to';
 
-    thisSerie.websites.watchSeries = thisSerie.websites.watchSeries || {};
-    var watchSeries = thisSerie.websites.watchSeries;
-
     function getSeasonByNo(no) {
+        bringe.serie.websites.watchSeries = bringe.serie.websites.watchSeries || {};
+        var watchSeries = bringe.serie.websites.watchSeries;
         var seasons = [],
             reqdSeason = null;
         if (watchSeries.seasons)
             seasons = watchSeries.seasons;
-        util().each(seasons, function (season) {
+        util.each(seasons, function (season) {
             if (season.seasonNo === no) {
                 reqdSeason = season;
             }
@@ -22,7 +21,7 @@ function watchseries() {
     function getEpisodeByNo(season, no) {
         var episodes = season.episodes,
             reqdEpisode = null;
-        util().each(episodes, function (episode) {
+        util.each(episodes, function (episode) {
             if (episode.episodeNo === no) {
                 reqdEpisode = episode;
             }
@@ -38,7 +37,7 @@ function watchseries() {
 
     function getLinkById(streams, id) {
         var link = null;
-        link = util().any(streams, function (stream) {
+        link = util.any(streams, function (stream) {
             if(stream.id === id) {
                 link = stream;
                 return link;
@@ -53,7 +52,7 @@ function watchseries() {
         return searchTerm;
     }
     function getWorthyRows(rows) {
-        rows = util().filter(rows, function (row) {
+        rows = util.filter(rows, function (row) {
             if ($(row).attr("class").trim() === "download_link_gorillavid.in") {
                 return true;
             }
@@ -81,19 +80,21 @@ function watchseries() {
         for(var i=0; i<serieItems.length; i++) {
             var serieItem = serieItems[i];
             var serieName = serieItem.value;
-            if(util().isSameMovieName(serieName, thisSerie.title)) {
+            if(util.isSameMovieName(serieName, thisSerie.title)) {
                 return serieItem.seo_url;
             }
         }
         return null;
     }
     function getSeries() {
+        bringe.serie.websites.watchSeries = bringe.serie.websites.watchSeries || {};
+        var watchSeries = bringe.serie.websites.watchSeries;
         if (watchSeries.seo_url) {
             var link = base_url + '/serie/' + watchSeries.seo_url;
             $.ajax({
                 url: link,
                 success: function (result) {
-                    if (page != "serie") return;
+                    if (bringe.page != "serie") return;
                     var parser = new DOMParser(),
                         doc = parser.parseFromString(result, "text/html"),
                         myDoc = $(doc),
@@ -151,7 +152,7 @@ function watchseries() {
                     episode.streams = episode.streams || [];
                     obj = {src: link, res: "-", label: "-", source: "watchseries", id: id};
                     episode.streams.push(obj);
-                    layout().showEpisodeStreamLink();
+                    layout.showEpisodeStreamLink();
                 }
             }
         });
@@ -162,14 +163,14 @@ function watchseries() {
         $.ajax({
             url: link,
             success: function (result) {
-                if (page != "serie") return;
+                if (bringe.page != "serie") return;
                 var parser = new DOMParser(),
                     doc = parser.parseFromString(result, "text/html"),
                     myDoc = $(doc);
                 var rows = myDoc.find("table#myTable tr"),
                     id = 1;
                 rows = getWorthyRows(rows);
-                util().each(rows, function (row) {
+                util.each(rows, function (row) {
                     var page = {};
                     page.linkId = $(row).attr("id").replace("link_", "");
                     page.redirector = $(row).find("td a.buttonlink").attr("href");
@@ -193,7 +194,7 @@ function watchseries() {
             },
             method: 'POST',
             success: function (result) {
-                if (page != "serie") return;
+                if (bringe.page != "serie") return;
                 if (typeof result != "object") {
                     try {
                         result = JSON.parse(result);
@@ -201,7 +202,8 @@ function watchseries() {
                         result = {};
                     }
                 }
-                watchSeries.seo_url = getSearchedSerie(result);
+                bringe.serie.websites.watchSeries = bringe.serie.websites.watchSeries || {};
+                bringe.serie.websites.watchSeries.seo_url = getSearchedSerie(result);
                 getSeries();
             }
         });
@@ -236,14 +238,14 @@ function watchseries() {
             var link = getLinkById(episode.streams, id);
             link = link.src;
             var name = thisEpisode.title;
-            layout().openWaiter("Adding Episode to Downloads");
-            downloads().addToDownload(link, name, ".mp4", function () {
-                layout().closeWaiter();
-                layout().shineDownloadButton();
+            layout.openWaiter("Adding Episode to Downloads");
+            downloads.addToDownload(link, name, ".mp4", function () {
+                layout.closeWaiter();
+                layout.shineDownloadButton();
             });
             return;
         }
-        layout().closeWaiter();
+        layout.closeWaiter();
     }
     function streamEpisodeStreamLink(obj) {
         var id = obj.id,
@@ -273,4 +275,4 @@ function watchseries() {
         downloadEpisodeStreamLink: downloadEpisodeStreamLink,
         streamEpisodeStreamLink: streamEpisodeStreamLink
     }
-}
+});

@@ -1,14 +1,14 @@
 /**
  * Created by sagar.ja on 15/04/17.
  */
-function imdb() {
+_define('imdb', [window, 'util', 'bringe'], function (window, util, bringe) {
     function failFunction() {
 
     }
     function getEpisodeByNo(season, no) {
         var episodes = season.episodes,
             reqdEpisode = null;
-        util().each(episodes, function (episode) {
+        util.each(episodes, function (episode) {
             if (episode.episodeNo === no) {
                 reqdEpisode = episode;
             }
@@ -26,8 +26,7 @@ function imdb() {
         for (var i = 0; i < divList.length; i++) {
             var div = $(divList[i]);
             var divName  = div.find(".lister-item-header a").text().trim();
-            console.log(divName);
-            if (util().isSameMovieName(divName, name)) {
+            if (util.isSameMovieName(divName, name)) {
                 movieDetails = {};
                 var imdbId = div.find(".lister-top-right .ribbonize").attr("data-tconst");
                 var imdbRating = div.find(".ratings-imdb-rating").attr("data-value");
@@ -47,7 +46,7 @@ function imdb() {
         return movieDetails;
     }
     function searchMovieSuccess(name, func, result) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             movieDivList = myDoc.find(".lister-item"),
@@ -69,8 +68,9 @@ function imdb() {
         func(true, movie);
     }
     function searchSerieSuccess(func, result) {
-        if (page != "serie") return;
-        var doc = new DOMParser().parseFromString(result, "text/html"),
+        if (bringe.page != "serie") return;
+        var thisSerie = bringe.serie,
+            doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             serieDivList = myDoc.find(".lister-item"),
             serieDetails = getRequiredMovie(serieDivList, thisSerie.title);
@@ -94,20 +94,22 @@ function imdb() {
         } else {
             url = encodeURI('http://www.imdb.com/search/title?title=' + q + '&title_type=feature&view=advanced');
         }
-        util().sendAjax(url, "GET", {}, util().getProxy(searchMovieSuccess, [name, func]), failFunction);
+        util.sendAjax(url, "GET", {}, util.getProxy(searchMovieSuccess, [name, func]), failFunction);
     }
 
     function searchSerie(q, func) {
-        q = util().getSearchTerm(q);
+        q = util.getSearchTerm(q);
         var url = encodeURI('http://www.imdb.com/search/title?title=' + q + '&title_type=tv_series&view=advanced');
-        util().sendAjax(url, "GET", {}, util().getProxy(searchSerieSuccess, [func]), failFunction);
+        util.sendAjax(url, "GET", {}, util.getProxy(searchSerieSuccess, [func]), failFunction);
     }
     function episodeSuccess(result) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
-            episodeDivList = myDoc.find("#eplist a.btn-full");
-        var episodes = [];
+            episodeDivList = myDoc.find("#eplist a.btn-full"),
+            episodes = [],
+            thisSerie = bringe.serie,
+            thisSeason = bringe.season;
         if (episodeDivList) {
             for (var i = 0; i < episodeDivList.length; i++) {
                 var div = $(episodeDivList[i]),
@@ -127,11 +129,11 @@ function imdb() {
     }
     function loadEpisodes(serieId, sNo) {
         var url = 'http://m.imdb.com/title/' + serieId +'/episodes/_ajax/?season=' + sNo;
-        util().sendAjax(url, "GET", {}, episodeSuccess, failFunction);
+        util.sendAjax(url, "GET", {}, episodeSuccess, failFunction);
     }
     return {
         searchMovie: searchMovie,
         searchSerie: searchSerie,
         loadEpisodes:loadEpisodes
     }
-}
+});

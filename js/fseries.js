@@ -1,21 +1,18 @@
 /**
  * Created by sagar.ja on 20/07/17.
  */
-function fseries() {
+_define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (window, util, bringe, downloads, layout) {
     var seasonCallback,
         episodeCallback,
         base_url = "https://fmovies.is",
         ts;
-
-    thisSerie.websites.fmovies = thisSerie.websites.fmovies || {};
-    var fmovies = thisSerie.websites.fmovies;
 
     function failSeasonFunction() {
         seasonCallback(false, {site: "fseries"});
     }
 
     function failEpisodeFunction() {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         episodeCallback(false, {site: "fseries"});
     }
 
@@ -84,9 +81,11 @@ function fseries() {
     }
 
     function getSeasonData(sNo) {
+        bringe.serie.websites.fmovies = bringe.serie.websites.fmovies || {};
+        var fmovies = bringe.serie.websites.fmovies;
         fmovies.seasons = fmovies.seasons || [];
         var seasons = fmovies.seasons;
-        var season = util().any(seasons, function (season) {
+        var season = util.any(seasons, function (season) {
             if (season.seasonNo === sNo) {
                 return season;
             }
@@ -103,7 +102,7 @@ function fseries() {
         var seasonData = getSeasonData(sNo);
         seasonData.episodes = seasonData.episodes || [];
         var episodes = seasonData.episodes;
-        var episode = util().any(episodes, function (episode) {
+        var episode = util.any(episodes, function (episode) {
             if (episode.episodeNo === epNo) {
                 return episode;
             }
@@ -118,7 +117,7 @@ function fseries() {
 
     function getLinkById(streams, id) {
         var link = null;
-        link = util().any(streams, function (stream) {
+        link = util.any(streams, function (stream) {
             if (stream.id === id) {
                 link = stream;
                 return link;
@@ -158,25 +157,27 @@ function fseries() {
         if (movieItems.length == 1) {
             return movieItems;
         }
-        var movieItem, movieName;
+        var movieItem, movieName,
+            title = bringe.serie.title,
+            seasonNo = bringe.season.seasonNo;
         for (var i = 0; i < movieItems.length; i++) {
             movieItem = movieItems[i];
             movieName = $(movieItem).html();
-            if (isSameMovieName1(movieName, thisSerie.title + " " + thisSeason.seasonNo)) {
+            if (isSameMovieName1(movieName, title + " " + seasonNo)) {
                 return movieItem;
             }
         }
         for (i = 0; i < movieItems.length; i++) {
             movieItem = movieItems[i];
             movieName = $(movieItem).html();
-            if (isSameMovieName2(movieName, thisSerie.title + " " + thisSeason.seasonNo)) {
+            if (isSameMovieName2(movieName, title + " " + seasonNo)) {
                 return movieItem;
             }
         }
         for (i = 0; i < movieItems.length; i++) {
             movieItem = movieItems[i];
             movieName = $(movieItem).html();
-            if (isSameMovieName3(movieName, thisSerie.title + " " + thisSeason.seasonNo)) {
+            if (isSameMovieName3(movieName, title + " " + seasonNo)) {
                 return movieItem;
             }
         }
@@ -188,7 +189,7 @@ function fseries() {
 
     function getParamString(obj) {
         var str = "";
-        util().each(obj, function (val, key) {
+        util.each(obj, function (val, key) {
             str += "&" + key + "=" + val;
         });
         return str;
@@ -216,7 +217,7 @@ function fseries() {
                 var episodeData = getEpisodeData(seasonNo, episodeNo);
                 episodeData.streams = episodeData.streams || [];
                 Array.prototype.push.apply(episodeData.streams, sourceList);
-                layout().showEpisodeStreamLink();
+                layout.showEpisodeStreamLink();
                 episodeCallback(true, {site: "fseries"});
             } else {
                 failEpisodeFunction();
@@ -227,11 +228,11 @@ function fseries() {
     }
 
     function getMovieStreams(url, id, seasonNo, episodeNo, subtitle) {
-        util().sendAjax(url, "GET", {}, util().getProxy(dataHandler, [id, seasonNo, episodeNo, subtitle]), failEpisodeFunction);
+        util.sendAjax(url, "GET", {}, util.getProxy(dataHandler, [id, seasonNo, episodeNo, subtitle]), failEpisodeFunction);
     }
 
     function episodesSuccessFunction(id, seasonNo, episodeNo, json) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         try {
             json = JSON.parse(json);
         } catch (ignore) {
@@ -251,7 +252,7 @@ function fseries() {
             for (var i = 0; i < eids.length; i++) {
                 var eid = eids[i];
                 var link = hashUrl(base_url + '/ajax/episode/info', 'id=' + eid + '&update=0');
-                util().sendAjax(link, "GET", {}, util().getProxy(episodesSuccessFunction, [i + 1, seasonNo, episodeNo]), failEpisodeFunction);
+                util.sendAjax(link, "GET", {}, util.getProxy(episodesSuccessFunction, [i + 1, seasonNo, episodeNo]), failEpisodeFunction);
             }
         } else {
             failEpisodeFunction();
@@ -260,7 +261,7 @@ function fseries() {
 
     function clearOldSeasonData(sNo) {
         var episodes = getSeasonData(sNo).episodes || [];
-        util().each(episodes, function (episode) {
+        util.each(episodes, function (episode) {
             delete episode.ids;
         });
     }
@@ -279,7 +280,7 @@ function fseries() {
     }
 
     function seasonPageSuccessFunction(seasonNo, result) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         var success = false,
             doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
@@ -294,7 +295,7 @@ function fseries() {
                 }
                 var links = $(server).find("ul.episodes a").toArray();
                 if (links) {
-                    util().each(links, function (link) {
+                    util.each(links, function (link) {
                         success = retrieveDataFromLink(link, seasonNo) || success;
                     });
                 }
@@ -306,7 +307,7 @@ function fseries() {
     }
 
     function searchSuccessFunction(seasonNo, result) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc);
         ts = myDoc.find("body").attr("data-ts");
@@ -315,7 +316,7 @@ function fseries() {
             var movieItem = getMovies123SearchedMovie(movieItems);
             if (movieItem) {
                 var movies123MoviePageLink = base_url + $(movieItem).attr("href");
-                util().sendAjax(movies123MoviePageLink, "GET", {}, util().getProxy(seasonPageSuccessFunction, [seasonNo]), failSeasonFunction);
+                util.sendAjax(movies123MoviePageLink, "GET", {}, util.getProxy(seasonPageSuccessFunction, [seasonNo]), failSeasonFunction);
                 return;
             }
         }
@@ -328,11 +329,11 @@ function fseries() {
         seasonCallback = func;
         var searchName = getMovies123SearchTerm(serieName, seasonNo);
         var link = base_url + '/search?keyword=' + searchName;
-        util().sendAjax(link, "GET", {}, util().getProxy(searchSuccessFunction, [seasonNo]), failSeasonFunction);
+        util.sendAjax(link, "GET", {}, util.getProxy(searchSuccessFunction, [seasonNo]), failSeasonFunction);
     }
 
     function tsSuccessFunction(ids, seasonNo, episodeNo, result) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc);
         ts = myDoc.find("body").attr("data-ts");
@@ -346,7 +347,7 @@ function fseries() {
         var episodeData = getEpisodeData(seasonNo, episodeNo),
             ids = episodeData.ids;
         episodeData.streams = [];
-        util().sendAjax(base_url, "GET", {}, util().getProxy(tsSuccessFunction, [ids, seasonNo, episodeNo]), failEpisodeFunction);
+        util.sendAjax(base_url, "GET", {}, util.getProxy(tsSuccessFunction, [ids, seasonNo, episodeNo]), failEpisodeFunction);
     }
 
     function getStreamLinks(obj) {
@@ -368,15 +369,15 @@ function fseries() {
         if (episode && episode.streams) {
             var link = getLinkById(episode.streams, id);
             link = link.src;
-            var name = thisEpisode.title;
-            layout().openWaiter("Adding Episode to Downloads");
-            downloads().addToDownload(link, name, ".mp4", function () {
-                layout().closeWaiter();
-                layout().shineDownloadButton();
+            var name = bringe.episode.title;
+            layout.openWaiter("Adding Episode to Downloads");
+            downloads.addToDownload(link, name, ".mp4", function () {
+                layout.closeWaiter();
+                layout.shineDownloadButton();
             });
             return;
         }
-        layout().closeWaiter();
+        layout.closeWaiter();
     }
 
     function streamEpisodeStreamLink(obj, callback) {
@@ -410,4 +411,4 @@ function fseries() {
         downloadEpisodeStreamLink: downloadEpisodeStreamLink,
         streamEpisodeStreamLink: streamEpisodeStreamLink
     }
-}
+});

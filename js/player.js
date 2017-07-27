@@ -1,15 +1,14 @@
 /**
  * Created by sagar.ja on 06/05/17.
  */
-function Player() {
+_define('player', [window], function (window) {
     var vid = {};
     $(document).ready(function () {
 
         var bringePlayer = $("#bringePlayer");
         var video = $("#player")[0];
         vid.video = video;
-        var source = $("source");
-        vid.source = source;
+        vid.source = $("source");
         var playpause = $("#playpause");
         var rewind = $("#rewind");
         var forward = $("#forward");
@@ -320,7 +319,5 @@ function Player() {
         setupVideo: setupVideo,
         removeVideo: removeVideo
     }
-}
-
-var player = Player();
+});
 

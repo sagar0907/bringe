@@ -1,18 +1,18 @@
 /**
  * Created by sagar.ja on 18/07/17.
  */
-function fmovies() {
+_define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
     var callback;
     var base_url = "https://fmovies.is";
     var ts;
 
     function failFunction() {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         callback({site: "fmovies", status: false});
     }
 
     function successFunction(linkDetails) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         callback({site: "fmovies", status: true, linkDetails: linkDetails});
     }
 
@@ -186,7 +186,7 @@ function fmovies() {
                     source.source = "fmovies";
                     source.id = 'fm-' + index + '*' + source.res;
                     source.subtitles = [subtitle];
-                    thisMovie.streamLinkDetails = thisMovie.streamLinkDetails || [];
+                    bringe.movie.streamLinkDetails = bringe.movie.streamLinkDetails || [];
                     sourceList.push(source);
                 }
                 successFunction(sourceList);
@@ -199,7 +199,7 @@ function fmovies() {
     }
 
     function getMovieStreams(url, index, subtitle) {
-        util().sendAjax(url, "GET", {}, util().getProxy(dataHandler, [index, subtitle]), failFunction);
+        util.sendAjax(url, "GET", {}, util.getProxy(dataHandler, [index, subtitle]), failFunction);
     }
 
     function cleanSpecialUrl(url) {
@@ -208,14 +208,14 @@ function fmovies() {
 
     function getParamString(obj) {
         var str = "";
-        util().each(obj, function (val, key) {
+        util.each(obj, function (val, key) {
             str += "&" + key + "=" + val;
         });
         return str;
     }
 
     function episodesSuccessFunction(index, json) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         try {
             json = JSON.parse(json);
         } catch (ignore) {
@@ -231,7 +231,7 @@ function fmovies() {
     }
 
     function moviePageSuccessFunction(result) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             movies123FetchLink,
@@ -240,7 +240,7 @@ function fmovies() {
         for (var i = 0; i < movies123MovieIds.length; i++) {
             movieId = $(movies123MovieIds[i]).attr("data-id");
             movies123FetchLink = hashUrl(base_url + '/ajax/episode/info', 'id=' + movieId + '&update=0');
-            util().sendAjax(movies123FetchLink, "GET", {}, util().getProxy(episodesSuccessFunction, [i]), failFunction);
+            util.sendAjax(movies123FetchLink, "GET", {}, util.getProxy(episodesSuccessFunction, [i]), failFunction);
         }
     }
 
@@ -248,7 +248,7 @@ function fmovies() {
         var found = false;
 
         function searchSuccessFunction(result) {
-            if (page != "movie" || found) return;
+            if (bringe.page != "movie" || found) return;
             try {
                 result = JSON.parse(result);
             } catch (ignore) {
@@ -262,7 +262,7 @@ function fmovies() {
                     if (movieItem) {
                         found = true;
                         var movies123MoviePageLink = base_url + $(movieItem).find("a.name").attr("href");
-                        util().sendAjax(movies123MoviePageLink, "GET", {}, moviePageSuccessFunction, failFunction);
+                        util.sendAjax(movies123MoviePageLink, "GET", {}, moviePageSuccessFunction, failFunction);
                         return;
                     }
                 }
@@ -271,16 +271,16 @@ function fmovies() {
         }
 
         var links = [];
-        util().each(searchList, function (searchTerm) {
+        util.each(searchList, function (searchTerm) {
             links.push(hashUrl(base_url + '/ajax/film/search', 'sort=year%3Adesc&keyword=' + searchTerm));
         });
-        util().each(links, function (link) {
-            util().sendAjax(link, "GET", {}, searchSuccessFunction, failFunction);
+        util.each(links, function (link) {
+            util.sendAjax(link, "GET", {}, searchSuccessFunction, failFunction);
         });
     }
 
     function tsSuccessFunction(name, searchNames, result) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc);
         ts = myDoc.find("body").attr("data-ts");
@@ -290,10 +290,10 @@ function fmovies() {
     function loadMovie(name, year, func) {
         callback = func;
         var searchNames = getMovies123SearchTerms(name);
-        util().sendAjax(base_url, "GET", {}, util().getProxy(tsSuccessFunction, [name, searchNames]), failFunction);
+        util.sendAjax(base_url, "GET", {}, util.getProxy(tsSuccessFunction, [name, searchNames]), failFunction);
     }
 
     return {
         loadMovie: loadMovie
     }
-}
+});

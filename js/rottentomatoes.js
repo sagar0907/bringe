@@ -1,8 +1,7 @@
 /**
  * Created by sagar.ja on 05/03/17.
  */
-
-function rottenTomatoes() {
+_define('rottenTomatoes', [window, 'util', 'bringe'], function (window, util, bringe) {
     function searchMovie(q, callback) {
         var url = "https://www.rottentomatoes.com/api/private/v2.0/search/?limit=10&q=" + q;
         $.ajax({
@@ -16,7 +15,7 @@ function rottenTomatoes() {
                     }
                 }
                 if (result.movieCount) {
-                    result.movies = util().filter(result.movies, function (movie) {
+                    result.movies = util.filter(result.movies, function (movie) {
                         if (movie.meterScore) {
                             return true;
                         }
@@ -49,11 +48,11 @@ function rottenTomatoes() {
 
     function loadRottenTomatoesEpisodesList(season, id, episodeFunc) {
         var link = "https://www.rottentomatoes.com/api/private/v2.0/tvSeason/" + id + "/episodes?offset=0&limit=50";
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         $.ajax({
             url: link,
             success: function (result) {
-                if (page != "serie") return;
+                if (bringe.page != "serie") return;
                 if (typeof result != "object") {
                     try {
                         result = JSON.parse(result);
@@ -85,11 +84,11 @@ function rottenTomatoes() {
     }
 
     function loadRottenTomatoesMovie(movie, link, func) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         $.ajax({
             url: link,
             success: function (result) {
-                if (page != "movie") return;
+                if (bringe.page != "movie") return;
                 var parser = new DOMParser(),
                     doc = parser.parseFromString(result, "text/html"),
                     myDoc = $(doc),
@@ -115,14 +114,14 @@ function rottenTomatoes() {
                     var coverImage = coverImageDiv[0].style.backgroundImage;
                     coverImage = coverImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
                 }
-                if (util().isSet(coverImage)) {
+                if (util.isSet(coverImage)) {
                     movie.coverImage = coverImage || "";
                 }
                 var mainImageDiv = myDoc.find("#movie-image-section img");
                 if (mainImageDiv.length > 0) {
                     var mainImage = mainImageDiv.attr("src");
                 }
-                if (util().isSet(mainImage)) {
+                if (util.isSet(mainImage)) {
                     movie.image = mainImage || "";
                 }
                 var year = myDoc.find("#heroImageContainer .year");
@@ -157,11 +156,11 @@ function rottenTomatoes() {
     }
 
     function loadRottenTomatoesSerie(serie, link, func) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         $.ajax({
             url: link,
             success: function (result) {
-                if (page != "serie") return;
+                if (bringe.page != "serie") return;
                 var parser = new DOMParser(),
                     doc = parser.parseFromString(result, "text/html"),
                     myDoc = $(doc),
@@ -192,7 +191,7 @@ function rottenTomatoes() {
                 if (mainImageDiv.length > 0) {
                     var mainImage = mainImageDiv.attr("src");
                 }
-                if (util().isSet(mainImage)) {
+                if (util.isSet(mainImage)) {
                     serie.image = mainImage || "";
                 }
                 var serieSynopsis = myDoc.find("#movieSynopsis").text().trim();
@@ -261,11 +260,11 @@ function rottenTomatoes() {
     }
 
     function loadRottenTomatoesSeason(season, link, func, episodeFunc) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         $.ajax({
             url: link,
             success: function (result) {
-                if (page != "serie") return;
+                if (bringe.page != "serie") return;
                 var parser = new DOMParser(),
                     doc = parser.parseFromString(result, "text/html"),
                     myDoc = $(doc),
@@ -292,7 +291,7 @@ function rottenTomatoes() {
                 if (mainImageDiv.length > 0) {
                     var mainImage = mainImageDiv.attr("src");
                 }
-                if (util().isSet(mainImage)) {
+                if (util.isSet(mainImage)) {
                     season.image = mainImage || season.image || "";
                 }
                 var seasonSynopsis = myDoc.find("#movieSynopsis").text().trim();
@@ -323,11 +322,11 @@ function rottenTomatoes() {
 
 
     function loadRottenTomatoesEpisode(episode, link, func) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         $.ajax({
             url: link,
             success: function (result) {
-                if (page != "serie") return;
+                if (bringe.page != "serie") return;
                 var parser = new DOMParser(),
                     doc = parser.parseFromString(result, "text/html"),
                     myDoc = $(doc),
@@ -401,4 +400,4 @@ function rottenTomatoes() {
         getSeason: getSeason,
         getEpisode: getEpisode
     }
-}
+});

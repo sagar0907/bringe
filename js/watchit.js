@@ -4,7 +4,7 @@
 /**
  * Created by sagar.ja on 15/04/17.
  */
-function watchit() {
+_define('watchit', [window, 'util', 'bringe'], function (window, util, bringe) {
     var base_url = "https://gowatchit.com";
 
     function failFunction(func) {
@@ -12,17 +12,17 @@ function watchit() {
     }
 
     function movieSuccessFunction(youtubeId, linkDetails, func) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         func({site: "watchit", status: true, linkDetails: linkDetails, youtubeId: youtubeId});
     }
 
     function serieSuccessFunction(youtubeId, seasons, func) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         func({site: "watchit", status: true, seasons: seasons, youtubeId: youtubeId});
     }
 
     function seasonSuccessFunction(linkDetails, func) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         func({site: "watchit", status: true, linkDetails: linkDetails});
     }
 
@@ -64,7 +64,7 @@ function watchit() {
             failFunction(func);
         }
         var link = 'https://gowatchit.com/home';
-        util().sendAjax(link, "GET", {}, fetchApiSuccessFunction, util().getProxy(failFunction, [func]));
+        util.sendAjax(link, "GET", {}, fetchApiSuccessFunction, util.getProxy(failFunction, [func]));
     }
 
     function getSearchBody(name, year, isSerie) {
@@ -86,7 +86,7 @@ function watchit() {
     }
 
     function moviePageSuccessFunction(movieId, youtubeId, func, result) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             divs = myDoc.find("ul.channels li.tile a[data-provider-format-id]"),
@@ -102,7 +102,7 @@ function watchit() {
         movieSuccessFunction(youtubeId, streams, func);
     }
     function seasonPageSuccessFunction(seasonId, func, result) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             divs = myDoc.find("ul.channels li.tile a[data-provider-format-id]"),
@@ -119,7 +119,7 @@ function watchit() {
     }
 
     function seriePageSuccessFunction(serieId, youtubeId, func, result) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             divs = myDoc.find(".seasons-dropdown"),
@@ -153,14 +153,14 @@ function watchit() {
                 } catch (ignore) {}
                 if (link) {
                     var successFunc = isSerie? seriePageSuccessFunction : moviePageSuccessFunction;
-                    util().sendAjax(link, "GET", {}, util().getProxy(successFunc, [id, trailerUrl, func]), util().getProxy(failFunction, [func]));
+                    util.sendAjax(link, "GET", {}, util.getProxy(successFunc, [id, trailerUrl, func]), util.getProxy(failFunction, [func]));
                     return;
                 }
             }
             failFunction(func);
         }
         var link = base_url + '/api/v3/advanced_search/_search';
-        util().sendAjax(link, "POST", getSearchBody(name, year, isSerie), searchSuccessFunction, util().getProxy(failFunction, [func]), {'X-Api-Key': apiKey});
+        util.sendAjax(link, "POST", getSearchBody(name, year, isSerie), searchSuccessFunction, util.getProxy(failFunction, [func]), {'X-Api-Key': apiKey});
     }
 
     function getApiAndSearchMovie(name, year, func, isSerie) {
@@ -168,7 +168,7 @@ function watchit() {
         if(apiKey) {
             searchMovie(name, year, func, isSerie, apiKey);
         } else {
-            fetchApiKey(util().getProxy(searchMovie, [name, year, func, isSerie]), func);
+            fetchApiKey(util.getProxy(searchMovie, [name, year, func, isSerie]), func);
         }
     }
 
@@ -180,7 +180,7 @@ function watchit() {
     }
     function loadSeason(link, id, func) {
         if (link) {
-            util().sendAjax(link, "GET", {}, util().getProxy(seasonPageSuccessFunction, [id, func]), util().getProxy(failFunction, [func]));
+            util.sendAjax(link, "GET", {}, util.getProxy(seasonPageSuccessFunction, [id, func]), util.getProxy(failFunction, [func]));
         } else {
             failFunction(func);
         }
@@ -191,4 +191,4 @@ function watchit() {
         loadSerie: loadSerie,
         loadSeason: loadSeason
     }
-}
+});

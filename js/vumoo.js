@@ -1,15 +1,14 @@
 /**
  * Created by sagar.ja on 21/02/17.
  */
-
-function vumoo() {
+_define('vumoo', [window, 'util', 'bringe'], function (window, util, bringe) {
     var callback;
     function failFunction() {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         callback({site:"vumoo", status: false});
     }
     function successFunction(linkDetails) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         callback({site:"vumoo", status: true, linkDetails: linkDetails});
     }
 
@@ -32,7 +31,7 @@ function vumoo() {
     }
 
     function getVumooSearchTerm() {
-        var searchTerm = thisMovie.name;
+        var searchTerm = bringe.movie.name;
         searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/,"").replace(/^the/, "").replaceAll(/,| -|- /," ");
         searchTerm = searchTerm.replace("part", "");
         searchTerm = searchTerm.replace(/\d*$/,"").replaceAll(/\s\s+/," ").trim().replaceAll(" ", "+");
@@ -50,7 +49,7 @@ function vumoo() {
         for(var i=0; i<movieItems.length; i++) {
             var movieItem = movieItems[i];
             var movieName = $(movieItem).find(".cover-text-overlay").text();
-            if(util().isSameMovieName(movieName, thisMovie.name)) {
+            if(util.isSameMovieName(movieName, bringe.movie.name)) {
                 sameNameMovies.push(movieItem);
             }
         }
@@ -62,7 +61,7 @@ function vumoo() {
     }
 
     function getMovieSuccessFunction(result) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         try {
             var json = JSON.parse(result);
             if (json.length > 0) {
@@ -86,17 +85,17 @@ function vumoo() {
     }
 
     function moviePageSuccessFunction(result) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc);
         var vumooMovieId = myDoc.find("button[data-url]").attr("data-url");
-        thisMovie.vumooMovieId = vumooMovieId.replace("_p_", "");
-        var movieFetchLink = "http://vumoo.li/api/getContents?id=" + thisMovie.vumooMovieId +"&p=1";
-        util().sendAjax(movieFetchLink, "GET", {}, getMovieSuccessFunction, failFunction)
+        bringe.movie.vumooMovieId = vumooMovieId.replace("_p_", "");
+        var movieFetchLink = "http://vumoo.li/api/getContents?id=" + bringe.movie.vumooMovieId +"&p=1";
+        util.sendAjax(movieFetchLink, "GET", {}, getMovieSuccessFunction, failFunction)
     }
 
     function searchSuccessFunction(result) {
-        if (page != "movie") return;
+        if (bringe.page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc);
         var movieItems = myDoc.find("article.movie_item");
@@ -106,9 +105,9 @@ function vumoo() {
                 var vumooMoviePageLink = "http://vumoo.li" + $(movieItem).find("a").attr("href");
                 var vumooImdbRating = $(movieItem).find(".rating-overlay").text().trim();
                 if (vumooImdbRating) {
-                    thisMovie.vumooImdbRating = vumooImdbRating;
+                    bringe.movie.vumooImdbRating = vumooImdbRating;
                 }
-                util().sendAjax(vumooMoviePageLink, "GET", {}, moviePageSuccessFunction, failFunction);
+                util.sendAjax(vumooMoviePageLink, "GET", {}, moviePageSuccessFunction, failFunction);
                 return;
             }
         }
@@ -117,9 +116,9 @@ function vumoo() {
 
     function loadVumoo(func) {
         callback = func;
-        util().sendAjax('http://vumoo.li/videos/search/?search=' + getVumooSearchTerm(), "GET", {}, searchSuccessFunction, failFunction);
+        util.sendAjax('http://vumoo.li/videos/search/?search=' + getVumooSearchTerm(), "GET", {}, searchSuccessFunction, failFunction);
     }
     return {
         loadVumoo: loadVumoo
     }
-}
+});

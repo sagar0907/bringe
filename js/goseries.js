@@ -1,26 +1,25 @@
 /**
  * Created by sagar.ja on 17/04/17.
  */
-function goseries() {
+_define('goseries', [window, 'util', 'bringe', 'layout', 'downloads'], function (window, util, bringe, layout, downloads) {
     var seasonCallback;
     var episodeCallback;
     var base_url = "https://gomovies.to";
-
-    thisSerie.websites.gomovies = thisSerie.websites.gomovies || {};
-    var gomovies = thisSerie.websites.gomovies;
 
     function failSeasonFunction() {
         seasonCallback(false, {site: "goseries"});
     }
     function failEpisodeFunction() {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         episodeCallback(false, {site: "goseries"});
     }
 
     function getSeasonData(sNo) {
+        bringe.serie.websites.gomovies = bringe.serie.websites.gomovies || {};
+        var gomovies = bringe.serie.websites.gomovies;
         gomovies.seasons = gomovies.seasons || [];
         var seasons = gomovies.seasons;
-        var season = util().any(seasons, function (season) {
+        var season = util.any(seasons, function (season) {
             if (season.seasonNo === sNo) {
                 return season;
             }
@@ -37,7 +36,7 @@ function goseries() {
         var seasonData = getSeasonData(sNo);
         seasonData.episodes = seasonData.episodes || [];
         var episodes = seasonData.episodes;
-        var episode = util().any(episodes, function (episode) {
+        var episode = util.any(episodes, function (episode) {
             if (episode.episodeNo === epNo) {
                 return episode;
             }
@@ -52,7 +51,7 @@ function goseries() {
 
     function getLinkById(streams, id) {
         var link = null;
-        link = util().any(streams, function (stream) {
+        link = util.any(streams, function (stream) {
             if(stream.id === id) {
                 link = stream;
                 return link;
@@ -92,25 +91,27 @@ function goseries() {
         if (movieItems.length == 1) {
             return movieItems;
         }
-        var movieItem, movieName;
+        var movieItem, movieName,
+            title = bringe.serie.title,
+            seasonNo = bringe.season.seasonNo;
         for (var i = 0; i < movieItems.length; i++) {
             movieItem = movieItems[i];
             movieName = $(movieItem).find("a").attr("title");
-            if (isSameMovieName1(movieName, thisSerie.title + " - Season " + thisSeason.seasonNo)) {
+            if (isSameMovieName1(movieName, title + " - Season " + seasonNo)) {
                 return movieItem;
             }
         }
         for (i = 0; i < movieItems.length; i++) {
             movieItem = movieItems[i];
             movieName = $(movieItem).find("a").attr("title");
-            if (isSameMovieName2(movieName, thisSerie.title + " - Season " + thisSeason.seasonNo)) {
+            if (isSameMovieName2(movieName, title + " - Season " + seasonNo)) {
                 return movieItem;
             }
         }
         for (i = 0; i < movieItems.length; i++) {
             movieItem = movieItems[i];
             movieName = $(movieItem).find("a").attr("title");
-            if (isSameMovieName3(movieName, thisSerie.title + " - Season " + thisSeason.seasonNo)) {
+            if (isSameMovieName3(movieName, title + " - Season " + seasonNo)) {
                 return movieItem;
             }
         }
@@ -138,7 +139,7 @@ function goseries() {
                 var episodeData = getEpisodeData(seasonNo, episodeNo);
                 episodeData.streams = episodeData.streams || [];
                 Array.prototype.push.apply(episodeData.streams, sourceList);
-                layout().showEpisodeStreamLink();
+                layout.showEpisodeStreamLink();
                 episodeCallback(true, {site: "goseries"});
             } else {
                 failEpisodeFunction();
@@ -154,7 +155,7 @@ function goseries() {
         var y = parts[1].split("'")[1];
         var link = 'https://gomovies.to/ajax/movie_sources/' + eid + '?x=' + x + '&y=' + y;
         if (x && y) {
-            util().sendAjax(link, "GET", {}, util().getProxy(dataHandler, [eid, seasonNo, episodeNo]), failEpisodeFunction);
+            util.sendAjax(link, "GET", {}, util.getProxy(dataHandler, [eid, seasonNo, episodeNo]), failEpisodeFunction);
         } else {
             failEpisodeFunction();
         }
@@ -165,7 +166,7 @@ function goseries() {
             for (var i = 0; i < eids.length; i++) {
                 var eid = eids[i];
                 var link = 'https://gomovies.to/ajax/movie_token?eid=' + eid + '&mid=' + getSeasonData(seasonNo).seasonId;
-                util().sendAjax(link, "GET", {}, util().getProxy(hashSuccessFunction, [eid, seasonNo, episodeNo]), failEpisodeFunction);
+                util.sendAjax(link, "GET", {}, util.getProxy(hashSuccessFunction, [eid, seasonNo, episodeNo]), failEpisodeFunction);
             }
         } else {
             failEpisodeFunction();
@@ -175,8 +176,7 @@ function goseries() {
     function getMovieId(url) {
         var parts = url.split("-");
         var part = parts[parts.length - 1];
-        var id = part.split("/")[0];
-        return id;
+        return part.split("/")[0];
     }
 
     function getEpisodeNoFromTitle(title) {
@@ -186,7 +186,7 @@ function goseries() {
 
     function clearOldSeasonData(sNo) {
         var episodes = getSeasonData(sNo).episodes || [];
-        util().each(episodes, function (episode) {
+        util.each(episodes, function (episode) {
             delete episode.ids;
         });
     }
@@ -206,7 +206,7 @@ function goseries() {
     }
 
     function episodesSuccessFunction(seasonNo, result) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         try {
             var json = JSON.parse(result);
             var success = false;
@@ -225,7 +225,7 @@ function goseries() {
                         }
                         var links = $(server).find("a.btn-eps").toArray();
                         if (links) {
-                            util().each(links, function (link) {
+                            util.each(links, function (link) {
                                 success = retrieveDataFromLink(link, seasonNo, serverId) || success;
                             });
                         }
@@ -241,18 +241,18 @@ function goseries() {
     }
 
     function seasonPageSuccessFunction(seasonNo, result) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             url = myDoc.find(".fb-comments").attr("data-href"),
             movies123MovieId = getMovieId(url),
             movies123FetchLink = base_url + "/ajax/movie_episodes/" + movies123MovieId;
         getSeasonData(seasonNo).seasonId = movies123MovieId;
-        util().sendAjax(movies123FetchLink, "GET", {}, util().getProxy(episodesSuccessFunction, [seasonNo]), failSeasonFunction);
+        util.sendAjax(movies123FetchLink, "GET", {}, util.getProxy(episodesSuccessFunction, [seasonNo]), failSeasonFunction);
     }
 
     function searchSuccessFunction(seasonNo, result) {
-        if (page != "serie") return;
+        if (bringe.page != "serie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc);
         var movieItems = myDoc.find(".movies-list .ml-item");
@@ -260,7 +260,7 @@ function goseries() {
             var movieItem = getMovies123SearchedMovie(movieItems);
             if (movieItem) {
                 var movies123MoviePageLink = $(movieItem).find("a").attr("href") + "watching.html";
-                util().sendAjax(movies123MoviePageLink, "GET", {}, util().getProxy(seasonPageSuccessFunction, [seasonNo]), failSeasonFunction);
+                util.sendAjax(movies123MoviePageLink, "GET", {}, util.getProxy(seasonPageSuccessFunction, [seasonNo]), failSeasonFunction);
                 return;
             }
         }
@@ -273,7 +273,7 @@ function goseries() {
         seasonCallback = func;
         var searchName = getMovies123SearchTerm(serieName, seasonNo);
         var link = base_url + '/movie/search/' + searchName;
-        util().sendAjax(link, "GET", {}, util().getProxy(searchSuccessFunction, [seasonNo]), failSeasonFunction);
+        util.sendAjax(link, "GET", {}, util.getProxy(searchSuccessFunction, [seasonNo]), failSeasonFunction);
     }
 
     function loadEpisode(obj, func) {
@@ -305,15 +305,15 @@ function goseries() {
         if (episode && episode.streams) {
             var link = getLinkById(episode.streams, id);
             link = link.src;
-            var name = thisEpisode.title;
-            layout().openWaiter("Adding Episode to Downloads");
-            downloads().addToDownload(link, name, ".mp4", function () {
-                layout().closeWaiter();
-                layout().shineDownloadButton();
+            var name = bringe.episode.title;
+            layout.openWaiter("Adding Episode to Downloads");
+            downloads.addToDownload(link, name, ".mp4", function () {
+                layout.closeWaiter();
+                layout.shineDownloadButton();
             });
             return;
         }
-        layout().closeWaiter();
+        layout.closeWaiter();
     }
     function streamEpisodeStreamLink(obj, callback) {
         var id = obj.id,
@@ -345,4 +345,4 @@ function goseries() {
         downloadEpisodeStreamLink: downloadEpisodeStreamLink,
         streamEpisodeStreamLink: streamEpisodeStreamLink
     }
-}
+});
