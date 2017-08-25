@@ -106,8 +106,6 @@ _define('movies', [window, 'bringe', 'layout', 'gomovies', 'fmovies', 'watchit',
             layout.findingMovieLink();
             var thisMovie = bringe.movie;
             thisMovie.movieRespones = {count: 0, successCount: 0};
-            //vumoo().loadVumoo(handleResponse);
-            //movies123().loadMovies123(handleResponse);
             gomovies.loadMovie(thisMovie.name, thisMovie.year, handleResponse);
             fmovies.loadMovie(thisMovie.name, thisMovie.year, handleResponse);
             watchit.loadMovie(thisMovie.name, thisMovie.year, handleWatchItResponse);

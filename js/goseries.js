@@ -4,7 +4,7 @@
 _define('goseries', [window, 'util', 'bringe', 'layout', 'downloads'], function (window, util, bringe, layout, downloads) {
     var seasonCallback;
     var episodeCallback;
-    var base_url = "https://gomovies.to";
+    var base_url = "https://gostream.is";
 
     function failSeasonFunction() {
         seasonCallback(false, {site: "goseries"});
@@ -153,7 +153,7 @@ _define('goseries', [window, 'util', 'bringe', 'layout', 'downloads'], function 
         var parts = result.split(',');
         var x = parts[0].split("'")[1];
         var y = parts[1].split("'")[1];
-        var link = 'https://gomovies.to/ajax/movie_sources/' + eid + '?x=' + x + '&y=' + y;
+        var link = base_url + '/ajax/movie_sources/' + eid + '?x=' + x + '&y=' + y;
         if (x && y) {
             util.sendAjax(link, "GET", {}, util.getProxy(dataHandler, [eid, seasonNo, episodeNo]), failEpisodeFunction);
         } else {
@@ -165,7 +165,7 @@ _define('goseries', [window, 'util', 'bringe', 'layout', 'downloads'], function 
         if (eids && eids.length > 0) {
             for (var i = 0; i < eids.length; i++) {
                 var eid = eids[i];
-                var link = 'https://gomovies.to/ajax/movie_token?eid=' + eid + '&mid=' + getSeasonData(seasonNo).seasonId;
+                var link = base_url + '/ajax/movie_token?eid=' + eid + '&mid=' + getSeasonData(seasonNo).seasonId;
                 util.sendAjax(link, "GET", {}, util.getProxy(hashSuccessFunction, [eid, seasonNo, episodeNo]), failEpisodeFunction);
             }
         } else {

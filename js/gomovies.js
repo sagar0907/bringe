@@ -3,7 +3,7 @@
  */
 _define('gomovies', [window, 'util', 'bringe'], function (window, util, bringe) {
     var callback;
-    var base_url = "https://gomovies.to";
+    var base_url = "https://gostream.is";
     var mid;
 
     function failFunction() {
@@ -165,7 +165,7 @@ _define('gomovies', [window, 'util', 'bringe'], function (window, util, bringe) 
         var parts = result.split(',');
         var x = parts[0].split("'")[1];
         var y = parts[1].split("'")[1];
-        var link = 'https://gomovies.to/ajax/movie_sources/' + eid + '?x=' + x + '&y=' + y;
+        var link = base_url + '/ajax/movie_sources/' + eid + '?x=' + x + '&y=' + y;
         if (x && y) {
             util.sendAjax(link, "GET", {}, util.getProxy(dataHandler, [eid]), failFunction);
         } else {
@@ -176,7 +176,7 @@ _define('gomovies', [window, 'util', 'bringe'], function (window, util, bringe) 
     function getMovies123MovieLinks(eids) {
         for (var i = 0; i < eids.length; i++) {
             var eid = eids[i];
-            var link = 'https://gomovies.to/ajax/movie_token?eid=' + eid + '&mid=' + mid;
+            var link = base_url + '/ajax/movie_token?eid=' + eid + '&mid=' + mid;
             util.sendAjax(link, "GET", {}, util.getProxy(hashSuccessFunction, [eid]), failFunction);
         }
     }

@@ -180,7 +180,7 @@ _define('player', [window], function (window) {
 
         function formatTime(t) {
             if (t < 0) t = 0;
-            if (!t & t !== 0) return "";
+            if (!t && t !== 0) return "";
             var sec = Math.floor(t);
             if (sec > 59) {
                 var min = Math.floor(sec / 60);

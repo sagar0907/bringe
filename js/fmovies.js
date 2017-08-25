@@ -50,7 +50,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         function s(t) {
             var e, i = 0;
             for (e = 0; e < t.length; e++) {
-                i += t.charCodeAt(e) * e;
+                i += t.charCodeAt(e) * e - e;
             }
             return i;
         }
