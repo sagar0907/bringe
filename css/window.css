@@ -4,7 +4,7 @@ body{
     color: #555;
     word-wrap: break-word;
     background-color: #f7f7f7;
-    background: url(../images/deadpool2.jpg) no-repeat center center fixed;
+    background: url(../images/deadpool.jpg) no-repeat center center fixed;
     background-size: cover;
     margin-bottom: 20px;
 }
@@ -62,7 +62,7 @@ body{
     position: fixed;
     z-index:10;
     background-color: #f7f7f7;
-    background: url(../images/deadpool2.jpg) no-repeat center center fixed;
+    background: url(../images/deadpool.jpg) no-repeat center center fixed;
     background-size: cover;
     transition-duration: 0.5s;
 }
@@ -1420,7 +1420,7 @@ td.movieDownload {
 .btn-arrow-right:before,
 .btn-arrow-left:after { /* hide arrow tails background */
     background-color: #f7f7f7;
-    background: url(../images/deadpool2.jpg) no-repeat center center fixed;
+    background: url(../images/deadpool.jpg) no-repeat center center fixed;
     background-size: cover;
 }
 .btn-info {

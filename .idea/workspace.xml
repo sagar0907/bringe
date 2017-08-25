@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b0deef5a-5c45-4c2c-8634-10185b5536a6" name="Default" comment="changes">
+    <list default="true" id="b0deef5a-5c45-4c2c-8634-10185b5536a6" name="Default" comment="cleanup">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/images/bringe-128.png" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/css/pub.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/js/metacritic.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/js/pub.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/js/vumoo.js" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/images/bringe-cd-blue-16.png" afterPath="$PROJECT_DIR$/images/bringe-16.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/images/bringe-cd-blue-48.png" afterPath="$PROJECT_DIR$/images/bringe-48.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/images/deadpool2.jpg" afterPath="$PROJECT_DIR$/images/deadpool.jpg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/window.css" afterPath="$PROJECT_DIR$/css/window.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/window.html" afterPath="$PROJECT_DIR$/html/window.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/background.js" afterPath="$PROJECT_DIR$/js/background.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/fmovies.js" afterPath="$PROJECT_DIR$/js/fmovies.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/gomovies.js" afterPath="$PROJECT_DIR$/js/gomovies.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/goseries.js" afterPath="$PROJECT_DIR$/js/goseries.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/movies.js" afterPath="$PROJECT_DIR$/js/movies.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/player.js" afterPath="$PROJECT_DIR$/js/player.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/layout.js" afterPath="$PROJECT_DIR$/js/layout.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/manifest.json" afterPath="$PROJECT_DIR$/manifest.json" />
     </list>
     <ignored path="MovieMania.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,11 +35,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="window.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="window.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/html/window.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7620">
-              <caret line="508" column="14" selection-start-line="508" selection-start-column="14" selection-end-line="508" selection-end-column="14" />
+            <state relative-caret-position="105">
+              <caret line="7" column="42" selection-start-line="7" selection-start-column="42" selection-end-line="7" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -75,7 +80,7 @@
       <file leaf-file-name="movies.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/movies.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
+            <state relative-caret-position="1515">
               <caret line="101" column="9" selection-start-line="101" selection-start-column="9" selection-end-line="101" selection-end-column="9" />
               <folding />
             </state>
@@ -92,21 +97,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="player.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/player.js">
+      <file leaf-file-name="manifest.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/manifest.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4800">
-              <caret line="320" column="5" selection-start-line="320" selection-start-column="5" selection-end-line="320" selection-end-column="5" />
+            <state relative-caret-position="480">
+              <caret line="32" column="17" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="layout.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/layout.js">
+      <file leaf-file-name="player.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/player.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5925">
-              <caret line="395" column="32" selection-start-line="395" selection-start-column="32" selection-end-line="395" selection-end-column="32" />
+            <state relative-caret-position="4800">
+              <caret line="320" column="5" selection-start-line="320" selection-start-column="5" selection-end-line="320" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -120,16 +125,6 @@
               <folding>
                 <element signature="e#0#43#0" expanded="false" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="downloads.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/downloads.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="38" selection-start-line="5" selection-start-column="38" selection-end-line="5" selection-end-column="38" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -177,7 +172,6 @@
         <option value="$PROJECT_DIR$/js/imdb.js" />
         <option value="$PROJECT_DIR$/js/fseries.js" />
         <option value="$PROJECT_DIR$/js/watchseries.js" />
-        <option value="$PROJECT_DIR$/manifest.json" />
         <option value="$PROJECT_DIR$/js/watchit.js" />
         <option value="$PROJECT_DIR$/js/series.js" />
         <option value="$PROJECT_DIR$/js/subtitles.js" />
@@ -185,13 +179,14 @@
         <option value="$PROJECT_DIR$/js/window.js" />
         <option value="$PROJECT_DIR$/js/downloads.js" />
         <option value="$PROJECT_DIR$/js/require.js" />
-        <option value="$PROJECT_DIR$/html/window.html" />
         <option value="$PROJECT_DIR$/js/player.js" />
         <option value="$PROJECT_DIR$/js/fmovies.js" />
         <option value="$PROJECT_DIR$/js/background.js" />
         <option value="$PROJECT_DIR$/js/gomovies.js" />
         <option value="$PROJECT_DIR$/js/movies.js" />
         <option value="$PROJECT_DIR$/js/goseries.js" />
+        <option value="$PROJECT_DIR$/html/window.html" />
+        <option value="$PROJECT_DIR$/manifest.json" />
       </list>
     </option>
   </component>
@@ -231,7 +226,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -309,6 +303,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -318,18 +313,18 @@
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="SearchEverywhereHistoryKey" value="gose&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;movies&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/movies.js&#10;fmov&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fmovies.js&#10;subt&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;series&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/series.js&#10;goseries&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;gom&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/gomovies.js&#10;layout&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/layout.js&#10;watch&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/watchseries.js&#10;fser&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fseries.js&#10;watchit&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/watchit.js&#10;fmo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fmovies.js&#10;win&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/window.js&#10;vumoo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/vumoo.js&#10;imdb&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/imdb.js&#10;mana&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/manager.js&#10;google&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/google.js&#10;back&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/background.js&#10;trail&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/trailers.js&#10;rotten&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/rottentomatoes.js&#10;sub&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;player&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/player.js&#10;windo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/window.js&#10;wind&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/html/window.html&#10;downl&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/downloads.js&#10;serie&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/series.js&#10;lay&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/layout.js&#10;goog&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/google.js&#10;trai&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/trailers.js&#10;subtit&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;down&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/downloads.js" />
+    <property name="SearchEverywhereHistoryKey" value="pub&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/pub.js&#10;gose&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;movies&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/movies.js&#10;fmov&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fmovies.js&#10;subt&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;series&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/series.js&#10;goseries&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;gom&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/gomovies.js&#10;layout&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/layout.js&#10;watch&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/watchseries.js&#10;fser&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fseries.js&#10;watchit&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/watchit.js&#10;fmo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fmovies.js&#10;win&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/window.js&#10;vumoo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/vumoo.js&#10;imdb&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/imdb.js&#10;mana&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/manager.js&#10;google&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/google.js&#10;back&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/background.js&#10;trail&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/trailers.js&#10;rotten&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/rottentomatoes.js&#10;sub&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;player&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/player.js&#10;windo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/window.js&#10;wind&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/html/window.html&#10;downl&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/downloads.js&#10;serie&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/series.js&#10;lay&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/layout.js&#10;goog&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/google.js&#10;trai&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/trailers.js&#10;subtit&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;down&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/downloads.js" />
     <property name="FullScreen" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/js" />
-      <recent name="$PROJECT_DIR$/images" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/images" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/css" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/js" />
+      <recent name="$PROJECT_DIR$/images" />
     </key>
   </component>
   <component name="RunManager">
@@ -432,6 +427,7 @@
       <workItem from="1501093536642" duration="17760000" />
       <workItem from="1501269714821" duration="5471000" />
       <workItem from="1503646208615" duration="1016000" />
+      <workItem from="1503657119618" duration="981000" />
     </task>
     <task id="LOCAL-00001" summary="clean and searchResult">
       <created>1500401868374</created>
@@ -458,7 +454,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="367268000" />
+    <option name="totallyTimeSpent" value="368249000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -473,8 +469,9 @@
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20516963" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20840065" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -507,7 +504,8 @@
     <MESSAGE value="clean and searchResult" />
     <MESSAGE value="fmovies" />
     <MESSAGE value="classes" />
-    <option name="LAST_COMMIT_MESSAGE" value="classes" />
+    <MESSAGE value="cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleanup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -549,30 +547,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/html/test.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="12" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/html/test.html" />
     <entry file="file://$PROJECT_DIR$/images/batman.jpg" />
-    <entry file="file://$PROJECT_DIR$/images/audience_icon.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/images/bringe_blue.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/images/deadpool.jpg">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/images/deadpool2.jpg">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
@@ -651,28 +633,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/pub.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="960">
-          <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/css/pub.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/manifest.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="28" column="17" selection-start-line="28" selection-start-column="17" selection-end-line="28" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/watchseries.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
@@ -691,7 +651,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6150">
           <caret line="410" column="17" selection-start-line="410" selection-start-column="17" selection-end-line="410" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -699,7 +658,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1035">
           <caret line="71" column="41" selection-start-line="71" selection-start-column="41" selection-end-line="71" selection-end-column="41" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -761,16 +719,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/fmovies.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="21" column="19" selection-start-line="21" selection-start-column="19" selection-end-line="21" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#43#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/background.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2715">
@@ -781,7 +729,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/movies.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
+        <state relative-caret-position="1515">
           <caret line="101" column="9" selection-start-line="101" selection-start-column="9" selection-end-line="101" selection-end-column="9" />
           <folding />
         </state>
@@ -803,10 +751,54 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/images/deadpool.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/images/audience_icon.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/fmovies.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="21" column="19" selection-start-line="21" selection-start-column="19" selection-end-line="21" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#43#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/html/window.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7620">
-          <caret line="508" column="14" selection-start-line="508" selection-start-column="14" selection-end-line="508" selection-end-column="14" />
+        <state relative-caret-position="105">
+          <caret line="7" column="42" selection-start-line="7" selection-start-column="42" selection-end-line="7" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/pub.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="42" column="13" selection-start-line="42" selection-start-column="13" selection-end-line="42" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/pub.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/manifest.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="32" column="17" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
           <folding />
         </state>
       </provider>

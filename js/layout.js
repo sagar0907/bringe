@@ -984,7 +984,7 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
 
     function showRottenLoader(obj) {
         $('.rotten-buffer').remove();
-        var buffer = $('<div class="rotten-buffer"><img class="fa-spin" src="../images/bringe-cd-blue-48.png"></div>');
+        var buffer = $('<div class="rotten-buffer"><img class="fa-spin" src="../images/bringe-48.png"></div>');
         obj.append(buffer);
     }
 
@@ -1138,7 +1138,7 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
     function searching() {
         removeSearchBuffer();
         removeSearchResultText();
-        var buffer = $('<div class="search-buffer"><img class="fa-spin" src="../images/bringe-cd-blue-48.png"></div>');
+        var buffer = $('<div class="search-buffer"><img class="fa-spin" src="../images/bringe-48.png"></div>');
         $(".search-result-wrapper").append(buffer);
     }
 
