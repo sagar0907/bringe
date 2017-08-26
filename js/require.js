@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 27/07/17.
- */
 (function () {
     "use strict";
     var resolvedModules = {},

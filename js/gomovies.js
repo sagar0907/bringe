@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 15/04/17.
- */
 _define('gomovies', [window, 'util', 'bringe'], function (window, util, bringe) {
     var callback;
     var base_url = "https://gostream.is";

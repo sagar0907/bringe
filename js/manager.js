@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 28/04/17.
- */
 _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'series', 'subscene', 'imdb', 'movies', 'downloads', 'player', 'google', 'trailer'],
     function (window, util, bringe, layout, rottenTomatoes, series, subscene, imdb, movies, downloads, player, google, trailer) {
         function searchEntered() {

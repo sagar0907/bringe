@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 21/02/17.
- */
 _define('downloads', [window, 'util', 'layout', 'bringe'], function (window, util, layout, bringe) {
     function setupDownloadsSection() {
         layout.setupDownloadSection();

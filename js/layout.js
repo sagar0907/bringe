@@ -998,7 +998,6 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
         popupBox.find(".popup-header").html("Episode Links");
         var table = popupBox.find("table");
         var thead = table.find("thead");
-        //thead.append('<tr> <td>Source</td> <td>Quality</td> <td>Format</td> </tr>');
         var tbody = table.find("tbody");
         for (var i = 0; i < streamLinks.length; i++) {
             var link = streamLinks[i];
@@ -1017,8 +1016,7 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
             });
             streamButton.click(function (evt) {
                 closePopup();
-                var obj = $(this),
-                    line = obj.parent(),
+                var line = $(this).parent(),
                     source = line.attr("data-id"),
                     tds = line.find("td"),
                     id = $(tds[0]).attr("data-id");
@@ -1034,32 +1032,29 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
         popupBox.find(".popup-header").html("Stream Movie");
         var table = popupBox.find("table");
         var thead = table.find("thead");
-        //thead.append('<tr> <td>Source</td> <td>Quality</td> <td>Format</td> </tr>');
         var tbody = table.find("tbody");
         var linksObj = movie.streamLinkDetails;
         for (var i = 0; i < linksObj.length; i++) {
             var linkObj = linksObj[i];
-            var ext = linkObj.type;
-            var serverId = linkObj.id.split("*")[0];
-            var row = $('<tr class="' + linkObj.id + '"> <td>#' + serverId + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Stream</td> <td class="movieDownload">Download</td> </tr>');
+            var row = $('<tr data-id="' + linkObj.source + '"> <td data-id="' + linkObj.id + '">Server ' + (i+1) + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Stream</td> <td class="movieDownload">Download</td> </tr>');
             tbody.append(row);
             var stream = row.find(".movieStream");
             var download = row.find(".movieDownload");
             stream.click(function (evt) {
                 closePopup();
-                var obj = $(this).parent(),
-                    id = obj.attr("class"),
-                    tds = obj.find("td"),
-                    label = $(tds[1]).html();
-                util.fireEvent("openMovieStream", [{id: id, label: label}]);
+                var line = $(this).parent(),
+                    source = line.attr("data-id"),
+                    tds = line.find("td"),
+                    id = $(tds[0]).attr("data-id");
+                util.fireEvent("openMovieStream", [{id: id, source: source}]);
             });
             download.click(function (evt) {
                 closePopup();
-                var obj = $(this).parent(),
-                    id = obj.attr("class"),
-                    tds = obj.find("td"),
-                    label = $(tds[1]).html();
-                util.fireEvent("downloadMovieStream", [{id: id, label: label}]);
+                var line = $(this).parent(),
+                    source = line.attr("data-id"),
+                    tds = line.find("td"),
+                    id = $(tds[0]).attr("data-id");
+                util.fireEvent("downloadMovieStream", [{id: id, source: source}]);
             });
         }
         openPopup();

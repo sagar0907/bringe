@@ -1,9 +1,3 @@
-/**
- * Created by sagar.ja on 03/06/17.
- */
-/**
- * Created by sagar.ja on 15/04/17.
- */
 _define('watchit', [window, 'util', 'bringe'], function (window, util, bringe) {
     var base_url = "https://gowatchit.com";
 

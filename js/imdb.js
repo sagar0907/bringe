@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 15/04/17.
- */
 _define('imdb', [window, 'util', 'bringe'], function (window, util, bringe) {
     function failFunction() {
 

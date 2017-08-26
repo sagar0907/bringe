@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 08/05/17.
- */
 _define('trailer', [window], function (window) {
     function searchGoogle(searchTerm, func) {
         var link = "https://www.google.com/search?q=" + searchTerm;

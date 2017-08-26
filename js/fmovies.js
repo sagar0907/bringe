@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 18/07/17.
- */
 _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
     var callback;
     var base_url = "https://fmovies.is";
@@ -18,7 +15,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
 
     function hashUrl(t, params) {
 
-        var salt = 'bLeqpV';
+        var salt = 'BMdMTbaboeoF';
         var y = ts;
 
         function r(t, params) {
@@ -50,7 +47,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         function s(t) {
             var e, i = 0;
             for (e = 0; e < t.length; e++) {
-                i += t.charCodeAt(e) * e - e;
+                i += t.charCodeAt(e) + e;
             }
             return i;
         }

@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 12/02/17.
- */
 var background = chrome.extension.getBackgroundPage();
 String.prototype.replaceAll = function (search, replacement) {
     var target = this;

@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 26/03/17.
- */
 _define('watchseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (window, util, bringe, downloads, layout) {
     var base_url = 'http://mywatchseries.to';
 

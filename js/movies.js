@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 24/02/17.
- */
 _define('movies', [window, 'bringe', 'layout', 'gomovies', 'fmovies', 'watchit', 'downloads'],
     function (window, bringe, layout, gomovies, fmovies, watchit, downloads) {
         var totalSites = 2;
@@ -86,13 +83,13 @@ _define('movies', [window, 'bringe', 'layout', 'gomovies', 'fmovies', 'watchit',
         function downloadMovieStreamLink(selector) {
             layout.openWaiter("Adding Movie to Downloads...");
             var movie;
-            if (selector && selector.id && selector.label) {
+            if (selector && selector.id && selector.source) {
                 movie = getMovieBySelector(selector);
             } else {
                 movie = getDefaultMovie();
             }
             if (movie) {
-                downloads.addToDownload(movie.src, thisMovie.name, ".mp4", function () {
+                downloads.addToDownload(movie.src, bringe.movie.name, ".mp4", function () {
                     layout.closeWaiter();
                     layout.shineDownloadButton();
                 });

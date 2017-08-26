@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 20/07/17.
- */
 _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (window, util, bringe, downloads, layout) {
     var seasonCallback,
         episodeCallback,
@@ -18,7 +15,7 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
 
     function hashUrl(t, params) {
 
-        var salt = 'bLeqpV';
+        var salt = 'BMdMTbaboeoF';
         var y = ts;
 
         function r(t, params) {
@@ -50,7 +47,7 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         function s(t) {
             var e, i = 0;
             for (e = 0; e < t.length; e++) {
-                i += t.charCodeAt(e) * e;
+                i += t.charCodeAt(e) + e;
             }
             return i;
         }

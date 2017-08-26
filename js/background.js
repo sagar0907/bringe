@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 28/01/17.
- */
 var windowId, movies,
     downloadIdList = [],
     cookie = {},

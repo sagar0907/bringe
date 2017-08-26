@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 10/05/17.
- */
 _define('google', [window], function (window) {
     function getSiteName(link) {
         var start = link.indexOf(".");

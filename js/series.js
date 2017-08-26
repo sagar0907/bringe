@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 18/04/17.
- */
 _define('series', [window, 'util', 'bringe', 'layout', 'goseries', 'fseries', 'watchit', 'watchseries'],
     function (window, util, bringe, layout, goseries, fseries, watchit, watchseries) {
 

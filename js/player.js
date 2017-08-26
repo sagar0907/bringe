@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 06/05/17.
- */
 _define('player', [window], function (window) {
     var vid = {};
     $(document).ready(function () {

@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 05/03/17.
- */
 _define('rottenTomatoes', [window, 'util', 'bringe'], function (window, util, bringe) {
     function searchMovie(q, callback) {
         var url = "https://www.rottentomatoes.com/api/private/v2.0/search/?limit=10&q=" + q;

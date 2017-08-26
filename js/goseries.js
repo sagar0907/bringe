@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 17/04/17.
- */
 _define('goseries', [window, 'util', 'bringe', 'layout', 'downloads'], function (window, util, bringe, layout, downloads) {
     var seasonCallback;
     var episodeCallback;

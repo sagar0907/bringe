@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 21/02/17.
- */
 function movies123() {
     var callback;
     var base_url = "http://123movies.org";

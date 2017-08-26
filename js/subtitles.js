@@ -1,6 +1,3 @@
-/**
- * Created by sagar.ja on 28/04/17.
- */
 _define('subscene', [window, 'util', 'bringe'], function (window, util, bringe) {
     function getSeasonPart() {
         var seasonNo = bringe.serie.seasonNo,
