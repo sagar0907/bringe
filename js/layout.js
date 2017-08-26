@@ -368,7 +368,7 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
             var downloadList = [], i;
             for (i = 0; i < results.length; i++) {
                 var item = results[i];
-                if (item.byExtensionId == "npppfccdplcbhbcnbdgchlnbfhmemfja") {
+                if (item.byExtensionId == "kjkmhkicphnkbfgafbigdklljcmogmpg") {
                     downloadList.push(item);
                 }
             }
