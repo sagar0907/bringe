@@ -1692,6 +1692,17 @@ video::-webkit-media-controls {
     line-height: 60px;
     font-size: 60px;
 }
+#playerNotification {
+    text-align: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    bottom: 0;
+    margin-bottom: 10px;
+    color: #aaa;
+}
 
 input[type=range] {
     -webkit-appearance: none;

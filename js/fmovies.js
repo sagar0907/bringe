@@ -174,6 +174,9 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                     sourceList = [];
                 for (var i = 0; i < sources.length; i++) {
                     var source = sources[i];
+                    if (source.file && source.file[0] == '/') {
+                        source.file = 'http:' + source.file;
+                    }
                     source.src = source.file;
                     source.res = source.res || parseInt(source.label);
                     if (!source.res) {
@@ -219,7 +222,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         }
         if (json.target) {
             json.target = cleanSpecialUrl(json.target);
-            //dataHandler(index, json.subtitle, JSON.stringify({data: [{file: json.target}]}));
+            dataHandler(index, json.subtitle, JSON.stringify({data: [{file: json.target, type: 'iframe'}]}));
         } else if (json && json.grabber && json.params) {
             var url = hashUrl(json.grabber + getParamString(json.params), '');
             getMovieStreams(url, index, json.subtitle);

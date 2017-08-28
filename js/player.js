@@ -43,6 +43,7 @@ _define('player', [window], function (window) {
         video.onplaying = hideVideoLoader;
         seekbar.onchange = seekVideo;
         volumecontrol[0].onchange = updateVolume;
+        video.addEventListener('error', loadError, true)
 
         playpause.click(function () {
             playVideo();
@@ -166,6 +167,10 @@ _define('player', [window], function (window) {
                 $('html').css({cursor: 'default'});
                 $("#playerControls").show();
             }
+        }
+
+        function loadError() {
+            playerNotification.show();
         }
 
         function formatUnit(t) {
@@ -293,6 +298,7 @@ _define('player', [window], function (window) {
         if (obj.poster) {
             $(vid.video).attr("poster", obj.poster);
         }
+        $("#playerNotification").hide();
         vid.video.load();
     }
 

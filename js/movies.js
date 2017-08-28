@@ -63,25 +63,12 @@ _define('movies', [window, 'bringe', 'layout', 'gomovies', 'fmovies', 'watchit',
                 return sourceList[0];
         }
 
-        function openMovieStreamLink(selector) {
-            var movie;
-            if (selector && selector.id && selector.label) {
-                movie = getMovieBySelector(selector);
-                if (movie) {
-                    chrome.tabs.create({'url': movie.src}, function (tab) {
-                    });
-                }
-            } else {
-                movie = getDefaultMovie();
-                if (movie) {
-                    chrome.tabs.create({'url': movie.src}, function (tab) {
-                    });
-                }
-            }
+        function openMovieStreamLink(src) {
+            chrome.tabs.create({'url': src}, function (tab) {
+            });
         }
 
         function downloadMovieStreamLink(selector) {
-            layout.openWaiter("Adding Movie to Downloads...");
             var movie;
             if (selector && selector.id && selector.source) {
                 movie = getMovieBySelector(selector);
@@ -89,12 +76,15 @@ _define('movies', [window, 'bringe', 'layout', 'gomovies', 'fmovies', 'watchit',
                 movie = getDefaultMovie();
             }
             if (movie) {
-                downloads.addToDownload(movie.src, bringe.movie.name, ".mp4", function () {
-                    layout.closeWaiter();
-                    layout.shineDownloadButton();
-                });
-            } else {
-                layout.closeWaiter();
+                if (movie.type === 'iframe') {
+                    openMovieStreamLink(movie.src);
+                } else {
+                    layout.openWaiter("Adding Movie to Downloads...");
+                    downloads.addToDownload(movie.src, bringe.movie.name, ".mp4", function () {
+                        layout.closeWaiter();
+                        layout.shineDownloadButton();
+                    });
+                }
             }
         }
 

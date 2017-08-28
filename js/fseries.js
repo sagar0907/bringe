@@ -200,6 +200,9 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
                     sourceList = [];
                 for (var i = 0; i < sources.length; i++) {
                     var source = sources[i];
+                    if (source.file && source.file[0] == '/') {
+                        source.file = 'http:' + source.file;
+                    }
                     source.src = source.file;
                     source.res = source.res || parseInt(source.label);
                     if (!source.res) {
@@ -236,7 +239,7 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         }
         if (json.target) {
             json.target = cleanSpecialUrl(json.target);
-            //dataHandler(index, json.subtitle, JSON.stringify({data: [{file: json.target}]}));
+            dataHandler(id, seasonNo, episodeNo, json.subtitle, JSON.stringify({data: [{file: json.target, type: 'iframe'}]}));
         } else if (json && json.grabber && json.params) {
             var url = hashUrl(json.grabber + getParamString(json.params), '');
             getMovieStreams(url, id, seasonNo, episodeNo, json.subtitle);
@@ -286,10 +289,10 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         if (servers.length > 0) {
             for (var i = 0; i < servers.length; i++) {
                 var server = servers[i];
-                var title = $(server).find("label").text().trim();
+                /*var title = $(server).find("label").text().trim();
                 if (title.indexOf("OpenLoad") !== -1 || title.indexOf("MyCloud") !== -1) {
                     continue;
-                }
+                }*/
                 var links = $(server).find("ul.episodes a").toArray();
                 if (links) {
                     util.each(links, function (link) {
@@ -365,16 +368,19 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         var episode = getEpisodeData(seasonNo, episodeNo);
         if (episode && episode.streams) {
             var link = getLinkById(episode.streams, id);
-            link = link.src;
-            var name = bringe.episode.title;
-            layout.openWaiter("Adding Episode to Downloads");
-            downloads.addToDownload(link, name, ".mp4", function () {
-                layout.closeWaiter();
-                layout.shineDownloadButton();
-            });
-            return;
+            if (link.type === 'iframe') {
+                chrome.tabs.create({'url': link.src}, function (tab) {
+                });
+            } else {
+                link = link.src;
+                var name = bringe.episode.title;
+                layout.openWaiter("Adding Episode to Downloads");
+                downloads.addToDownload(link, name, ".mp4", function () {
+                    layout.closeWaiter();
+                    layout.shineDownloadButton();
+                });
+            }
         }
-        layout.closeWaiter();
     }
 
     function streamEpisodeStreamLink(obj, callback) {

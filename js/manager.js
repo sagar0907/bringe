@@ -383,12 +383,17 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
             if (selector && selector.id) {
                 var movie = movies.getMovieBySelector(selector);
                 if (movie) {
-                    var obj = {src: movie.src};
-                    if (bringe.movie.coverImage && bringe.movie.coverImage != "") {
-                        obj.poster = bringe.movie.coverImage;
+                    if (movie.type === 'iframe') {
+                        chrome.tabs.create({'url': movie.src}, function (tab) {
+                        });
+                    } else {
+                        var obj = {src: movie.src};
+                        if (bringe.movie.coverImage && bringe.movie.coverImage != "") {
+                            obj.poster = bringe.movie.coverImage;
+                        }
+                        player.setupVideo(obj);
+                        layout.openVideoPopup();
                     }
-                    player.setupVideo(obj);
-                    layout.openVideoPopup();
                 }
             }
         }
@@ -414,15 +419,21 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function openSerieStreamLink(selector) {
-            if (selector && selector.id && selector.source)
+            if (selector && selector.id && selector.source) {
                 var episode = series.getEpisodeBySelector(selector);
-            if (episode) {
-                var obj = {src: episode.src};
-                if (bringe.serie.coverImage && bringe.serie.coverImage != "") {
-                    obj.poster = bringe.serie.coverImage;
+                if (episode) {
+                    if (episode.type === 'iframe') {
+                        chrome.tabs.create({'url': episode.src}, function (tab) {
+                        });
+                    } else {
+                        var obj = {src: episode.src};
+                        if (bringe.serie.coverImage && bringe.serie.coverImage != "") {
+                            obj.poster = bringe.serie.coverImage;
+                        }
+                        player.setupVideo(obj);
+                        layout.openVideoPopup();
+                    }
                 }
-                player.setupVideo(obj);
-                layout.openVideoPopup();
             }
         }
 
