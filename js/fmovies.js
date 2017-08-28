@@ -13,68 +13,51 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         callback({site: "fmovies", status: true, linkDetails: linkDetails});
     }
 
-    function hashUrl(t, params) {
-
+    function hashUrl(url, params) {
         var salt = 'BMdMTbaboeoF';
-        var y = ts;
 
-        function r(t, params) {
-            var e, i = /([^=\?&]+)(?:=([^&$]+))?/gi, n = {};
-            if (t.indexOf('?') > -1) {
-                do {
-                    e = i.exec(t.url),
-                    e && (n[e[1]] = decodeURIComponent(e[2] || '').replace(/\+/g, ' '));
-                } while (e);
-            }
-            if (params) {
-                do {
-                    e = i.exec(params),
-                    e && (n[e[1]] = decodeURIComponent(e[2] || '').replace(/\+/g, ' '));
-                } while (e);
-            }
-            return n;
-        }
-
-        function a(t, e) {
-            var i, n = 0;
-            for (i = 0; i < Math.max(t.length, e.length); i++) {
-                n += i < e.length ? e.charCodeAt(i) : 0;
-                n += i < t.length ? t.charCodeAt(i) : 0;
-            }
-            return Number(n).toString(16);
-        }
-
-        function s(t) {
-            var e, i = 0;
-            for (e = 0; e < t.length; e++) {
-                i += t.charCodeAt(e) + e;
+        function sumOfChars(str) {
+            var i = 0;
+            for (e = 0; e < str.length; e++) {
+                i += str.charCodeAt(e);
             }
             return i;
         }
 
-        function o(t) {
-            var i, r, o = s(salt), l = {};
-            r = t;
-            r.ts = '' + y;
-            for (i in r) {
-                Object.prototype.hasOwnProperty.call(r, i) && (o += s(a(salt + i, r[i])));
-            }
-            l.ts = y;
-            l._ = o;
-            return l;
+        function intermediateHash(saltedKey, value) {
+            var sum = sumOfChars(saltedKey) + sumOfChars(value);
+            return Number(sum).toString(16);
         }
 
-        function d(t, e) {
-            var i, n = '';
-            for (i in e) {
-                Object.prototype.hasOwnProperty.call(e, i) && (n += '&' + i + '=' + e[i]);
-            }
-            return t + (t.indexOf('?') < 0 ? '?' : '&') + n.substr(1);
+        function hash(msg) {
+            var n = msg.length
+            return n*(n-1)/2 + sumOfChars(msg)
         }
 
-        var e = o(r(t, params));
-        var x = d(t, e);
-        return x + (x.indexOf('?') < 0 ? '?' : '&') + params;
+        function hashParams(params) {
+            var token = hash(salt), l = {};
+            params.ts = '' + ts;
+            for (var key in params) {
+                if (!params.hasOwnProperty(key)) continue;
+                saltedKey = salt + key
+                val = params[key]
+                msg = intermediateHash(saltedKey, val)
+                token += hash(msg);
+            }
+
+            params['ts'] = ts
+            params['_'] = token
+
+            return params
+        }
+
+        var p = hashParams(params);
+
+        var query = Object.keys(p)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(p[k]))
+            .join('&');
+
+        return url + '?' + query;
     }
 
 
@@ -203,14 +186,6 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         return url.indexOf('?') > -1 ? url.substring(0, url.indexOf('?')) : url;
     }
 
-    function getParamString(obj) {
-        var str = "";
-        util.each(obj, function (val, key) {
-            str += "&" + key + "=" + val;
-        });
-        return str;
-    }
-
     function episodesSuccessFunction(index, json) {
         if (bringe.page != "movie") return;
         try {
@@ -221,7 +196,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
             json.target = cleanSpecialUrl(json.target);
             //dataHandler(index, json.subtitle, JSON.stringify({data: [{file: json.target}]}));
         } else if (json && json.grabber && json.params) {
-            var url = hashUrl(json.grabber + getParamString(json.params), '');
+            var url = hashUrl(json.grabber, json.params);
             getMovieStreams(url, index, json.subtitle);
         }
         failFunction();
@@ -236,7 +211,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
             movieId;
         for (var i = 0; i < movies123MovieIds.length; i++) {
             movieId = $(movies123MovieIds[i]).attr("data-id");
-            movies123FetchLink = hashUrl(base_url + '/ajax/episode/info', 'id=' + movieId + '&update=0');
+            movies123FetchLink = hashUrl(base_url + '/ajax/episode/info', {id: movieId, update: '0'});
             util.sendAjax(movies123FetchLink, "GET", {}, util.getProxy(episodesSuccessFunction, [i]), failFunction);
         }
     }
@@ -269,7 +244,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
 
         var links = [];
         util.each(searchList, function (searchTerm) {
-            links.push(hashUrl(base_url + '/ajax/film/search', 'sort=year%3Adesc&keyword=' + searchTerm));
+            links.push(hashUrl(base_url + '/ajax/film/search', {sort: 'year:desc',keyword: searchTerm}));
         });
         util.each(links, function (link) {
             util.sendAjax(link, "GET", {}, searchSuccessFunction, failFunction);
