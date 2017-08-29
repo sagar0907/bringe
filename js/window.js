@@ -300,6 +300,21 @@ _define('handler', [window, document, 'util', 'manager', 'layout', 'downloads'],
             layout.goBackFromDownloads();
         });
 
+        $("#footerFB").click(function (evt) {
+            chrome.tabs.create({'url': 'https://www.facebook.com/getBringe'}, function (tab) {
+            });
+        });
+
+        $("#footerChrome").click(function (evt) {
+            chrome.tabs.create({'url': 'https://goo.gl/xrh6u1'}, function (tab) {
+            });
+        });
+
+        $("#footerGithub").click(function (evt) {
+            chrome.tabs.create({'url': 'https://github.com/sagar0907/bringe'}, function (tab) {
+            });
+        });
+
         manager.fetchTrendingMovies();
 
         util.listenEvent("getMovie", manager.getMovie);
