@@ -12,7 +12,7 @@ body{
     background: url(../images/deadpool.jpg) no-repeat center center fixed;
     background-size: cover;
     position: relative;
-    padding-bottom: 100px;
+    padding-bottom: 110px;
     min-height: 100%;
 }
 /* hebrew */
@@ -1757,7 +1757,7 @@ input[type=range]:focus {
     margin-top: 20px;
     background-color: #fff;
     text-align: center;
-    height: 80px;
+    height: 90px;
 }
 
 .footer {
@@ -1766,15 +1766,16 @@ input[type=range]:focus {
     height: 20px;
     line-height: 20px;
     font-size: 12px;
-    color: #777;
+    color: rgba(30, 136, 229, 0.8);
+    margin-top: 10px;
 }
 .footerBox {
     margin: 10px auto;
     display: table;
     height: 40px;
-    line-height: 40px;
-    color: #fff;
-    background-color: rgb(30, 136, 229);
+    line-height: 38px;
+    color: #1e88e5;
+    background-color: #fff;
     border-radius: 8px;
     cursor: pointer;
 }
@@ -1782,14 +1783,16 @@ input[type=range]:focus {
     float: left;
     font-size: 28px;
     padding: 0 10px;
-    border-radius: 8px;
-    border-right: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px 0 0 8px;
+    border: 1px solid rgba(30, 136, 229, 0.5);
 }
 .footerBoxText {
     float: left;
     font-size: 16px;
     padding: 0 10px;
     border-radius: 0 8px 8px 0;
+    border: 1px solid rgba(30, 136, 229, 0.5);
+    border-left: 0px;
 }
 
 @media (max-width: 850px) {
