@@ -178,6 +178,30 @@ function getMovies123Details(link, theCookie, id, callback) {
     })
 }
 
+function webListener() {
+    chrome.webRequest.onBeforeSendHeaders.addListener(
+        function (details) {
+            if (details.url.indexOf("fmovies") != -1) {
+                var refererSet = false;
+                for (var i = 0; i < details.requestHeaders.length; i++) {
+                    if (details.requestHeaders[i].name.toLowerCase() == "referer") {
+                        details.requestHeaders[i].value = 'https://fmovies.is/film/';
+                        refererSet = true;
+                    }
+                }
+                if (!refererSet) {
+                    details.requestHeaders.push(
+                        {"name": "Referer", "value": "https://fmovies.is/film/"}
+                        );
+                }
+                return {requestHeaders: details.requestHeaders};
+            }
+        },
+        {urls: ["<all_urls>"]},
+        ["blocking", "requestHeaders"]
+    );
+}
+
 function setSearchFunction(func) {
     searchFunction = func;
 }
@@ -205,6 +229,7 @@ function shortcutListener() {
         }
     });
 }
+webListener();
 omniboxListener();
 shortcutListener();
 

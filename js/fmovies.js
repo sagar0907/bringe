@@ -14,11 +14,11 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
     }
 
     function hashUrl(url, params) {
-        var salt = 'BMdMTbaboeoF';
+        var salt = 'ypYZrEpHb';
 
         function sumOfChars(str) {
             var i = 0;
-            for (e = 0; e < str.length; e++) {
+            for (var e = 0; e < str.length; e++) {
                 i += str.charCodeAt(e);
             }
             return i;
@@ -30,23 +30,24 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         }
 
         function hash(msg) {
-            var n = msg.length
-            return n*(n-1)/2 + sumOfChars(msg)
+            var n = msg.length;
+            return n * (n - 1) / 2 + sumOfChars(msg);
         }
 
         function hashParams(params) {
-            var token = hash(salt), l = {};
+            var token = hash(salt),
+                saltedKey,
+                val,
+                msg;
             params.ts = '' + ts;
             for (var key in params) {
                 if (!params.hasOwnProperty(key)) continue;
-                saltedKey = salt + key
-                val = params[key]
-                msg = intermediateHash(saltedKey, val)
+                saltedKey = salt + key;
+                val = params[key];
+                msg = intermediateHash(saltedKey, val);
                 token += hash(msg);
             }
-
-            params['ts'] = ts
-            params['_'] = token
+            params['_'] = token;
 
             return params
         }
@@ -54,7 +55,9 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         var p = hashParams(params);
 
         var query = Object.keys(p)
-            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(p[k]))
+            .map(function (k) {
+                return encodeURIComponent(k) + '=' + encodeURIComponent(p[k]);
+            })
             .join('&');
 
         return url + '?' + query;
@@ -210,12 +213,19 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             movies123FetchLink,
+            servers = myDoc.find('#servers .server'),
+            server, serverId,
             movies123MovieIds = myDoc.find("ul.episodes a"),
             movieId;
-        for (var i = 0; i < movies123MovieIds.length; i++) {
-            movieId = $(movies123MovieIds[i]).attr("data-id");
-            movies123FetchLink = hashUrl(base_url + '/ajax/episode/info', {id: movieId, update: '0'});
-            util.sendAjax(movies123FetchLink, "GET", {}, util.getProxy(episodesSuccessFunction, [i]), failFunction);
+        for (var j = 0; j < servers.length; j++) {
+            server = $(servers[j]);
+            serverId = server.attr('data-id');
+            movies123MovieIds = myDoc.find("ul.episodes a");
+            for (var i = 0; i < movies123MovieIds.length; i++) {
+                movieId = $(movies123MovieIds[i]).attr("data-id");
+                movies123FetchLink = hashUrl(base_url + '/ajax/episode/info', {id: movieId, update: '0', server: serverId});
+                util.sendAjax(movies123FetchLink, "GET", {}, util.getProxy(episodesSuccessFunction, [i]), failFunction);
+            }
         }
     }
 
@@ -247,7 +257,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
 
         var links = [];
         util.each(searchList, function (searchTerm) {
-            links.push(hashUrl(base_url + '/ajax/film/search', {sort: 'year:desc',keyword: searchTerm}));
+            links.push(hashUrl(base_url + '/ajax/film/search', {sort: 'year:desc', keyword: searchTerm}));
         });
         util.each(links, function (link) {
             util.sendAjax(link, "GET", {}, searchSuccessFunction, failFunction);

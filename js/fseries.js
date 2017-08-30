@@ -13,68 +13,55 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         episodeCallback(false, {site: "fseries"});
     }
 
-    function hashUrl(t, params) {
+    function hashUrl(url, params) {
+        var salt = 'ypYZrEpHb';
 
-        var salt = 'BMdMTbaboeoF';
-        var y = ts;
-
-        function r(t, params) {
-            var e, i = /([^=\?&]+)(?:=([^&$]+))?/gi, n = {};
-            if (t.indexOf('?') > -1) {
-                do {
-                    e = i.exec(t.url);
-                    e && (n[e[1]] = decodeURIComponent(e[2] || '').replace(/\+/g, ' '));
-                } while (e);
-            }
-            if (params) {
-                do {
-                    e = i.exec(params);
-                    e && (n[e[1]] = decodeURIComponent(e[2] || '').replace(/\+/g, ' '));
-                } while (e);
-            }
-            return n;
-        }
-
-        function a(t, e) {
-            var i, n = 0;
-            for (i = 0; i < Math.max(t.length, e.length); i++) {
-                n += i < e.length ? e.charCodeAt(i) : 0;
-                n += i < t.length ? t.charCodeAt(i) : 0;
-            }
-            return Number(n).toString(16);
-        }
-
-        function s(t) {
-            var e, i = 0;
-            for (e = 0; e < t.length; e++) {
-                i += t.charCodeAt(e) + e;
+        function sumOfChars(str) {
+            var i = 0;
+            for (var e = 0; e < str.length; e++) {
+                i += str.charCodeAt(e);
             }
             return i;
         }
 
-        function o(t) {
-            var i, r, o = s(salt), l = {};
-            r = t;
-            r.ts = '' + y;
-            for (i in r) {
-                Object.prototype.hasOwnProperty.call(r, i) && (o += s(a(salt + i, r[i])));
-            }
-            l.ts = y;
-            l._ = o;
-            return l;
+        function intermediateHash(saltedKey, value) {
+            var sum = sumOfChars(saltedKey) + sumOfChars(value);
+            return Number(sum).toString(16);
         }
 
-        function d(t, e) {
-            var i, n = '';
-            for (i in e) {
-                Object.prototype.hasOwnProperty.call(e, i) && (n += '&' + i + '=' + e[i]);
-            }
-            return t + (t.indexOf('?') < 0 ? '?' : '&') + n.substr(1);
+        function hash(msg) {
+            var n = msg.length;
+            return n * (n - 1) / 2 + sumOfChars(msg);
         }
 
-        var e = o(r(t, params));
-        var x = d(t, e);
-        return x + (x.indexOf('?') < 0 ? '?' : '&') + params;
+        function hashParams(params) {
+            var token = hash(salt),
+                saltedKey,
+                val,
+                msg;
+            params.ts = '' + ts;
+            for (var key in params) {
+                if (!params.hasOwnProperty(key)) continue;
+                saltedKey = salt + key;
+                val = params[key];
+                msg = intermediateHash(saltedKey, val);
+                token += hash(msg);
+            }
+            params.ts = '' + ts;
+            params['_'] = token;
+
+            return params
+        }
+
+        var p = hashParams(params);
+
+        var query = Object.keys(p)
+            .map(function (k) {
+                return encodeURIComponent(k) + '=' + encodeURIComponent(p[k]);
+            })
+            .join('&');
+
+        return url + '?' + query;
     }
 
     function getSeasonData(sNo) {
@@ -184,14 +171,6 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         return url.indexOf('?') > -1 ? url.substring(0, url.indexOf('?')) : url;
     }
 
-    function getParamString(obj) {
-        var str = "";
-        util.each(obj, function (val, key) {
-            str += "&" + key + "=" + val;
-        });
-        return str;
-    }
-
     function dataHandler(id, seasonNo, episodeNo, subtitle, result) {
         try {
             result = JSON.parse(result);
@@ -239,19 +218,24 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         }
         if (json.target) {
             json.target = cleanSpecialUrl(json.target);
-            dataHandler(id, seasonNo, episodeNo, json.subtitle, JSON.stringify({data: [{file: json.target, type: 'iframe'}]}));
+            dataHandler(id, seasonNo, episodeNo, json.subtitle, JSON.stringify({
+                data: [{
+                    file: json.target,
+                    type: 'iframe'
+                }]
+            }));
         } else if (json && json.grabber && json.params) {
-            var url = hashUrl(json.grabber + getParamString(json.params), '');
+            var url = hashUrl(json.grabber, json.params);
             getMovieStreams(url, id, seasonNo, episodeNo, json.subtitle);
         }
         failEpisodeFunction();
     }
 
-    function getMovies123MovieLinks(eids, seasonNo, episodeNo) {
-        if (eids && eids.length > 0) {
-            for (var i = 0; i < eids.length; i++) {
-                var eid = eids[i];
-                var link = hashUrl(base_url + '/ajax/episode/info', 'id=' + eid + '&update=0');
+    function getMovies123MovieLinks(data, seasonNo, episodeNo) {
+        if (data && data.length > 0) {
+            for (var i = 0; i < data.length; i++) {
+                var dataObj = data[i];
+                var link = hashUrl(base_url + '/ajax/episode/info', {id: dataObj.id, server: dataObj.server, update: '0'});
                 util.sendAjax(link, "GET", {}, util.getProxy(episodesSuccessFunction, [i + 1, seasonNo, episodeNo]), failEpisodeFunction);
             }
         } else {
@@ -262,18 +246,18 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
     function clearOldSeasonData(sNo) {
         var episodes = getSeasonData(sNo).episodes || [];
         util.each(episodes, function (episode) {
-            delete episode.ids;
+            delete episode.data;
         });
     }
 
-    function retrieveDataFromLink(link, seasonNo) {
+    function retrieveDataFromLink(link, seasonNo, serverId) {
         var linkId = $(link).attr("data-id"),
             episodeNo = parseInt($(link).html()),
             episodeData;
         if (linkId && episodeNo) {
             episodeData = getEpisodeData(seasonNo, episodeNo);
-            episodeData.ids = episodeData.ids || [];
-            episodeData.ids.push(linkId);
+            episodeData.data = episodeData.data || [];
+            episodeData.data.push({id: linkId, server: serverId});
             return true;
         }
         return false;
@@ -284,19 +268,19 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         var success = false,
             doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
-            servers = myDoc.find("#servers .server");
+            servers = myDoc.find("#servers .server"),
+            server,
+            serverId,
+            links;
         clearOldSeasonData(seasonNo);
         if (servers.length > 0) {
             for (var i = 0; i < servers.length; i++) {
-                var server = servers[i];
-                /*var title = $(server).find("label").text().trim();
-                if (title.indexOf("OpenLoad") !== -1 || title.indexOf("MyCloud") !== -1) {
-                    continue;
-                }*/
-                var links = $(server).find("ul.episodes a").toArray();
+                server = $(servers[i]);
+                serverId = server.attr('data-id');
+                links = server.find("ul.episodes a").toArray();
                 if (links) {
                     util.each(links, function (link) {
-                        success = retrieveDataFromLink(link, seasonNo) || success;
+                        success = retrieveDataFromLink(link, seasonNo, serverId) || success;
                     });
                 }
             }
@@ -332,12 +316,12 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         util.sendAjax(link, "GET", {}, util.getProxy(searchSuccessFunction, [seasonNo]), failSeasonFunction);
     }
 
-    function tsSuccessFunction(ids, seasonNo, episodeNo, result) {
+    function tsSuccessFunction(data, seasonNo, episodeNo, result) {
         if (bringe.page != "serie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc);
         ts = myDoc.find("body").attr("data-ts");
-        getMovies123MovieLinks(ids, seasonNo, episodeNo);
+        getMovies123MovieLinks(data, seasonNo, episodeNo);
     }
 
     function loadEpisode(obj, func) {
@@ -345,9 +329,9 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         var seasonNo = obj.seasonNo,
             episodeNo = obj.episodeNo;
         var episodeData = getEpisodeData(seasonNo, episodeNo),
-            ids = episodeData.ids;
+            data = episodeData.data;
         episodeData.streams = [];
-        util.sendAjax(base_url, "GET", {}, util.getProxy(tsSuccessFunction, [ids, seasonNo, episodeNo]), failEpisodeFunction);
+        util.sendAjax(base_url, "GET", {}, util.getProxy(tsSuccessFunction, [data, seasonNo, episodeNo]), failEpisodeFunction);
     }
 
     function getStreamLinks(obj) {
