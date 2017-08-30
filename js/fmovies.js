@@ -63,90 +63,82 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         return url + '?' + query;
     }
 
+    var isSameNameFunctions = function () {
+        function isSameMovieName1(a, b) {
+            a = a.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "");
+            b = b.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "");
+            return a == b;
+        }
 
-    function isSameMovieName1(a, b) {
-        a = a.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "");
-        b = b.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "");
-        return a == b;
-    }
+        function isSameMovieName2(a, b) {
+            a = a.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
+            b = b.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
+            return a == b;
+        }
 
-    function isSameMovieName2(a, b) {
-        a = a.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
-        b = b.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
-        return a == b;
-    }
+        function isSameMovieName3(a, b) {
+            a = a.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
+            b = b.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
+            return a == b;
+        }
 
-    function isSameMovieName3(a, b) {
-        a = a.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
-        b = b.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
-        return a == b;
-    }
+        function isSameMovieName4(a, b) {
+            a = a.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "").replace("part", "").replace(/iii$/, "3").replace(/ii$/, "2");
+            b = b.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "").replace("part", "").replace(/iii$/, "3").replace(/ii$/, "2");
+            return a == b;
+        }
 
-    function isSameMovieName4(a, b) {
-        a = a.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "").replace("part", "").replace(/iii$/, "3").replace(/ii$/, "2");
-        b = b.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "").replace("part", "").replace(/iii$/, "3").replace(/ii$/, "2");
-        return a == b;
-    }
+        return [isSameMovieName1, isSameMovieName2, isSameMovieName3, isSameMovieName4];
+    }();
+    
+    var searchTermFunctions = function () {
+        function getMovieSearchTerm1(searchTerm) {
+            searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "").replace(/'/, "").replace(/^the/, "").replaceAll(/,|:| -|- /, " ");
+            searchTerm = searchTerm.replace("part", "");
+            searchTerm = searchTerm.replace(/\d*$/, "").trim().replaceAll(/\s+/, "+");
+            return searchTerm;
+        }
 
-    function getMovies123SearchTerm1(searchTerm) {
-        searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "").replace(/'/, "").replace(/^the/, "").replaceAll(/,|:| -|- /, " ");
-        searchTerm = searchTerm.replace("part", "");
-        searchTerm = searchTerm.replace(/\d*$/, "").trim().replaceAll(/\s+/, "+");
-        return searchTerm;
-    }
+        function getMovieSearchTerm2(searchTerm) {
+            searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "").replace(/^the/, "").replaceAll(/,|:| -|- |'/, " ");
+            searchTerm = searchTerm.replace(/\d*$/, "").trim().replaceAll(/\s+/, "+");
+            return searchTerm;
+        }
 
-    function getMovies123SearchTerm2(searchTerm) {
-        searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "").replace(/^the/, "").replaceAll(/,|:| -|- |'/, " ");
-        searchTerm = searchTerm.replace(/\d*$/, "").trim().replaceAll(/\s+/, "+");
-        return searchTerm;
-    }
+        function getMovieSearchTerm3(searchTerm) {
+            searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "").replace(/^the/, "").replaceAll(/,|:| -|- |'/, " ");
+            searchTerm = searchTerm.replace("part", "");
+            searchTerm = searchTerm.replace(/i*$/, "").trim().replaceAll(/\s+/, "+");
+            return searchTerm;
+        }
+        return [getMovieSearchTerm1, getMovieSearchTerm2, getMovieSearchTerm3];
+    }();
 
-    function getMovies123SearchTerm3(searchTerm) {
-        searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "").replace(/^the/, "").replaceAll(/,|:| -|- |'/, " ");
-        searchTerm = searchTerm.replace("part", "");
-        searchTerm = searchTerm.replace(/i*$/, "").trim().replaceAll(/\s+/, "+");
-        return searchTerm;
-    }
-
-    function getMovies123SearchTerms(searchTerm) {
+    function getMovieSearchTerms(searchTerm) {
         var terms = [];
-        terms.push(getMovies123SearchTerm1(searchTerm));
-        terms.push(getMovies123SearchTerm2(searchTerm));
-        terms.push(getMovies123SearchTerm3(searchTerm));
+        for (var fIndex = 0; fIndex < searchTermFunctions.length; fIndex++) {
+            terms.push(searchTermFunctions[fIndex](searchTerm));
+        }
         terms = terms.filter(function (item, pos) {
             return terms.indexOf(item) == pos;
         });
         return terms;
     }
 
-    function getMovies123SearchedMovie2(name, movieItems) {
+    function getSearchedMovieName(name, movieItems) {
         if (movieItems.length == 1) {
             return movieItems;
         }
-        var movieItem, movieName, movieNames = [];
-        for (var i = 0; i < movieItems.length; i++) {
-            movieItem = movieItems[i];
-            movieName = $(movieItem).find("a.name").html();
-            movieNames.push(movieName);
+        var movieNames = [],
+            itemIndex, fIndex;
+        for (itemIndex = 0; itemIndex < movieItems.length; itemIndex++) {
+            movieNames.push($(movieItems[itemIndex]).find("a.name").html());
         }
-        for (i = 0; i < movieItems.length; i++) {
-            if (isSameMovieName1(movieNames[i], name)) {
-                return movieItems[i];
-            }
-        }
-        for (i = 0; i < movieItems.length; i++) {
-            if (isSameMovieName2(movieNames[i], name)) {
-                return movieItems[i];
-            }
-        }
-        for (i = 0; i < movieItems.length; i++) {
-            if (isSameMovieName3(movieNames[i], name)) {
-                return movieItems[i];
-            }
-        }
-        for (i = 0; i < movieItems.length; i++) {
-            if (isSameMovieName4(movieNames[i], name)) {
-                return movieItems[i];
+        for (fIndex = 0; fIndex < isSameNameFunctions.length; fIndex++) {
+            for (itemIndex = 0; itemIndex < movieItems.length; itemIndex++) {
+                if (isSameNameFunctions[fIndex](movieNames[itemIndex], name)) {
+                    return movieItems[itemIndex];
+                }
             }
         }
         failFunction();
@@ -184,10 +176,6 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         }
     }
 
-    function getMovieStreams(url, index, subtitle) {
-        util.sendAjax(url, "GET", {}, util.getProxy(dataHandler, [index, subtitle]), failFunction);
-    }
-
     function cleanSpecialUrl(url) {
         return url.indexOf('?') > -1 ? url.substring(0, url.indexOf('?')) : url;
     }
@@ -203,7 +191,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
             dataHandler(index, json.subtitle, JSON.stringify({data: [{file: json.target, type: 'iframe'}]}));
         } else if (json && json.grabber && json.params) {
             var url = hashUrl(json.grabber, json.params);
-            getMovieStreams(url, index, json.subtitle);
+            util.sendAjax(url, "GET", {}, util.getProxy(dataHandler, [index, json.subtitle]), failFunction);
         }
         failFunction();
     }
@@ -212,19 +200,25 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         if (bringe.page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
-            movies123FetchLink,
+            movieFetchLink,
             servers = myDoc.find('#servers .server'),
             server, serverId,
-            movies123MovieIds = myDoc.find("ul.episodes a"),
-            movieId;
+            movieIds,
+            movieId,
+            index = 0;
         for (var j = 0; j < servers.length; j++) {
             server = $(servers[j]);
             serverId = server.attr('data-id');
-            movies123MovieIds = myDoc.find("ul.episodes a");
-            for (var i = 0; i < movies123MovieIds.length; i++) {
-                movieId = $(movies123MovieIds[i]).attr("data-id");
-                movies123FetchLink = hashUrl(base_url + '/ajax/episode/info', {id: movieId, update: '0', server: serverId});
-                util.sendAjax(movies123FetchLink, "GET", {}, util.getProxy(episodesSuccessFunction, [i]), failFunction);
+            movieIds = server.find("ul.episodes a");
+            for (var i = 0; i < movieIds.length; i++) {
+                movieId = $(movieIds[i]).attr("data-id");
+                movieFetchLink = hashUrl(base_url + '/ajax/episode/info', {
+                    id: movieId,
+                    update: '0',
+                    server: serverId
+                });
+                index++;
+                util.sendAjax(movieFetchLink, "GET", {}, util.getProxy(episodesSuccessFunction, [index]), failFunction);
             }
         }
     }
@@ -243,11 +237,11 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                     myDoc = $(doc);
                 var movieItems = myDoc.find(".item");
                 if (movieItems.length > 0) {
-                    var movieItem = getMovies123SearchedMovie2(name, movieItems);
+                    var movieItem = getSearchedMovieName(name, movieItems);
                     if (movieItem) {
                         found = true;
-                        var movies123MoviePageLink = base_url + $(movieItem).find("a.name").attr("href");
-                        util.sendAjax(movies123MoviePageLink, "GET", {}, moviePageSuccessFunction, failFunction);
+                        var moviePageLink = base_url + $(movieItem).find("a.name").attr("href");
+                        util.sendAjax(moviePageLink, "GET", {}, moviePageSuccessFunction, failFunction);
                         return;
                     }
                 }
@@ -264,18 +258,18 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         });
     }
 
-    function tsSuccessFunction(name, searchNames, result) {
+    function tsSuccessFunction(name, result) {
         if (bringe.page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc);
         ts = myDoc.find("body").attr("data-ts");
+        var searchNames = getMovieSearchTerms(name);
         searchMovie(name, searchNames);
     }
 
     function loadMovie(name, year, func) {
         callback = func;
-        var searchNames = getMovies123SearchTerms(name);
-        util.sendAjax(base_url, "GET", {}, util.getProxy(tsSuccessFunction, [name, searchNames]), failFunction);
+        util.sendAjax(base_url, "GET", {}, util.getProxy(tsSuccessFunction, [name]), failFunction);
     }
 
     return {
