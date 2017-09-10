@@ -116,12 +116,12 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
             }
 
             function handleImdbLoaded(success, movie) {
-                bringe.movie = bringe.movie || {};
-                var thisMovie = bringe.movie;
-                thisMovie.ratings.imdbRating = movie.imdbRating;
-                thisMovie.ratings.metaRating = movie.metaRating;
-                thisMovie.imdb = {id: movie.imdbId};
                 if (success) {
+                    bringe.movie = bringe.movie || {};
+                    var thisMovie = bringe.movie;
+                    thisMovie.ratings.imdbRating = movie.imdbRating;
+                    thisMovie.ratings.metaRating = movie.metaRating;
+                    thisMovie.imdb = {id: movie.imdbId};
                     layout.placeImdbMovieRating();
                 }
             }
@@ -197,7 +197,8 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
             }
 
             function handleTrailerLoad(success, id) {
-                if (success) {bringe.movie = bringe.movie || {};
+                if (success) {
+                    bringe.movie = bringe.movie || {};
                     var thisMovie = bringe.movie;
                     thisMovie.trailer = thisMovie.trailer || {};
                     thisMovie.trailer.youtube = thisMovie.trailer.youtube || {};
