@@ -1,4 +1,4 @@
-_define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (window, util, bringe, downloads, layout) {
+_define('fseries', [window, 'util', 'bringe'], function (window, util, bringe) {
     var seasonCallback,
         episodeCallback,
         base_url = "https://fmovies.is",
@@ -69,34 +69,16 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         var fmovies = bringe.serie.websites.fmovies;
         fmovies.seasons = fmovies.seasons || [];
         var seasons = fmovies.seasons;
-        var season = util.any(seasons, function (season) {
-            if (season.seasonNo === sNo) {
-                return season;
-            }
-        });
-        if (season) {
-            return season;
-        }
-        season = {seasonNo: sNo};
-        fmovies.seasons.push(season);
-        return season;
+        seasons[sNo] = seasons[sNo] || {seasonNo: sNo};
+        return seasons[sNo];
     }
 
     function getEpisodeData(sNo, epNo) {
         var seasonData = getSeasonData(sNo);
         seasonData.episodes = seasonData.episodes || [];
         var episodes = seasonData.episodes;
-        var episode = util.any(episodes, function (episode) {
-            if (episode.episodeNo === epNo) {
-                return episode;
-            }
-        });
-        if (episode) {
-            return episode;
-        }
-        episode = {episodeNo: epNo};
-        seasonData.episodes.push(episode);
-        return episode;
+        episodes[epNo] = episodes[epNo] || {episodeNo: sNo};
+        return episodes[epNo];
     }
 
     function getLinkById(streams, id) {
@@ -174,6 +156,18 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         return url.indexOf('?') > -1 ? url.substring(0, url.indexOf('?')) : url;
     }
 
+    function getOriginFromUrl(url) {
+        var part = url.split('//')[1],
+            origin;
+        if (part) {
+            origin = part.split('.')[0];
+            if (origin == 'www') {
+                origin = part.split('.')[1];
+            }
+            return origin;
+        }
+    }
+
     function dataHandler(id, seasonNo, episodeNo, subtitle, result) {
         try {
             result = JSON.parse(result);
@@ -192,6 +186,7 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
                         source.label = '-';
                     }
                     source.source = "fseries";
+                    source.origin = source.origin || 'fmovies';
                     source.id = "fm-" + id + '*' + source.res;
                     source.subtitles = [subtitle];
                     sourceList.push(source);
@@ -199,7 +194,6 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
                 var episodeData = getEpisodeData(seasonNo, episodeNo);
                 episodeData.streams = episodeData.streams || [];
                 Array.prototype.push.apply(episodeData.streams, sourceList);
-                layout.showEpisodeStreamLink();
                 episodeCallback(true, {site: "fseries"});
             } else {
                 failEpisodeFunction();
@@ -207,10 +201,6 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         } catch (error) {
             failEpisodeFunction();
         }
-    }
-
-    function getMovieStreams(url, id, seasonNo, episodeNo, subtitle) {
-        util.sendAjax(url, "GET", {}, util.getProxy(dataHandler, [id, seasonNo, episodeNo, subtitle]), failEpisodeFunction);
     }
 
     function episodesSuccessFunction(id, seasonNo, episodeNo, json) {
@@ -221,6 +211,7 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         }
         if (json.target) {
             json.target = cleanSpecialUrl(json.target);
+            json.origin = getOriginFromUrl(json.target);
             dataHandler(id, seasonNo, episodeNo, json.subtitle, JSON.stringify({
                 data: [{
                     file: json.target,
@@ -229,7 +220,7 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
             }));
         } else if (json && json.grabber && json.params) {
             var url = hashUrl(json.grabber, json.params);
-            getMovieStreams(url, id, seasonNo, episodeNo, json.subtitle);
+            util.sendAjax(url, "GET", {}, util.getProxy(dataHandler, [id, seasonNo, episodeNo, json.subtitle]), failEpisodeFunction);
         }
         failEpisodeFunction();
     }
@@ -244,13 +235,6 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         } else {
             failEpisodeFunction();
         }
-    }
-
-    function clearOldSeasonData(sNo) {
-        var episodes = getSeasonData(sNo).episodes || [];
-        util.each(episodes, function (episode) {
-            delete episode.data;
-        });
     }
 
     function retrieveDataFromLink(link, seasonNo, serverId) {
@@ -275,7 +259,7 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
             server,
             serverId,
             links;
-        clearOldSeasonData(seasonNo);
+        getSeasonData(seasonNo).episodes = [];
         if (servers.length > 0) {
             for (var i = 0; i < servers.length; i++) {
                 server = $(servers[i]);
@@ -310,15 +294,6 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         failSeasonFunction();
     }
 
-    function loadSeason(obj, func) {
-        var serieName = obj.title,
-            seasonNo = obj.seasonNo;
-        seasonCallback = func;
-        var searchName = getSeasonSearchTerm(serieName, seasonNo);
-        var link = base_url + '/search?keyword=' + searchName;
-        util.sendAjax(link, "GET", {}, util.getProxy(searchSuccessFunction, [seasonNo]), failSeasonFunction);
-    }
-
     function tsSuccessFunction(data, seasonNo, episodeNo, result) {
         if (bringe.page != "serie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
@@ -327,14 +302,14 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         getEpisodeInfo(data, seasonNo, episodeNo);
     }
 
-    function loadEpisode(obj, func) {
-        episodeCallback = func;
-        var seasonNo = obj.seasonNo,
-            episodeNo = obj.episodeNo;
-        var episodeData = getEpisodeData(seasonNo, episodeNo),
-            data = episodeData.data;
-        episodeData.streams = [];
-        util.sendAjax(base_url, "GET", {}, util.getProxy(tsSuccessFunction, [data, seasonNo, episodeNo]), failEpisodeFunction);
+    function getEpisodeBySelector(selector) {
+        var id = selector.id,
+            seasonNo = selector.seasonNo,
+            episodeNo = selector.episodeNo;
+        var episode = getEpisodeData(seasonNo, episodeNo);
+        if (episode && episode.streams) {
+            return getLinkById(episode.streams, id);
+        }
     }
 
     function getStreamLinks(obj) {
@@ -348,57 +323,29 @@ _define('fseries', [window, 'util', 'bringe', 'downloads', 'layout'], function (
         }
     }
 
-    function downloadEpisodeStreamLink(obj, callback) {
-        var id = obj.id,
-            seasonNo = obj.seasonNo,
+    function loadEpisode(obj, func) {
+        episodeCallback = func;
+        var seasonNo = obj.seasonNo,
             episodeNo = obj.episodeNo;
-        var episode = getEpisodeData(seasonNo, episodeNo);
-        if (episode && episode.streams) {
-            var link = getLinkById(episode.streams, id);
-            if (link.type === 'iframe') {
-                chrome.tabs.create({'url': link.src}, function (tab) {
-                });
-            } else {
-                link = link.src;
-                var name = bringe.episode.title;
-                layout.openWaiter("Adding Episode to Downloads");
-                downloads.addToDownload(link, name, ".mp4", function () {
-                    layout.closeWaiter();
-                    layout.shineDownloadButton();
-                });
-            }
-        }
+        var episodeData = getEpisodeData(seasonNo, episodeNo),
+            data = episodeData.data;
+        episodeData.streams = [];
+        util.sendAjax(base_url, "GET", {}, util.getProxy(tsSuccessFunction, [data, seasonNo, episodeNo]), failEpisodeFunction);
     }
 
-    function streamEpisodeStreamLink(obj, callback) {
-        var id = obj.id,
-            seasonNo = obj.seasonNo,
-            episodeNo = obj.episodeNo;
-        var episode = getEpisodeData(seasonNo, episodeNo);
-        if (episode && episode.streams) {
-            var link = getLinkById(episode.streams, id);
-            link = link.src;
-            chrome.tabs.create({'url': link}, function (tab) {
-            });
-        }
-    }
-
-    function getEpisodeBySelector(selector) {
-        var id = selector.id,
-            seasonNo = selector.seasonNo,
-            episodeNo = selector.episodeNo;
-        var episode = getEpisodeData(seasonNo, episodeNo);
-        if (episode && episode.streams) {
-            return getLinkById(episode.streams, id);
-        }
+    function loadSeason(obj, func) {
+        var serieName = obj.title,
+            seasonNo = obj.seasonNo;
+        seasonCallback = func;
+        var searchName = getSeasonSearchTerm(serieName, seasonNo);
+        var link = base_url + '/search?keyword=' + searchName;
+        util.sendAjax(link, "GET", {}, util.getProxy(searchSuccessFunction, [seasonNo]), failSeasonFunction);
     }
 
     return {
         loadSeason: loadSeason,
         loadEpisode: loadEpisode,
         getStreamLinks: getStreamLinks,
-        getEpisodeBySelector: getEpisodeBySelector,
-        downloadEpisodeStreamLink: downloadEpisodeStreamLink,
-        streamEpisodeStreamLink: streamEpisodeStreamLink
+        getEpisodeBySelector: getEpisodeBySelector
     }
 });

@@ -145,8 +145,8 @@ _define('gomovies', [window, 'util', 'bringe'], function (window, util, bringe) 
                         source.label = '-';
                     }
                     source.source = "gomovies";
+                    source.origin = "gomovies";
                     source.id = eid + '*' + source.res;
-                    bringe.movie.streamLinkDetails = bringe.movie.streamLinkDetails || [];
                     sourceList.push(source);
                 }
                 successFunction(sourceList);
@@ -226,39 +226,8 @@ _define('gomovies', [window, 'util', 'bringe'], function (window, util, bringe) 
             url = myDoc.find(".fb-comments").attr("data-href"),
             movies123MovieId = getMovieId(url),
             movies123FetchLink = base_url + "/ajax/movie_episodes/" + movies123MovieId;
-        mid = movies123MovieId;
-        util.sendAjax(movies123FetchLink, "GET", {}, episodesSuccessFunction, failFunction);
-    }
-
-    function searchSuccessFunction1(result) {
-        if (bringe.page != "movie") return;
-        result = JSON.parse(result);
-        if (result.status == 1 && result.message == "Success") {
-            var content = result.content;
-            var doc = new DOMParser().parseFromString(content, "text/html"),
-                myDoc = $(doc);
-            var movieItems = myDoc.find("li:not(.ss-bottom)");
-            if (movieItems.length > 0) {
-                var movieItem = getMovies123SearchedMovie(movieItems);
-                if (movieItem) {
-                    var movies123MoviePageLink = $(movieItem).find(".ss-title").attr("href") + "watching.html";
-                    util.sendAjax(movies123MoviePageLink, "GET", {}, moviePageSuccessFunction, failFunction);
-                    return;
-                }
-            }
-        }
-        failFunction();
-    }
-
-    function load(func) {
-        callback = func;
-        var salt = "x6a4moj7q8xq6dk5";
-        var searchName = getMovies123SearchTerm();
-        var link = base_url + '/ajax/suggest_search';
-        util.sendAjax(link, "POST", {
-            keyword: searchName,
-            token: md5(searchName + salt)
-        }, searchSuccessFunction1, failFunction);
+            mid = movies123MovieId;
+            util.sendAjax(movies123FetchLink, "GET", {}, episodesSuccessFunction, failFunction);
     }
 
     function searchMovie(name, searchList) {

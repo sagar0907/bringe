@@ -209,12 +209,12 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
             }
 
             function handleImdbLoaded(success, movie) {
-                bringe.movie = bringe.movie || {};
-                var thisMovie = bringe.movie;
-                thisMovie.ratings.imdbRating = movie.imdbRating;
-                thisMovie.ratings.metaRating = movie.metaRating;
-                thisMovie.imdb = {id: movie.imdbId};
                 if (success) {
+                    bringe.movie = bringe.movie || {};
+                    var thisMovie = bringe.movie;
+                    thisMovie.ratings.imdbRating = movie.imdbRating;
+                    thisMovie.ratings.metaRating = movie.metaRating;
+                    thisMovie.imdb = {id: movie.imdbId};
                     layout.placeImdbMovieRating();
                 }
             }
@@ -368,12 +368,14 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
                 layout.clearAllEpisodeData();
                 bringe.serieLevel = "episode";
                 bringe.episode = bringe.season.episodes[index];
+                bringe.episode.seasonNo = bringe.season.seasonNo;
+                bringe.episode.serieName = bringe.serie.title;
                 bringe.serie.episodeNo = bringe.episode.episodeNo;
                 layout.showRottenLoader($(".serie-wrapper"));
                 layout.showSeriePart();
                 rottenTomatoes.getEpisode(bringe.episode, handleRottenLoaded);
                 series.loadEpisode();
-                subscene.searchSubtitle(handleSubtitleLoad);
+                subscene.searchEpisodeSubtitle(bringe.episode, handleSubtitleLoad);
                 if (bringe.season.youtubeId) {
                     layout.showEpisodeTrailerLink();
                 }
@@ -405,17 +407,22 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
 
         function downloadMovieSubtitle(id) {
             layout.openWaiter("Adding Subtitle to Downloads");
-            downloads.addToDownload(bringe.movie.subtitleLinks[id].link, bringe.movie.name, ".zip", function () {
+            downloads.addToDownload(bringe.movie.subtitleLinks[id].link, bringe.movie.name, ".zip", function (downloadId) {
                 layout.closeWaiter();
-                layout.shineDownloadButton();
+                if (downloadId) {
+                    layout.shineDownloadButton();
+                }
             });
         }
 
         function downloadEpisodeSubtitle(id) {
+            var serie = bringe.serie;
             layout.openWaiter("Adding Subtitle to Downloads");
-            downloads.addToDownload(subscene.getSubtitleEpisode().links[id].link, bringe.serie.title, ".zip", function () {
+            downloads.addToDownload(subscene.getSubtitleEpisode(serie.seasonNo, serie.episodeNo).links[id].link, serie.title, ".zip", function (downloadId) {
                 layout.closeWaiter();
-                layout.shineDownloadButton();
+                if (downloadId) {
+                    layout.shineDownloadButton();
+                }
             });
         }
 
@@ -438,8 +445,27 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
             }
         }
 
-        function downloadSerieStreamLink(obj) {
-            series.downloadEpisodeStreamLink(obj);
+        function downloadSerieStreamLink(selector) {
+            if (selector && selector.id && selector.source) {
+                var episode = series.getEpisodeBySelector(selector),
+                    link;
+                if (episode) {
+                    if (episode.type === 'iframe') {
+                        chrome.tabs.create({'url': episode.src}, function (tab) {
+                        });
+                    } else {
+                        link = episode.src;
+                        var name = bringe.episode.title;
+                        layout.openWaiter("Adding Episode to Downloads");
+                        downloads.addToDownload(link, name, ".mp4", function (downloadId) {
+                            layout.closeWaiter();
+                            if (downloadId) {
+                                layout.shineDownloadButton();
+                            }
+                        });
+                    }
+                }
+            }
         }
 
         function openMovieStreamPopup() {
@@ -456,7 +482,8 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function openEpisodesSubtitlePopup() {
-            var episode = subscene.getSubtitleEpisode() || {};
+            var serie = bringe.serie;
+            var episode = subscene.getSubtitleEpisode(serie.seasonNo, serie.episodeNo) || {};
             layout.openEpisodesSubtitlePopup(episode);
         }
 

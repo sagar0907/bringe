@@ -1,6 +1,10 @@
-_define('movies', [window, 'bringe', 'layout', 'gomovies', 'fmovies', 'watchit', 'downloads'],
-    function (window, bringe, layout, gomovies, fmovies, watchit, downloads) {
-        var totalSites = 2;
+_define('movies', [window, 'util', 'bringe', 'layout', 'fmovies', '123movies', 'watchit', 'downloads'],
+    function (window, util, bringe, layout, fmovies, movies123, watchit, downloads) {
+        var movieAdapters = {
+            'fmovies': fmovies,
+            '123movies': movies123
+        };
+        var totalSites = 3;
 
         function handleResponse(object) {
             var thisMovie = bringe.movie;
@@ -63,11 +67,6 @@ _define('movies', [window, 'bringe', 'layout', 'gomovies', 'fmovies', 'watchit',
                 return sourceList[0];
         }
 
-        function openMovieStreamLink(src) {
-            chrome.tabs.create({'url': src}, function (tab) {
-            });
-        }
-
         function downloadMovieStreamLink(selector) {
             var movie;
             if (selector && selector.id && selector.source) {
@@ -76,13 +75,16 @@ _define('movies', [window, 'bringe', 'layout', 'gomovies', 'fmovies', 'watchit',
                 movie = getDefaultMovie();
             }
             if (movie) {
-                if (movie.type === 'iframe') {
-                    openMovieStreamLink(movie.src);
+                if (movie.type == 'iframe') {
+                    chrome.tabs.create({'url': movie.src}, function (tab) {
+                    });
                 } else {
                     layout.openWaiter("Adding Movie to Downloads...");
-                    downloads.addToDownload(movie.src, bringe.movie.name, ".mp4", function () {
+                    downloads.addToDownload(movie.src, bringe.movie.name, ".mp4", function (downloadId) {
                         layout.closeWaiter();
-                        layout.shineDownloadButton();
+                        if (downloadId) {
+                            layout.shineDownloadButton();
+                        }
                     });
                 }
             }
@@ -93,15 +95,15 @@ _define('movies', [window, 'bringe', 'layout', 'gomovies', 'fmovies', 'watchit',
             layout.findingMovieLink();
             var thisMovie = bringe.movie;
             thisMovie.movieRespones = {count: 0, successCount: 0};
-            gomovies.loadMovie(thisMovie.name, thisMovie.year, handleResponse);
-            fmovies.loadMovie(thisMovie.name, thisMovie.year, handleResponse);
+            util.each(movieAdapters, function (movieAdapter) {
+                movieAdapter.loadMovie(thisMovie.name, thisMovie.year, handleResponse);
+            });
             watchit.loadMovie(thisMovie.name, thisMovie.year, handleWatchItResponse);
         }
 
         return {
             loadMovies: loadMovies,
             getMovieBySelector: getMovieBySelector,
-            downloadMovieStreamLink: downloadMovieStreamLink,
-            openMovieStreamLink: openMovieStreamLink
+            downloadMovieStreamLink: downloadMovieStreamLink
         }
     });

@@ -3,7 +3,7 @@
   "name": "Bringe",
   "short_name": "Bringe",
   "description": "This extension takes care of all your movie and tv series needs.",
-  "version": "0.0.0.8",
+  "version": "0.0.0.9",
   "browser_action": {
     "default_icon": "images/bringe-48.png",
     "default_title": "Bringe"

@@ -144,6 +144,18 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         failFunction();
     }
 
+    function getOriginFromUrl(url) {
+        var part = url.split('//')[1],
+            origin;
+        if (part) {
+            origin = part.split('.')[0];
+            if (origin == 'www') {
+                origin = part.split('.')[1];
+            }
+            return origin;
+        }
+    }
+
     function dataHandler(index, subtitle, result) {
         try {
             result = JSON.parse(result);
@@ -162,9 +174,9 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                         source.label = '-';
                     }
                     source.source = "fmovies";
+                    source.origin = source.origin || 'fmovies';
                     source.id = 'fm-' + index + '*' + source.res;
                     source.subtitles = [subtitle];
-                    bringe.movie.streamLinkDetails = bringe.movie.streamLinkDetails || [];
                     sourceList.push(source);
                 }
                 successFunction(sourceList);
@@ -188,6 +200,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         }
         if (json.target) {
             json.target = cleanSpecialUrl(json.target);
+            json.origin = getOriginFromUrl(json.target);
             dataHandler(index, json.subtitle, JSON.stringify({data: [{file: json.target, type: 'iframe'}]}));
         } else if (json && json.grabber && json.params) {
             var url = hashUrl(json.grabber, json.params);

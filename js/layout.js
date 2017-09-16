@@ -1000,8 +1000,13 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
         var thead = table.find("thead");
         var tbody = table.find("tbody");
         for (var i = 0; i < streamLinks.length; i++) {
-            var link = streamLinks[i];
-            var row = $('<tr data-id="' + link.source + '"> <td data-id="' + link.id + '">Server ' + (i+1) + '</td> <td class="streamQuality">' + link.label + '</td> <td class="streamEpisode">Stream Episode</td> <td class="downloadEpisode">Download</td> </tr>');
+            var link = streamLinks[i],
+                row;
+            if (link.type == 'iframe') {
+                row = $('<tr data-id="' + link.source + '"> <td data-id="' + link.id + '">Link ' + (i + 1) + '</td> <td class="streamOrigin">' + (link.origin || link.source) + '</td> <td class="streamQuality">' + link.label + '</td> <td class="streamEpisode">Launch Episode</td> <td class="downloadEpisode"></td> </tr>');
+            } else {
+                row = $('<tr data-id="' + link.source + '"> <td data-id="' + link.id + '">Link ' + (i + 1) + '</td> <td class="streamOrigin">' + (link.origin || link.source) + '</td> <td class="streamQuality">' + link.label + '</td> <td class="streamEpisode">Stream Episode</td> <td class="downloadEpisode">Download</td> </tr>');
+            }
             tbody.append(row);
             var downloadButton = row.find(".downloadEpisode");
             var streamButton = row.find(".streamEpisode");
@@ -1035,8 +1040,13 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
         var tbody = table.find("tbody");
         var linksObj = movie.streamLinkDetails;
         for (var i = 0; i < linksObj.length; i++) {
-            var linkObj = linksObj[i];
-            var row = $('<tr data-id="' + linkObj.source + '"> <td data-id="' + linkObj.id + '">Server ' + (i+1) + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Stream</td> <td class="movieDownload">Download</td> </tr>');
+            var linkObj = linksObj[i],
+                row;
+            if (linkObj.type == 'iframe') {
+                row = $('<tr data-id="' + linkObj.source + '"> <td data-id="' + linkObj.id + '">Link ' + (i + 1) + '</td> <td>' + linkObj.origin + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Launch Movie</td> <td class="movieDownload"></td> </tr>');
+            } else {
+                row = $('<tr data-id="' + linkObj.source + '"> <td data-id="' + linkObj.id + '">Link ' + (i + 1) + '</td> <td>' + linkObj.origin + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Stream Movie</td> <td class="movieDownload">Download</td> </tr>');
+            }
             tbody.append(row);
             var stream = row.find(".movieStream");
             var download = row.find(".movieDownload");

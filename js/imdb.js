@@ -91,13 +91,13 @@ _define('imdb', [window, 'util', 'bringe'], function (window, util, bringe) {
         } else {
             url = encodeURI('http://www.imdb.com/search/title?title=' + q + '&title_type=feature&view=advanced');
         }
-        util.sendAjax(url, "GET", {}, util.getProxy(searchMovieSuccess, [name, func]), failFunction);
+        util.sendAjax(url, "GET", {}, util.getProxy(searchMovieSuccess, [name, func]), util.getProxy(func, [false]));
     }
 
     function searchSerie(q, func) {
         q = util.getSearchTerm(q);
         var url = encodeURI('http://www.imdb.com/search/title?title=' + q + '&title_type=tv_series&view=advanced');
-        util.sendAjax(url, "GET", {}, util.getProxy(searchSerieSuccess, [func]), failFunction);
+        util.sendAjax(url, "GET", {}, util.getProxy(searchSerieSuccess, [func]), util.getProxy(func, [false]));
     }
     function episodeSuccess(result) {
         if (bringe.page != "serie") return;

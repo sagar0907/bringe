@@ -140,7 +140,7 @@ body{
 }
 .popup-box {
     position: absolute;
-    width: 600px;
+    width: 800px;
     height: 600px;
     clear:both;
     top: 50%;
@@ -206,7 +206,7 @@ td.downloadEpisode {
     color: #f06292;
 }
 td.movieStream {
-    color: #f06292;
+    color: #e53935;
 }
 td.movieDownload {
     color: #f06292;

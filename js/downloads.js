@@ -10,7 +10,7 @@ _define('downloads', [window, 'util', 'layout', 'bringe'], function (window, uti
         chrome.downloads.download({url: link, filename: "Bringe/" + name}, function (downloadId) {
             if (callback) {
                 setTimeout(function() {
-                    callback();
+                    callback(downloadId);
                 }, 400);
             }
             setTimeout(function() {
@@ -45,8 +45,6 @@ _define('downloads', [window, 'util', 'layout', 'bringe'], function (window, uti
         var button = $('<div class="download-action-button pause-button">Pause</div>');
         button.click(function () {
             chrome.downloads.pause(id, function () {
-                //reShowDownloadItem(id);
-                //layout.placeDownloadSection();
             })
         });
         return button;

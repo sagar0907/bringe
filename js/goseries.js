@@ -1,4 +1,4 @@
-_define('goseries', [window, 'util', 'bringe', 'layout', 'downloads'], function (window, util, bringe, layout, downloads) {
+_define('goseries', [window, 'util', 'bringe'], function (window, util, bringe) {
     var seasonCallback;
     var episodeCallback;
     var base_url = "https://gostream.is";
@@ -16,34 +16,16 @@ _define('goseries', [window, 'util', 'bringe', 'layout', 'downloads'], function 
         var gomovies = bringe.serie.websites.gomovies;
         gomovies.seasons = gomovies.seasons || [];
         var seasons = gomovies.seasons;
-        var season = util.any(seasons, function (season) {
-            if (season.seasonNo === sNo) {
-                return season;
-            }
-        });
-        if (season) {
-            return season;
-        }
-        season = {seasonNo: sNo};
-        gomovies.seasons.push(season);
-        return season;
+        seasons[sNo] = seasons[sNo] || {seasonNo: sNo};
+        return seasons[sNo];
     }
 
     function getEpisodeData(sNo, epNo) {
         var seasonData = getSeasonData(sNo);
         seasonData.episodes = seasonData.episodes || [];
         var episodes = seasonData.episodes;
-        var episode = util.any(episodes, function (episode) {
-            if (episode.episodeNo === epNo) {
-                return episode;
-            }
-        });
-        if (episode) {
-            return episode;
-        }
-        episode = {episodeNo: epNo};
-        seasonData.episodes.push(episode);
-        return episode;
+        episodes[epNo] = episodes[epNo] || {episodeNo: sNo};
+        return episodes[epNo];
     }
 
     function getLinkById(streams, id) {
@@ -130,13 +112,13 @@ _define('goseries', [window, 'util', 'bringe', 'layout', 'downloads'], function 
                         source.label = '-';
                     }
                     source.source = "goseries";
+                    source.origin = "gomovies";
                     source.id = eid + '*' + source.res;
                     sourceList.push(source);
                 }
                 var episodeData = getEpisodeData(seasonNo, episodeNo);
                 episodeData.streams = episodeData.streams || [];
                 Array.prototype.push.apply(episodeData.streams, sourceList);
-                layout.showEpisodeStreamLink();
                 episodeCallback(true, {site: "goseries"});
             } else {
                 failEpisodeFunction();
@@ -293,36 +275,6 @@ _define('goseries', [window, 'util', 'bringe', 'layout', 'downloads'], function 
             return null;
         }
     }
-    
-    function downloadEpisodeStreamLink(obj, callback) {
-        var id = obj.id,
-            seasonNo = obj.seasonNo,
-            episodeNo = obj.episodeNo;
-        var episode = getEpisodeData(seasonNo, episodeNo);
-        if (episode && episode.streams) {
-            var link = getLinkById(episode.streams, id);
-            link = link.src;
-            var name = bringe.episode.title;
-            layout.openWaiter("Adding Episode to Downloads");
-            downloads.addToDownload(link, name, ".mp4", function () {
-                layout.closeWaiter();
-                layout.shineDownloadButton();
-            });
-            return;
-        }
-        layout.closeWaiter();
-    }
-    function streamEpisodeStreamLink(obj, callback) {
-        var id = obj.id,
-            seasonNo = obj.seasonNo,
-            episodeNo = obj.episodeNo;
-        var episode = getEpisodeData(seasonNo, episodeNo);
-        if (episode && episode.streams) {
-            var link = getLinkById(episode.streams, id);
-            link = link.src;
-            chrome.tabs.create({'url': link}, function(tab) {});
-        }
-    }
 
     function getEpisodeBySelector(selector) {
         var id = selector.id,
@@ -338,8 +290,6 @@ _define('goseries', [window, 'util', 'bringe', 'layout', 'downloads'], function 
         loadSeason: loadSeason,
         loadEpisode: loadEpisode,
         getStreamLinks: getStreamLinks,
-        getEpisodeBySelector: getEpisodeBySelector,
-        downloadEpisodeStreamLink: downloadEpisodeStreamLink,
-        streamEpisodeStreamLink: streamEpisodeStreamLink
+        getEpisodeBySelector: getEpisodeBySelector
     }
 });
