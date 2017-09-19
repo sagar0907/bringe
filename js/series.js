@@ -1,9 +1,10 @@
-_define('series', [window, 'util', 'bringe', 'layout', 'fseries', '123series', 'watchit', 'watchseries'],
-    function (window, util, bringe, layout, fseries, series123, watchit, watchseries) {
+_define('series', [window, 'util', 'bringe', 'layout', 'fseries', '123series', '123seriesonline', 'watchit', 'watchseries'],
+    function (window, util, bringe, layout, fseries, series123, seriesonline123, watchit, watchseries) {
 
         var serieAdapters = {
             'fseries': fseries,
             '123series': series123,
+            '123seriesonline': seriesonline123,
             'watchseries': watchseries
         };
 

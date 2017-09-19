@@ -60,10 +60,12 @@ _define('util', [window], function (window) {
         return 0;
     }
 
-    function sendAjax(link, type, data, successFunction, errorFunction, headers) {
+    function sendAjax(url, type, data, successFunction, errorFunction, headers) {
+        type = type || "GET";
+        data = data || {};
         headers = headers || {};
         $.ajax({
-            url: link,
+            url: url,
             type: type,
             data: data,
             headers: headers,
@@ -73,6 +75,12 @@ _define('util', [window], function (window) {
             error: function (result) {
                 errorFunction(result);
             }
+        });
+    }
+
+    function ajaxPromise(url, type, data, headers) {
+        return new Promise(function(resolve, reject) {
+            sendAjax(url, type, data, resolve, reject, headers);
         });
     }
 
@@ -193,6 +201,7 @@ _define('util', [window], function (window) {
         getTimeInWords: getTimeInWords,
         downloadComparator: downloadComparator,
         sendAjax: sendAjax,
+        ajaxPromise: ajaxPromise,
         isFunction: isFunction,
         isSet: isSet,
         isArray: isArray,

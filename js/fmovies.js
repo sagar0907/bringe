@@ -90,7 +90,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
 
         return [isSameMovieName1, isSameMovieName2, isSameMovieName3, isSameMovieName4];
     }();
-    
+
     var searchTermFunctions = function () {
         function getMovieSearchTerm1(searchTerm) {
             searchTerm = searchTerm.trim().toLowerCase().replace(/\(.*\)/, "").replace(/'/, "").replace(/^the/, "").replaceAll(/,|:| -|- /, " ");
@@ -111,6 +111,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
             searchTerm = searchTerm.replace(/i*$/, "").trim().replaceAll(/\s+/, "+");
             return searchTerm;
         }
+
         return [getMovieSearchTerm1, getMovieSearchTerm2, getMovieSearchTerm3];
     }();
 
@@ -156,35 +157,34 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         }
     }
 
-    function dataHandler(index, subtitle, result) {
+    function dataHandler(index, subtitle, sources) {
         try {
-            result = JSON.parse(result);
-            if (result && !result.error && result.data) {
-                var sources = result.data,
-                    sourceList = [];
-                for (var i = 0; i < sources.length; i++) {
-                    var source = sources[i];
-                    if (source.file && source.file[0] == '/') {
-                        source.file = 'http:' + source.file;
-                    }
-                    source.src = source.file;
-                    source.res = source.res || parseInt(source.label);
-                    if (!source.res) {
-                        source.res = '-';
-                        source.label = '-';
-                    }
-                    source.source = "fmovies";
-                    source.origin = source.origin || 'fmovies';
-                    source.id = 'fm-' + index + '*' + source.res;
-                    source.subtitles = [subtitle];
-                    sourceList.push(source);
+            var sourceList = [];
+            for (var i = 0; i < sources.length; i++) {
+                var source = sources[i];
+                if (source.file && source.file[0] == '/') {
+                    source.file = 'http:' + source.file;
                 }
+                source.src = source.file;
+                source.res = source.res || parseInt(source.label);
+                if (!source.res) {
+                    source.res = '-';
+                    source.label = '-';
+                }
+                source.source = "fmovies";
+                source.origin = source.origin || 'fmovies';
+                source.id = 'fm-' + index + '*' + source.res;
+                source.subtitles = [subtitle];
+                sourceList.push(source);
+            }
+            if (sourceList.length > 0) {
                 successFunction(sourceList);
+                return true;
             } else {
-                failFunction();
+                return false;
             }
         } catch (error) {
-            failFunction();
+            return false;
         }
     }
 
@@ -192,33 +192,17 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         return url.indexOf('?') > -1 ? url.substring(0, url.indexOf('?')) : url;
     }
 
-    function episodesSuccessFunction(index, json) {
-        if (bringe.page != "movie") return;
-        try {
-            json = JSON.parse(json);
-        } catch (ignore) {
-        }
-        if (json.target) {
-            json.target = cleanSpecialUrl(json.target);
-            json.origin = getOriginFromUrl(json.target);
-            dataHandler(index, json.subtitle, JSON.stringify({data: [{file: json.target, type: 'iframe'}]}));
-        } else if (json && json.grabber && json.params) {
-            var url = hashUrl(json.grabber, json.params);
-            util.sendAjax(url, "GET", {}, util.getProxy(dataHandler, [index, json.subtitle]), failFunction);
-        }
-        failFunction();
-    }
-
     function moviePageSuccessFunction(result) {
         if (bringe.page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             movieFetchLink,
+            promises = [],
+            linkFound = false,
             servers = myDoc.find('#servers .server'),
             server, serverId,
             movieIds,
-            movieId,
-            index = 0;
+            movieId;
         for (var j = 0; j < servers.length; j++) {
             server = $(servers[j]);
             serverId = server.attr('data-id');
@@ -230,59 +214,92 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                     update: '0',
                     server: serverId
                 });
-                index++;
-                util.sendAjax(movieFetchLink, "GET", {}, util.getProxy(episodesSuccessFunction, [index]), failFunction);
+                promises.push(util.ajaxPromise(movieFetchLink));
             }
         }
-    }
-
-    function searchMovie(name, searchList) {
-        var found = false;
-
-        function searchSuccessFunction(result) {
-            if (bringe.page != "movie" || found) return;
-            try {
-                result = JSON.parse(result);
-            } catch (ignore) {
+        Promise.all(promises).then(function () {
+            if (!linkFound) {
+                failFunction();
             }
-            if (result.html) {
-                var doc = new DOMParser().parseFromString(result.html, "text/html"),
-                    myDoc = $(doc);
-                var movieItems = myDoc.find(".item");
-                if (movieItems.length > 0) {
-                    var movieItem = getSearchedMovieName(name, movieItems);
-                    if (movieItem) {
-                        found = true;
-                        var moviePageLink = base_url + $(movieItem).find("a.name").attr("href");
-                        util.sendAjax(moviePageLink, "GET", {}, moviePageSuccessFunction, failFunction);
-                        return;
-                    }
+        }).catch(function (error) {
+            if (!linkFound) {
+                failFunction(error);
+            }
+        });
+        util.each(promises, function (promise, index) {
+            promise.then(function (json) {
+                if (bringe.page != "movie") return;
+                try {
+                    json = JSON.parse(json);
+                } catch (ignore) {
                 }
-            }
-            failFunction();
-        }
-
-        var links = [];
-        util.each(searchList, function (searchTerm) {
-            links.push(hashUrl(base_url + '/ajax/film/search', {sort: 'year:desc', keyword: searchTerm}));
+                if (json.target) {
+                    json.target = cleanSpecialUrl(json.target);
+                    json.origin = getOriginFromUrl(json.target);
+                    linkFound = dataHandler(index, json.subtitle, [{file: json.target, type: 'iframe'}]) || linkFound;
+                } else if (json && json.grabber && json.params) {
+                    var url = hashUrl(json.grabber, json.params);
+                    util.ajaxPromise(url).then(function (result) {
+                        try {
+                            result = JSON.parse(result);
+                        } catch (ignore){}
+                        if (result.error || !result.data) return;
+                        linkFound = dataHandler(index, json.subtitle, result.data) || linkFound;
+                    });
+                }
+            });
         });
-        util.each(links, function (link) {
-            util.sendAjax(link, "GET", {}, searchSuccessFunction, failFunction);
-        });
-    }
-
-    function tsSuccessFunction(name, result) {
-        if (bringe.page != "movie") return;
-        var doc = new DOMParser().parseFromString(result, "text/html"),
-            myDoc = $(doc);
-        ts = myDoc.find("body").attr("data-ts");
-        var searchNames = getMovieSearchTerms(name);
-        searchMovie(name, searchNames);
     }
 
     function loadMovie(name, year, func) {
         callback = func;
-        util.sendAjax(base_url, "GET", {}, util.getProxy(tsSuccessFunction, [name]), failFunction);
+        util.ajaxPromise(base_url).then(function (result) {
+            if (bringe.page != "movie") return;
+            var doc = new DOMParser().parseFromString(result, "text/html"),
+                myDoc = $(doc),
+                searchNames = getMovieSearchTerms(name),
+                searchSucceded = false,
+                link,
+                promises = [];
+            ts = myDoc.find("body").attr("data-ts");
+
+            util.each(searchNames, function (searchTerm) {
+                link = hashUrl(base_url + '/ajax/film/search', {sort: 'year:desc', keyword: searchTerm});
+                promises.push(util.ajaxPromise(link));
+            });
+            Promise.all(promises).then(function () {
+                if (!searchSucceded) {
+                    failFunction();
+                }
+            }).catch(function (error) {
+                if (!searchSucceded) {
+                    failFunction(error);
+                }
+            });
+            util.each(promises, function (promise) {
+                promise.then(function (result) {
+                    if (bringe.page != "movie" || searchSucceded) return;
+                    try {
+                        result = JSON.parse(result);
+                    } catch (ignore) {
+                    }
+                    if (!result.html) return;
+                    var doc = new DOMParser().parseFromString(result.html, "text/html"),
+                        myDoc = $(doc),
+                        movieItems = myDoc.find(".item");
+                    if (movieItems.length == 0) return;
+                    var movieItem = getSearchedMovieName(name, movieItems);
+                    if (!movieItem) return;
+                    searchSucceded = true;
+                    var moviePageLink = base_url + $(movieItem).find("a.name").attr("href");
+                    return util.ajaxPromise(moviePageLink);
+                }).then(function (result) {
+                    moviePageSuccessFunction(result);
+                });
+            });
+        }).catch(function (error) {
+            failFunction(error);
+        });
     }
 
     return {

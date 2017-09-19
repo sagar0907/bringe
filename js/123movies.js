@@ -146,7 +146,7 @@ _define('123movies', [window, 'util', 'bringe'], function (window, util, bringe)
         }
         util.each(episodeIds, function (epId) {
             if (epId) {
-                links.push('https://123movies.io/ajax/load_embed/' + epId);
+                links.push(base_url + '/ajax/load_embed/' + epId);
             }
         });
 
@@ -186,7 +186,7 @@ _define('123movies', [window, 'util', 'bringe'], function (window, util, bringe)
 
         var links = [];
         util.each(searchList, function (searchTerm) {
-            links.push('https://123movies.io/movie/search/' + searchTerm + '/view/all/all');
+            links.push(base_url + '/movie/search/' + searchTerm + '/view/all/all');
         });
         util.each(links, function (link) {
             util.sendAjax(link, "GET", {}, searchSuccessFunction, failFunction);

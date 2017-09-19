@@ -1,8 +1,9 @@
-_define('movies', [window, 'util', 'bringe', 'layout', 'fmovies', '123movies', 'watchit', 'downloads'],
-    function (window, util, bringe, layout, fmovies, movies123, watchit, downloads) {
+_define('movies', [window, 'util', 'bringe', 'layout', 'fmovies', '123movies', '123moviesonline', 'watchit', 'downloads'],
+    function (window, util, bringe, layout, fmovies, movies123, moviesonline123, watchit, downloads) {
         var movieAdapters = {
             'fmovies': fmovies,
-            '123movies': movies123
+            '123movies': movies123,
+            '123moviesonline': moviesonline123
         };
         var totalSites = 3;
 
