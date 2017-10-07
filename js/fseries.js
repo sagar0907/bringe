@@ -1,7 +1,7 @@
 _define('fseries', [window, 'util', 'bringe'], function (window, util, bringe) {
     var seasonCallback,
         episodeCallback,
-        base_url = "https://fmovies.is",
+        base_url = "https://fmovies.se",
         ts;
 
     function failSeasonFunction() {

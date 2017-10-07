@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b0deef5a-5c45-4c2c-8634-10185b5536a6" name="Default" comment="added 123moviesonline">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/download-layout.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/popup-layout.js" />
+    <list default="true" id="b0deef5a-5c45-4c2c-8634-10185b5536a6" name="Default" comment="fmovies change">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/html/window.html" afterPath="$PROJECT_DIR$/html/window.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/123movies.js" afterPath="$PROJECT_DIR$/js/123movies.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/123moviesonline.js" afterPath="$PROJECT_DIR$/js/123moviesonline.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/downloads.js" afterPath="$PROJECT_DIR$/js/downloads.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/fmovies.js" afterPath="$PROJECT_DIR$/js/fmovies.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/layout.js" afterPath="$PROJECT_DIR$/js/layout.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/manager.js" afterPath="$PROJECT_DIR$/js/manager.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/movies.js" afterPath="$PROJECT_DIR$/js/movies.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/window.js" afterPath="$PROJECT_DIR$/js/window.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/fseries.js" afterPath="$PROJECT_DIR$/js/fseries.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/manifest.json" afterPath="$PROJECT_DIR$/manifest.json" />
     </list>
     <ignored path="MovieMania.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,26 +26,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="window.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/window.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4020">
-              <caret line="268" column="17" selection-start-line="268" selection-start-column="17" selection-end-line="268" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="manager.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/manager.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2385">
-              <caret line="159" column="0" selection-start-line="159" selection-start-column="0" selection-end-line="159" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="movies.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/movies.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -64,21 +36,41 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="layout.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="layout.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/layout.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="22" column="33" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
+            <state relative-caret-position="255">
+              <caret line="17" column="40" selection-start-line="17" selection-start-column="40" selection-end-line="17" selection-end-column="40" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="popup-layout.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/popup-layout.js">
+      <file leaf-file-name="fmovies.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/fmovies.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2880">
-              <caret line="192" column="19" selection-start-line="192" selection-start-column="19" selection-end-line="192" selection-end-column="19" />
+            <state relative-caret-position="225">
+              <caret line="15" column="35" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fseries.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/fseries.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="315">
+              <caret line="21" column="31" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="manifest.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/manifest.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" column="21" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -178,7 +170,6 @@
         <option value="$PROJECT_DIR$/js/fbplugin.js" />
         <option value="$PROJECT_DIR$/js/background.js" />
         <option value="$PROJECT_DIR$/js/watchseries.js" />
-        <option value="$PROJECT_DIR$/js/fseries.js" />
         <option value="$PROJECT_DIR$/js/subtitles.js" />
         <option value="$PROJECT_DIR$/js/goseries.js" />
         <option value="$PROJECT_DIR$/js/123series.js" />
@@ -188,8 +179,6 @@
         <option value="$PROJECT_DIR$/js/123online.js" />
         <option value="$PROJECT_DIR$/js/series.js" />
         <option value="$PROJECT_DIR$/js/123seriesonline.js" />
-        <option value="$PROJECT_DIR$/manifest.json" />
-        <option value="$PROJECT_DIR$/js/fmovies.js" />
         <option value="$PROJECT_DIR$/js/123moviesonline.js" />
         <option value="$PROJECT_DIR$/js/123movies.js" />
         <option value="$PROJECT_DIR$/js/download-layout.js" />
@@ -200,6 +189,9 @@
         <option value="$PROJECT_DIR$/js/downloads.js" />
         <option value="$PROJECT_DIR$/html/window.html" />
         <option value="$PROJECT_DIR$/js/layout.js" />
+        <option value="$PROJECT_DIR$/js/fmovies.js" />
+        <option value="$PROJECT_DIR$/js/fseries.js" />
+        <option value="$PROJECT_DIR$/manifest.json" />
       </list>
     </option>
   </component>
@@ -340,7 +332,7 @@
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="last_opened_file_path" value="$USER_HOME$/cmadserving/cmadserving" />
-    <property name="SearchEverywhereHistoryKey" value="mani&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/manifest.json&#10;123s&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/123series.js&#10;series&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/series.js&#10;window&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/html/window.html&#10;movies&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/movies.js&#10;gom&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/gomovies.js&#10;123m&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/123movies.js&#10;fmovies&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fmovies.js&#10;wind&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/css/window.css&#10;lay&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/layout.js&#10;mana&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/manager.js&#10;123&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/123movies.js&#10;gomov&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/gomovies.js&#10;seri&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/series.js&#10;goser&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;gomo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/gomovies.js&#10;fse&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fseries.js&#10;go&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;layout&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/layout.js&#10;fser&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fseries.js&#10;watch&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/watchseries.js&#10;gomovies&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/gomovies.js&#10;fseries&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fseries.js&#10;manager&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/manager.js&#10;gose&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;fmov&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fmovies.js&#10;subt&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;goseries&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;watchit&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/watchit.js&#10;fmo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fmovies.js&#10;win&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/window.js&#10;vumoo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/vumoo.js&#10;imdb&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/imdb.js&#10;google&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/google.js&#10;back&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/background.js&#10;trail&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/trailers.js&#10;rotten&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/rottentomatoes.js&#10;sub&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;player&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/player.js&#10;windo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/window.js&#10;downl&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/downloads.js&#10;serie&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/series.js&#10;goog&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/google.js&#10;trai&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/trailers.js&#10;subtit&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;down&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/downloads.js" />
+    <property name="SearchEverywhereHistoryKey" value="fser&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fseries.js&#10;fmo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fmovies.js&#10;mani&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/manifest.json&#10;123s&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/123series.js&#10;series&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/series.js&#10;window&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/html/window.html&#10;movies&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/movies.js&#10;gom&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/gomovies.js&#10;123m&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/123movies.js&#10;fmovies&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fmovies.js&#10;wind&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/css/window.css&#10;lay&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/layout.js&#10;mana&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/manager.js&#10;123&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/123movies.js&#10;gomov&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/gomovies.js&#10;seri&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/series.js&#10;goser&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;gomo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/gomovies.js&#10;fse&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fseries.js&#10;go&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;layout&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/layout.js&#10;watch&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/watchseries.js&#10;gomovies&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/gomovies.js&#10;fseries&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fseries.js&#10;manager&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/manager.js&#10;gose&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;fmov&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/fmovies.js&#10;subt&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;goseries&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/goseries.js&#10;watchit&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/watchit.js&#10;win&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/window.js&#10;vumoo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/vumoo.js&#10;imdb&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/imdb.js&#10;google&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/google.js&#10;back&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/background.js&#10;trail&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/trailers.js&#10;rotten&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/rottentomatoes.js&#10;sub&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;player&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/player.js&#10;windo&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/window.js&#10;downl&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/downloads.js&#10;serie&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/series.js&#10;goog&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/google.js&#10;trai&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/trailers.js&#10;subtit&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/subtitles.js&#10;down&#9;FILE&#9;file:///Users/sagar.ja/project/bringe/js/downloads.js" />
     <property name="nodejs_interpreter_path" value="/usr/local/bin/node" />
     <property name="FullScreen" value="true" />
   </component>
@@ -470,7 +462,7 @@
       <workItem from="1506018790085" duration="681000" />
       <workItem from="1506120055461" duration="9463000" />
       <workItem from="1506324996435" duration="19000" />
-      <workItem from="1507378355381" duration="110000" />
+      <workItem from="1507378355381" duration="503000" />
     </task>
     <task id="LOCAL-00001" summary="clean and searchResult">
       <created>1500401868374</created>
@@ -570,11 +562,18 @@
       <option name="project" value="LOCAL" />
       <updated>1505858569939</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="refactor">
+      <created>1507378541911</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1507378541911</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="465929000" />
+    <option name="totallyTimeSpent" value="466322000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -589,7 +588,7 @@
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2609047" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2609047" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -633,7 +632,8 @@
     <MESSAGE value="minor fixes" />
     <MESSAGE value="added 123movies and fixes" />
     <MESSAGE value="added 123moviesonline" />
-    <option name="LAST_COMMIT_MESSAGE" value="added 123moviesonline" />
+    <MESSAGE value="refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -749,13 +749,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/fseries.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="172" column="40" selection-start-line="172" selection-start-column="40" selection-end-line="172" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/goseries.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="423">
@@ -816,20 +809,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2070">
           <caret line="138" column="12" selection-start-line="138" selection-start-column="12" selection-end-line="138" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/manifest.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/fmovies.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -907,8 +886,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/layout.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="33" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
+        <state relative-caret-position="255">
+          <caret line="17" column="40" selection-start-line="17" selection-start-column="40" selection-end-line="17" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/fmovies.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="35" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/fseries.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="31" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/manifest.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="21" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
           <folding />
         </state>
       </provider>
