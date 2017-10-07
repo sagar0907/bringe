@@ -78,9 +78,13 @@ _define('util', [window], function (window) {
         });
     }
 
-    function ajaxPromise(url, type, data, headers) {
+    function ajaxPromise(url, type, data, headers, callbackArgument) {
         return new Promise(function(resolve, reject) {
-            sendAjax(url, type, data, resolve, reject, headers);
+            if(callbackArgument) {
+
+            } else {
+                sendAjax(url, type, data, resolve, reject, headers);
+            }
         });
     }
 
@@ -262,7 +266,7 @@ _define('handler', [window, document, 'util', 'manager', 'layout', 'downloads'],
             return false;
         };
         $(".popup-close").click(function () {
-            layout.closePopup();
+            layout.popup.closePopup();
         });
         $("#moviesResultsButton").click(function () {
             layout.setMovieListVisible();
@@ -302,7 +306,7 @@ _define('handler', [window, document, 'util', 'manager', 'layout', 'downloads'],
             manager.closeYoutube();
         });
         $("#downloads-button").click(function (evt) {
-            downloads.setupDownloadsSection();
+            layout.setupDownloadSection();
         });
 
         $(".downloads-back").click(function (evt) {

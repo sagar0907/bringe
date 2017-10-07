@@ -2,14 +2,14 @@ _define('123movies', [window, 'util', 'bringe'], function (window, util, bringe)
     var callback;
     var base_url = 'https://123movies.io';
 
-    function failFunction() {
+    function failFunction(name) {
         if (bringe.page != "movie") return;
-        callback({site: "123movies", status: false});
+        callback({site: "123movies", status: false, name: name});
     }
 
-    function successFunction(linkDetails) {
+    function successFunction(name, linkDetails, complete) {
         if (bringe.page != "movie") return;
-        callback({site: "123movies", status: true, linkDetails: linkDetails});
+        callback({site: "123movies", status: true, name: name, linkDetails: linkDetails, complete: complete});
     }
 
     var isSameNameFunctions = function () {
@@ -91,7 +91,6 @@ _define('123movies', [window, 'util', 'bringe'], function (window, util, bringe)
                 }
             }
         }
-        failFunction();
     }
 
     function getOriginFromUrl(url) {
@@ -106,7 +105,7 @@ _define('123movies', [window, 'util', 'bringe'], function (window, util, bringe)
         }
     }
 
-    function dataHandler(index, result) {
+    function dataHandler(name, index, result) {
         try {
             result = JSON.parse(result);
         } catch (ignore) {
@@ -128,75 +127,86 @@ _define('123movies', [window, 'util', 'bringe'], function (window, util, bringe)
             source.type = 'iframe';
             source.subtitles = [];
             sourceList.push(source);
-            successFunction(sourceList);
-        } else {
-            failFunction();
+            successFunction(name, sourceList);
+            return true;
         }
     }
 
-    function episodesSuccessFunction(result) {
+    function moviePageSuccessFunction(name, result) {
         if (bringe.page != "movie" || !result) return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             episodes = myDoc.find('.le-server .les-content a'),
-            episodeIds = [],
-            links = [];
+            episode,
+            promises = [],
+            episodeId,
+            linkFound = false;
         for (var i = 0; i < episodes.length; i++) {
-            episodeIds.push($(episodes[i]).attr('episode-id'));
+            episode = $(episodes[i]);
+            episodeId = episode.attr('episode-id');
+            if (episodeId) {
+                promises.push(util.ajaxPromise(base_url + '/ajax/load_embed/' + episodeId));
+            }
         }
-        util.each(episodeIds, function (epId) {
-            if (epId) {
-                links.push(base_url + '/ajax/load_embed/' + epId);
+        Promise.all(promises).then(function () {
+            if (linkFound) {
+                successFunction(name, [], true);
+            } else {
+                failFunction(name);
+            }
+        }).catch(function (error) {
+            if (linkFound) {
+                successFunction(name, [], true);
+            } else {
+                failFunction(name, error);
             }
         });
 
-        if (links.length > 0) {
-            util.each(links, function(link, i) {
-                util.sendAjax(link, "GET", {}, util.getProxy(dataHandler, [i+1]), failFunction);
+        util.each(promises, function (promise, index) {
+            promise.then(function (result) {
+                linkFound = dataHandler(name, index+1, result) || linkFound;
             });
-        } else {
-            failFunction();
-        }
-    }
-
-    function fetchMovieSources(movieId) {
-        var url = base_url + '/ajax/v2_get_episodes/movie-' + movieId;
-        util.sendAjax(url, "GET", {}, episodesSuccessFunction, failFunction);
-    }
-
-    function searchMovie(name, searchList) {
-        var found = false;
-
-        function searchSuccessFunction(result) {
-            if (bringe.page != "movie" || found || !result) return;
-            var doc = new DOMParser().parseFromString(result, "text/html"),
-                myDoc = $(doc);
-            var movieItems = myDoc.find(".movies-list .ml-item");
-            if (movieItems.length > 0) {
-                var movieItem = getSearchedMovieName(name, movieItems);
-                if (movieItem) {
-                    found = true;
-                    var movieId = $(movieItem).attr("data-movie-id");
-                    fetchMovieSources(movieId);
-                    return;
-                }
-            }
-            failFunction();
-        }
-
-        var links = [];
-        util.each(searchList, function (searchTerm) {
-            links.push(base_url + '/movie/search/' + searchTerm + '/view/all/all');
-        });
-        util.each(links, function (link) {
-            util.sendAjax(link, "GET", {}, searchSuccessFunction, failFunction);
         });
     }
 
     function loadMovie(name, year, func) {
         callback = func;
-        var searchNames = getMovieSearchTerms(name);
-        searchMovie(name, searchNames);
+        var searchSucceeded = false,
+            searchNames = getMovieSearchTerms(name),
+            promises = [];
+        util.each(searchNames, function (searchTerm) {
+            promises.push(util.ajaxPromise(base_url + '/movie/search/' + searchTerm + '/view/all/all'));
+        });
+        Promise.all(promises).then(function () {
+            if (!searchSucceeded) {
+                failFunction(name);
+            }
+        }).catch(function (error) {
+            if (!searchSucceeded) {
+                failFunction(name, error);
+            }
+        });
+        util.each(promises, function (promise) {
+            promise.then(function (result) {
+                if (bringe.page != "movie" || searchSucceeded || !result) return;
+                var doc = new DOMParser().parseFromString(result, "text/html"),
+                    myDoc = $(doc);
+                var movieItems = myDoc.find(".movies-list .ml-item");
+                if (movieItems.length == 0) return;
+                var movieItem = getSearchedMovieName(name, movieItems);
+                if (!movieItem) return;
+                var movieId = $(movieItem).attr("data-movie-id");
+                if (!movieId) return;
+                searchSucceeded = true;
+                var url = base_url + '/ajax/v2_get_episodes/movie-' + movieId;
+                return util.ajaxPromise(url);
+            }).then(function (result) {
+                if (!result) return;
+                moviePageSuccessFunction(name, result);
+            }).catch(function (error) {
+                failFunction(name, error);
+            });
+        });
     }
 
     return {

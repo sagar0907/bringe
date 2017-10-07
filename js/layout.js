@@ -1,4 +1,4 @@
-_define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
+_define('layout', [window, 'util', 'bringe', 'download-layout', 'popup-layout'], function (window, util, bringe, downloadLayout, popupLayout) {
 
     var iconMap = {
         facebook: "fa-facebook-square",
@@ -45,11 +45,7 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
             '</div> <div class="col-xs-8"> <div class="movie-info-value"></div> </div> </div>'),
         reviewDivObj: $('<div class="movie-review"> <div class="review-text"> </div>' +
             '<div class="review-source"><div class="review-source-person"> </div>' +
-            '<div class="review-source-website"> </div></div> </div>'),
-        downloadItemDivObj: $('<div class="download-item"> <div class="row"> <div class="download-file-icon"><img></div>' +
-            '<div class="download-file-data"> <div class="download-file-name"></div> <div class="download-file-link"><a></a></div>' +
-            '<div class="download-progress-detail"></div> <div class="download-progress-bar"><div class="download-complete-part"></div></div>' +
-            '<div class="download-file-options"></div><div class="download-file-remove"></div> </div> </div> </div>')
+            '<div class="review-source-website"> </div></div> </div>')
     };
     function hideAllSection() {
         $(".search-wrapper").hide();
@@ -171,7 +167,7 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
     function setupDownloadSection() {
         hideAllSection();
         clearAllDownloadData();
-        placeDownloadSection();
+        downloadLayout.placeDownloadSection();
         showDownloadSection();
     }
 
@@ -298,110 +294,6 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
 
     function clearAllDownloadData() {
         $("#download-list").html("");
-    }
-
-    function resetDownloadItemBox(downloadItemBox, id) {
-        var downloads = _require(['downloads'])[0];
-        downloads.getAndPlaceDownloadItemById(id, function (downloadItem) {
-            if (downloadItem.exists) {
-                var fileProgressBar = downloadItemBox.find(".download-progress-bar");
-                var fileCompletePart = fileProgressBar.find(".download-complete-part");
-                var fileProgressDetail = downloadItemBox.find(".download-progress-detail");
-                var fileActionBox = downloadItemBox.find(".download-file-options");
-                var fileRemoveBox = downloadItemBox.find(".download-file-remove");
-                var detail = "";
-                if (downloadItem.state == "in_progress") {
-                    var last = fileProgressDetail.data("completed");
-                    fileProgressDetail.data("completed", downloadItem.bytesReceived);
-                    if (last && !downloadItem.paused) {
-                        detail += downloads.getSizeInWords(downloadItem.bytesReceived - last) + "/s - ";
-                    }
-                    detail += downloads.getSizeInWords(downloadItem.bytesReceived) + " of " + downloads.getSizeInWords(downloadItem.totalBytes) + ", ";
-                    if (downloadItem.paused) {
-                        detail += "Paused ";
-                    }
-                    if (downloadItem.estimatedEndTime) {
-                        var estimatedEndTime = new Date(downloadItem.estimatedEndTime);
-                        var nowTime = new Date();
-                        detail += util.getTimeInWords(estimatedEndTime.getTime() - nowTime.getTime()) + " left";
-                    }
-                    fileProgressDetail.html(detail);
-                    var completePercentage = downloads.getCompletedPercentage(downloadItem.bytesReceived, downloadItem.totalBytes);
-                    fileCompletePart.css("width", completePercentage + "%");
-                    fileProgressBar.css("height", "3px");
-                    if (downloadItem.paused == false && fileActionBox.find(".pause-button").length == 0) {
-                        fileActionBox.html("");
-                        fileActionBox.append(downloads.getPauseButton(downloadItem.id));
-                        fileActionBox.append(downloads.getCancelButton(downloadItem.id));
-                    } else if (downloadItem.paused && fileActionBox.find(".resume-button").length == 0) {
-                        fileActionBox.html("");
-                        fileActionBox.append(downloads.getResumeButton(downloadItem.id));
-                        fileActionBox.append(downloads.getCancelButton(downloadItem.id));
-                    }
-                } else if (downloadItem.state == "interrupted" && fileActionBox.find(".retry-button").length == 0) {
-                    fileActionBox.html("");
-                    fileActionBox.append(downloads.getRetryButton(downloadItem));
-                    fileProgressDetail.html("");
-                    fileProgressBar.css("height", "0px");
-                    fileRemoveBox.html("x");
-                } else if (downloadItem.state == "complete" && fileActionBox.find(".open-button").length == 0) {
-                    fileActionBox.html("");
-                    fileProgressDetail.html("");
-                    fileProgressBar.css("height", "0px");
-                    fileActionBox.append(downloads.getOpenButton(downloadItem.id));
-                    fileActionBox.append(downloads.getShowInFolderButton(downloadItem.id));
-                    fileRemoveBox.html("x");
-                }
-                setTimeout(function () {
-                    resetDownloadItemBox(downloadItemBox, id)
-                }, 1000);
-            } else {
-                downloadItemBox.remove();
-            }
-        });
-    }
-
-    function placeDownloadSection() {
-        $("#download-list").html("");
-        bringe.downloadActive = true;
-        chrome.downloads.search({filenameRegex: "Bringe", exists: true}, function (results) {
-            var downloadList = [], i;
-            for (i = 0; i < results.length; i++) {
-                var item = results[i];
-                if (item.byExtensionId == "kjkmhkicphnkbfgafbigdklljcmogmpg") {
-                    downloadList.push(item);
-                }
-            }
-            downloadList.sort(util.downloadComparator);
-            var downloadListBox = $("#download-list");
-            var downloads = _require(['downloads'])[0];
-            for (i = 0; i < downloadList.length; i++) {
-                downloads.getAndPlaceDownloadItemById(downloadList[i].id, function (downloadItem) {
-                    var downloadItemBox = globalDivs.downloadItemDivObj.clone();
-                    downloadItemBox.find(".download-file-name").html(util.extractFileName(downloadItem.filename));
-                    var fileLinkBox = downloadItemBox.find(".download-file-link");
-                    var fileIconBox = downloadItemBox.find(".download-file-icon");
-                    var fileRemoveBox = downloadItemBox.find(".download-file-remove");
-                    fileLinkBox.html(downloadItem.finalUrl);
-                    fileLinkBox.data("href", downloadItem.finalUrl);
-                    downloadListBox.append(downloadItemBox);
-                    downloads.getAndPlaceDownloadItemIcon(downloadItem.id, fileIconBox, function (iconUrl, iconBox) {
-                        iconBox.find("img").attr("src", iconUrl);
-                    });
-                    fileLinkBox.click(function (evt) {
-                        var link = evt.target;
-                        background.openLinkInBrowser($(link).data("href"));
-                    });
-                    fileRemoveBox.click(function () {
-                        bringe.downloadActive = false;
-                        chrome.downloads.erase({id: downloadItem.id}, function () {
-                            placeDownloadSection();
-                        });
-                    });
-                    resetDownloadItemBox(downloadItemBox, downloadItem.id);
-                });
-            }
-        });
     }
 
     function showTrendingMovies(movies) {
@@ -546,7 +438,7 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
         var wrapper = $(".movie-wrapper"),
             infoList,
             thisMovie = bringe.movie;
-        removeRottenLoader();
+        popupLayout.removeRottenLoader();
         var castList = wrapper.find(".cast-list"),
             movieDataSection = $(".movie-data-section"),
             i;
@@ -607,7 +499,7 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
             infoList,
             dataSection = $(".serie-data-section"),
             thisSerie = bringe.serie;
-        removeRottenLoader();
+        popupLayout.removeRottenLoader();
         $("#link-route").show();
 
         dataSection.find(".serie-name").html(thisSerie.title);
@@ -697,7 +589,7 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
             castList = wrapper.find(".cast-list"),
             dataSection = $(".season-data-section"),
             i;
-        removeRottenLoader();
+        popupLayout.removeRottenLoader();
         $("#link-route").show();
         $(".season-poster").find("img").attr("src", thisSeason.image);
         dataSection.find(".season-name").html(thisSeason.title);
@@ -788,7 +680,7 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
             castList = wrapper.find(".cast-list"),
             dataSection = $(".episode-data-section"),
             i;
-        removeRottenLoader();
+        popupLayout.removeRottenLoader();
         $("#link-route").show();
         $(".episode-poster img").attr("src", watching.image);
         dataSection.find(".episode-name").html(thisEpisode.title);
@@ -951,188 +843,6 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
         $("#episodeSubtitleButton").show();
     }
 
-    function clearPopup() {
-        var popupBox = $(".popup-box");
-        var table = popupBox.find("table");
-        popupBox.find(".popup-header").html("");
-        table.find("thead").html("");
-        table.find("tbody").html("");
-    }
-
-    function openPopup() {
-        $(".popup-wrapper").show();
-        $("body").addClass("stop-scrolling");
-    }
-
-    function closePopup() {
-        $(".popup-wrapper").hide();
-        $("body").removeClass("stop-scrolling");
-        clearPopup();
-    }
-
-    function openWaiter(text) {
-        $(".waiter-text").find("p").html(text);
-        $(".waiter-wrapper").show();
-        $("body").addClass("stop-scrolling");
-    }
-
-    function closeWaiter() {
-        $(".waiter-wrapper").hide();
-        $(".waiter-text").find("p").html("");
-        $("body").removeClass("stop-scrolling");
-    }
-
-    function showRottenLoader(obj) {
-        $('.rotten-buffer').remove();
-        var buffer = $('<div class="rotten-buffer"><img class="fa-spin" src="../images/bringe-48.png"></div>');
-        obj.append(buffer);
-    }
-
-    function removeRottenLoader() {
-        $('.rotten-buffer').remove();
-    }
-
-    function openEpisodesStreamPopup(streamLinks) {
-        clearPopup();
-        var popupBox = $(".popup-box");
-        popupBox.find(".popup-header").html("Episode Links");
-        var table = popupBox.find("table");
-        var thead = table.find("thead");
-        var tbody = table.find("tbody");
-        for (var i = 0; i < streamLinks.length; i++) {
-            var link = streamLinks[i],
-                row;
-            if (link.type == 'iframe') {
-                row = $('<tr data-id="' + link.source + '"> <td data-id="' + link.id + '">Link ' + (i + 1) + '</td> <td class="streamOrigin">' + (link.origin || link.source) + '</td> <td class="streamQuality">' + link.label + '</td> <td class="streamEpisode">Launch Episode</td> <td class="downloadEpisode"></td> </tr>');
-            } else {
-                row = $('<tr data-id="' + link.source + '"> <td data-id="' + link.id + '">Link ' + (i + 1) + '</td> <td class="streamOrigin">' + (link.origin || link.source) + '</td> <td class="streamQuality">' + link.label + '</td> <td class="streamEpisode">Stream Episode</td> <td class="downloadEpisode">Download</td> </tr>');
-            }
-            tbody.append(row);
-            var downloadButton = row.find(".downloadEpisode");
-            var streamButton = row.find(".streamEpisode");
-            downloadButton.click(function (evt) {
-                closePopup();
-                var obj = $(this),
-                    line = obj.parent(),
-                    source = line.attr("data-id"),
-                    tds = line.find("td"),
-                    id = $(tds[0]).attr("data-id");
-                util.fireEvent("downloadSerieStream", [{id: id, source: source}]);
-            });
-            streamButton.click(function (evt) {
-                closePopup();
-                var line = $(this).parent(),
-                    source = line.attr("data-id"),
-                    tds = line.find("td"),
-                    id = $(tds[0]).attr("data-id");
-                util.fireEvent("openSerieStream", [{id: id, source: source}]);
-            });
-        }
-        openPopup();
-    }
-
-    function openMovieStreamPopup(movie) {
-        clearPopup();
-        var popupBox = $(".popup-box");
-        popupBox.find(".popup-header").html("Stream Movie");
-        var table = popupBox.find("table");
-        var thead = table.find("thead");
-        var tbody = table.find("tbody");
-        var linksObj = movie.streamLinkDetails;
-        for (var i = 0; i < linksObj.length; i++) {
-            var linkObj = linksObj[i],
-                row;
-            if (linkObj.type == 'iframe') {
-                row = $('<tr data-id="' + linkObj.source + '"> <td data-id="' + linkObj.id + '">Link ' + (i + 1) + '</td> <td>' + linkObj.origin + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Launch Movie</td> <td class="movieDownload"></td> </tr>');
-            } else {
-                row = $('<tr data-id="' + linkObj.source + '"> <td data-id="' + linkObj.id + '">Link ' + (i + 1) + '</td> <td>' + linkObj.origin + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Stream Movie</td> <td class="movieDownload">Download</td> </tr>');
-            }
-            tbody.append(row);
-            var stream = row.find(".movieStream");
-            var download = row.find(".movieDownload");
-            stream.click(function (evt) {
-                closePopup();
-                var line = $(this).parent(),
-                    source = line.attr("data-id"),
-                    tds = line.find("td"),
-                    id = $(tds[0]).attr("data-id");
-                util.fireEvent("openMovieStream", [{id: id, source: source}]);
-            });
-            download.click(function (evt) {
-                closePopup();
-                var line = $(this).parent(),
-                    source = line.attr("data-id"),
-                    tds = line.find("td"),
-                    id = $(tds[0]).attr("data-id");
-                util.fireEvent("downloadMovieStream", [{id: id, source: source}]);
-            });
-        }
-        openPopup();
-    }
-
-    function openMovieSubtitlePopup(movie) {
-        clearPopup();
-        var popupBox = $(".popup-box");
-        popupBox.find(".popup-header").html("Download Subtitle");
-        var table = popupBox.find("table");
-        var thead = table.find("thead");
-        thead.append('<tr> <td>Source</td> <td>Rating</td> <td>Format</td> </tr>');
-        var tbody = table.find("tbody");
-        var linksObj = movie.subtitleLinks;
-        for (var i = 0; i < linksObj.length; i++) {
-            var linkObj = linksObj[i];
-            var ext = "srt";
-            var row = $('<tr class="' + linkObj.index + '"> <td><img src="../images/subscene.gif"/></td> <td>' + linkObj.rating + '</td> <td>' + ext + '</td> </tr>');
-            tbody.append(row);
-            row.click(function (evt) {
-                closePopup();
-                var obj = $(this);
-                var id = obj.attr("class");
-                util.fireEvent("downloadMovieSubtitle", [parseInt(id)]);
-            });
-        }
-        openPopup();
-    }
-
-    function openEpisodeSubtitlePopup(episode) {
-        clearPopup();
-        var popupBox = $(".popup-box");
-        popupBox.find(".popup-header").html("Download Subtitle");
-        var table = popupBox.find("table");
-        var thead = table.find("thead");
-        thead.append('<tr> <td>Source</td> <td>Rating</td> <td>Format</td> </tr>');
-        var tbody = table.find("tbody");
-        var linksObj = episode.links;
-        if (linksObj) {
-            for (var i = 0; i < linksObj.length; i++) {
-                var linkObj = linksObj[i];
-                var ext = "srt";
-                var row = $('<tr class="' + linkObj.index + '"> <td><img src="../images/subscene.gif"/></td> <td>' + linkObj.rating + '</td> <td>' + ext + '</td> </tr>');
-                tbody.append(row);
-                row.click(function (evt) {
-                    closePopup();
-                    var obj = $(this);
-                    var id = obj.attr("class");
-                    util.fireEvent("downloadEpisodeSubtitle", [parseInt(id)]);
-                });
-            }
-            openPopup();
-        }
-    }
-
-    function openVideoPopup() {
-        $(".video-wrapper").show();
-    }
-    function closeVideoPopup() {
-        $(".video-wrapper").hide();
-    }
-    function openTrailerPopup() {
-        $(".youtube-wrapper").show();
-    }
-    function closeTrailerPopup() {
-        $(".youtube-wrapper").hide();
-    }
-
     function shineDownloadButton() {
         $("#downloads-button").addClass("shine");
         setTimeout(function () {
@@ -1183,7 +893,6 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
         placeSeriesList: placeSeriesList,
         setMovieListVisible: setMovieListVisible,
         setSerieListVisible: setSerieListVisible,
-        placeDownloadSection: placeDownloadSection,
         showMovieStreamLink: showMovieStreamLink,
         showEpisodeStreamLink: showEpisodeStreamLink,
         showMovieTrailerLink: showMovieTrailerLink,
@@ -1211,25 +920,13 @@ _define('layout', [window, 'util', 'bringe'], function (window, util, bringe) {
         showEpisodeSubtitleLink: showEpisodeSubtitleLink,
         goBackFromDownloads: goBackFromDownloads,
         setupDownloadSection: setupDownloadSection,
-        closePopup: closePopup,
-        openWaiter: openWaiter,
-        closeWaiter: closeWaiter,
-        showRottenLoader: showRottenLoader,
-        removeRottenLoader: removeRottenLoader,
-        openMovieStreamPopup: openMovieStreamPopup,
-        openMovieSubtitlePopup: openMovieSubtitlePopup,
-        openEpisodesStreamPopup: openEpisodesStreamPopup,
-        openEpisodesSubtitlePopup: openEpisodeSubtitlePopup,
-        openVideoPopup: openVideoPopup,
-        closeVideoPopup: closeVideoPopup,
-        openTrailerPopup: openTrailerPopup,
-        closeTrailerPopup: closeTrailerPopup,
         shineDownloadButton: shineDownloadButton,
         showSearchResultText: showSearchResultText,
         searching: searching,
         removeSearchBuffer: removeSearchBuffer,
         findingMovieLink: findingMovieLink,
         couldnotFetchMovieLink: couldnotFetchMovieLink,
-        movieLoadComplete: movieLoadComplete
+        movieLoadComplete: movieLoadComplete,
+        popup: popupLayout
     }
 });

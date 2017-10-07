@@ -3,14 +3,14 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
     var base_url = "https://fmovies.is";
     var ts;
 
-    function failFunction() {
+    function failFunction(name, error) {
         if (bringe.page != "movie") return;
-        callback({site: "fmovies", status: false});
+        callback({site: "fmovies", status: false, name: name});
     }
 
-    function successFunction(linkDetails) {
+    function successFunction(name, linkDetails, complete) {
         if (bringe.page != "movie") return;
-        callback({site: "fmovies", status: true, linkDetails: linkDetails});
+        callback({site: "fmovies", status: true, name: name, linkDetails: linkDetails, complete: complete});
     }
 
     function hashUrl(url, params) {
@@ -142,7 +142,6 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                 }
             }
         }
-        failFunction();
     }
 
     function getOriginFromUrl(url) {
@@ -157,7 +156,11 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         }
     }
 
-    function dataHandler(index, subtitle, sources) {
+    function cleanSpecialUrl(url) {
+        return url.indexOf('?') > -1 ? url.substring(0, url.indexOf('?')) : url;
+    }
+
+    function dataHandler(name, index, subtitle, sources) {
         try {
             var sourceList = [];
             for (var i = 0; i < sources.length; i++) {
@@ -178,7 +181,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                 sourceList.push(source);
             }
             if (sourceList.length > 0) {
-                successFunction(sourceList);
+                successFunction(name, sourceList);
                 return true;
             } else {
                 return false;
@@ -188,15 +191,12 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         }
     }
 
-    function cleanSpecialUrl(url) {
-        return url.indexOf('?') > -1 ? url.substring(0, url.indexOf('?')) : url;
-    }
-
-    function moviePageSuccessFunction(result) {
+    function moviePageSuccessFunction(name, result) {
         if (bringe.page != "movie") return;
         var doc = new DOMParser().parseFromString(result, "text/html"),
             myDoc = $(doc),
             movieFetchLink,
+            promisesLeft,
             promises = [],
             linkFound = false,
             servers = myDoc.find('#servers .server'),
@@ -217,13 +217,24 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                 promises.push(util.ajaxPromise(movieFetchLink));
             }
         }
+        promisesLeft = promises.length;
+        function completeAPromise() {
+            promisesLeft--;
+            if (promisesLeft == 0) {
+                if (!linkFound) {
+                    successFunction(name, [], true);
+                } else {
+                    failFunction(name, null, true);
+                }
+            }
+        }
         Promise.all(promises).then(function () {
             if (!linkFound) {
-                failFunction();
+                failFunction(name);
             }
         }).catch(function (error) {
             if (!linkFound) {
-                failFunction(error);
+                failFunction(name, error);
             }
         });
         util.each(promises, function (promise, index) {
@@ -236,29 +247,35 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                 if (json.target) {
                     json.target = cleanSpecialUrl(json.target);
                     json.origin = getOriginFromUrl(json.target);
-                    linkFound = dataHandler(index, json.subtitle, [{file: json.target, type: 'iframe'}]) || linkFound;
+                    return {data: [{file: json.target, origin: json.origin, type: 'iframe'}]};
                 } else if (json && json.grabber && json.params) {
                     var url = hashUrl(json.grabber, json.params);
-                    util.ajaxPromise(url).then(function (result) {
-                        try {
-                            result = JSON.parse(result);
-                        } catch (ignore){}
-                        if (result.error || !result.data) return;
-                        linkFound = dataHandler(index, json.subtitle, result.data) || linkFound;
-                    });
+                    return util.ajaxPromise(url);
                 }
+                completeAPromise();
+            }).then(function (result) {
+                if (!result) return;
+                try {
+                    result = JSON.parse(result);
+                } catch (ignore){}
+                if (!result.error || result.data) {
+                    linkFound = dataHandler(name, index, result.subtitle, result.data) || linkFound;
+                }
+                completeAPromise();
+            }).catch(function (error) {
+                completeAPromise(error);
             });
         });
     }
 
     function loadMovie(name, year, func) {
         callback = func;
+        var searchSucceeded = false;
         util.ajaxPromise(base_url).then(function (result) {
             if (bringe.page != "movie") return;
             var doc = new DOMParser().parseFromString(result, "text/html"),
                 myDoc = $(doc),
                 searchNames = getMovieSearchTerms(name),
-                searchSucceded = false,
                 link,
                 promises = [];
             ts = myDoc.find("body").attr("data-ts");
@@ -268,17 +285,17 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                 promises.push(util.ajaxPromise(link));
             });
             Promise.all(promises).then(function () {
-                if (!searchSucceded) {
-                    failFunction();
+                if (!searchSucceeded) {
+                    failFunction(name);
                 }
             }).catch(function (error) {
-                if (!searchSucceded) {
-                    failFunction(error);
+                if (!searchSucceeded) {
+                    failFunction(name, error);
                 }
             });
             util.each(promises, function (promise) {
                 promise.then(function (result) {
-                    if (bringe.page != "movie" || searchSucceded) return;
+                    if (bringe.page != "movie" || searchSucceeded) return;
                     try {
                         result = JSON.parse(result);
                     } catch (ignore) {
@@ -286,19 +303,27 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                     if (!result.html) return;
                     var doc = new DOMParser().parseFromString(result.html, "text/html"),
                         myDoc = $(doc),
-                        movieItems = myDoc.find(".item");
+                        movieItems = myDoc.find(".item"),
+                        path;
                     if (movieItems.length == 0) return;
                     var movieItem = getSearchedMovieName(name, movieItems);
                     if (!movieItem) return;
-                    searchSucceded = true;
-                    var moviePageLink = base_url + $(movieItem).find("a.name").attr("href");
+                    path = $(movieItem).find("a.name").attr("href");
+                    if (!path) return;
+                    searchSucceeded = true;
+                    var moviePageLink = base_url + path;
                     return util.ajaxPromise(moviePageLink);
                 }).then(function (result) {
-                    moviePageSuccessFunction(result);
+                    if (!result) return;
+                    moviePageSuccessFunction(name, result);
+                }).catch(function(error){
+                    failFunction(name, error);
                 });
             });
         }).catch(function (error) {
-            failFunction(error);
+            if (!searchSucceeded) {
+                failFunction(name, error);
+            }
         });
     }
 

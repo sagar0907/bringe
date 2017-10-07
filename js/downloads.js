@@ -1,7 +1,4 @@
-_define('downloads', [window, 'util', 'layout', 'bringe'], function (window, util, layout, bringe) {
-    function setupDownloadsSection() {
-        layout.setupDownloadSection();
-    }
+_define('downloads', [window, 'util', 'download-layout', 'bringe'], function (window, util, downloadLayout, bringe) {
     function addToDownload(link, name, ext, callback) {
         chrome.downloads.setShelfEnabled(false);
         if(ext) {
@@ -20,7 +17,7 @@ _define('downloads', [window, 'util', 'layout', 'bringe'], function (window, uti
     }
     function reStartDownload(link, name) {
         addToDownload(link, name, "", function () {
-            layout.placeDownloadSection();
+            downloadLayout.placeDownloadSection();
         });
     }
     function getAndPlaceDownloadItemById(id, callback) {
@@ -134,7 +131,6 @@ _define('downloads', [window, 'util', 'layout', 'bringe'], function (window, uti
     }
     return {
         addToDownload: addToDownload,
-        setupDownloadsSection: setupDownloadsSection,
         getAndPlaceDownloadItemById : getAndPlaceDownloadItemById,
         getAndPlaceDownloadItemIcon: getAndPlaceDownloadItemIcon,
         getPauseButton: getPauseButton,

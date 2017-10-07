@@ -9,13 +9,13 @@ _define('movies', [window, 'util', 'bringe', 'layout', 'fmovies', '123movies', '
 
         function handleResponse(object) {
             var thisMovie = bringe.movie;
-            thisMovie.movieRespones.count++;
+            if (thisMovie.name != object.name) return;
             if (object.status) {
                 var site = object.site;
                 if (!thisMovie.movieRespones[site]) {
                     thisMovie.movieRespones[site] = true;
-                    thisMovie.movieRespones.successCount++;
-                    if (thisMovie.movieRespones.successCount === 1) {
+                    thisMovie.movieRespones.count++;
+                    if (thisMovie.movieRespones.count === 1) {
                         layout.showMovieStreamLink();
                         layout.movieLoadComplete();
                     }
@@ -24,11 +24,15 @@ _define('movies', [window, 'util', 'bringe', 'layout', 'fmovies', '123movies', '
                 for (var i = 0; i < object.linkDetails.length; i++) {
                     thisMovie.streamLinkDetails.push(object.linkDetails[i]);
                 }
+                if (object.complete) {
+                    thisMovie.successCount++;
+                }
+            } else {
+                thisMovie.successCount++;
             }
-            if (thisMovie.movieRespones.count === totalSites) {
+            if (thisMovie.movieRespones.successCount === totalSites) {
                 layout.movieLoadComplete();
             }
-            layout.movieLoadComplete();
         }
 
         function handleWatchItResponse(object) {
@@ -80,9 +84,9 @@ _define('movies', [window, 'util', 'bringe', 'layout', 'fmovies', '123movies', '
                     chrome.tabs.create({'url': movie.src}, function (tab) {
                     });
                 } else {
-                    layout.openWaiter("Adding Movie to Downloads...");
-                    downloads.addToDownload(movie.src, bringe.movie.name, ".mp4", function (downloadId) {
-                        layout.closeWaiter();
+                    layout.popup.openWaiter("Adding Movie to Downloads...");
+                    downloads.addToDownload(movie.src, bringe.movie.name, " (Bringe).mp4", function (downloadId) {
+                        layout.popup.closeWaiter();
                         if (downloadId) {
                             layout.shineDownloadButton();
                         }
