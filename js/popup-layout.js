@@ -1,5 +1,16 @@
 _define('popup-layout', [window, 'util', 'bringe'], function (window, util, bringe) {
-    function openPopup() {
+    var popupStatus = false;
+    var popupName,
+        seasonNo,
+        episodeNo;
+    function getPopupData() {
+        return {status: popupStatus, name: popupName, seasonNo: seasonNo, episodeNo: episodeNo};
+    }
+    function openPopup(name, sNo, eNo) {
+        popupStatus = true;
+        popupName = name;
+        seasonNo = sNo;
+        episodeNo = eNo;
         $(".popup-wrapper").show();
         $("body").addClass("stop-scrolling");
     }
@@ -9,8 +20,11 @@ _define('popup-layout', [window, 'util', 'bringe'], function (window, util, brin
         popupBox.find(".popup-header").html("");
         table.find("thead").html("");
         table.find("tbody").html("");
+        popupBox.find(".popup-fetching").hide();
     }
     function closePopup() {
+        popupStatus = false;
+        popupName = null;
         $(".popup-wrapper").hide();
         $("body").removeClass("stop-scrolling");
         clearPopup();
@@ -40,7 +54,7 @@ _define('popup-layout', [window, 'util', 'bringe'], function (window, util, brin
     function openMovieStreamPopup(movie) {
         clearPopup();
         var popupBox = $(".popup-box");
-        popupBox.find(".popup-header").html("Stream Movie");
+        popupBox.find(".popup-header").html("Bringe the Movie");
         var table = popupBox.find("table");
         var thead = table.find("thead");
         var tbody = table.find("tbody");
@@ -49,9 +63,9 @@ _define('popup-layout', [window, 'util', 'bringe'], function (window, util, brin
             var linkObj = linksObj[i],
                 row;
             if (linkObj.type == 'iframe') {
-                row = $('<tr data-id="' + linkObj.source + '"> <td data-id="' + linkObj.id + '">Link ' + (i + 1) + '</td> <td>' + linkObj.origin + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Launch Movie</td> <td class="movieDownload"></td> </tr>');
+                row = $('<tr data-id="' + linkObj.source + '"> <td data-id="' + linkObj.id + '">Link ' + (i + 1) + '</td> <td>' + linkObj.origin + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Launch</td> <td class="movieDownload"></td> </tr>');
             } else {
-                row = $('<tr data-id="' + linkObj.source + '"> <td data-id="' + linkObj.id + '">Link ' + (i + 1) + '</td> <td>' + linkObj.origin + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Stream Movie</td> <td class="movieDownload">Download</td> </tr>');
+                row = $('<tr data-id="' + linkObj.source + '"> <td data-id="' + linkObj.id + '">Link ' + (i + 1) + '</td> <td>' + linkObj.origin + '</td> <td>' + linkObj.label + '</td> <td class="movieStream">Stream</td> <td class="movieDownload">Download</td> </tr>');
             }
             tbody.append(row);
             var stream = row.find(".movieStream");
@@ -73,7 +87,12 @@ _define('popup-layout', [window, 'util', 'bringe'], function (window, util, brin
                 util.fireEvent("downloadMovieStream", [{id: id, source: source}]);
             });
         }
-        openPopup();
+        if (movie.movieRespones && movie.movieRespones.complete) {
+            popupBox.find(".popup-fetching").hide();
+        } else {
+            popupBox.find(".popup-fetching").show();
+        }
+        openPopup(movie.title);
     }
 
     function openMovieSubtitlePopup(movie) {
@@ -99,10 +118,10 @@ _define('popup-layout', [window, 'util', 'bringe'], function (window, util, brin
         }
         openPopup();
     }
-    function openEpisodesStreamPopup(streamLinks) {
+    function openEpisodesStreamPopup(serie, streamLinks) {
         clearPopup();
         var popupBox = $(".popup-box");
-        popupBox.find(".popup-header").html("Episode Links");
+        popupBox.find(".popup-header").html("Bringe the Episode");
         var table = popupBox.find("table");
         var thead = table.find("thead");
         var tbody = table.find("tbody");
@@ -110,9 +129,9 @@ _define('popup-layout', [window, 'util', 'bringe'], function (window, util, brin
             var link = streamLinks[i],
                 row;
             if (link.type == 'iframe') {
-                row = $('<tr data-id="' + link.source + '"> <td data-id="' + link.id + '">Link ' + (i + 1) + '</td> <td class="streamOrigin">' + (link.origin || link.source) + '</td> <td class="streamQuality">' + link.label + '</td> <td class="streamEpisode">Launch Episode</td> <td class="downloadEpisode"></td> </tr>');
+                row = $('<tr data-id="' + link.source + '"> <td data-id="' + link.id + '">Link ' + (i + 1) + '</td> <td class="streamOrigin">' + (link.origin || link.source) + '</td> <td class="streamQuality">' + link.label + '</td> <td class="streamEpisode">Launch</td> <td class="downloadEpisode"></td> </tr>');
             } else {
-                row = $('<tr data-id="' + link.source + '"> <td data-id="' + link.id + '">Link ' + (i + 1) + '</td> <td class="streamOrigin">' + (link.origin || link.source) + '</td> <td class="streamQuality">' + link.label + '</td> <td class="streamEpisode">Stream Episode</td> <td class="downloadEpisode">Download</td> </tr>');
+                row = $('<tr data-id="' + link.source + '"> <td data-id="' + link.id + '">Link ' + (i + 1) + '</td> <td class="streamOrigin">' + (link.origin || link.source) + '</td> <td class="streamQuality">' + link.label + '</td> <td class="streamEpisode">Stream</td> <td class="downloadEpisode">Download</td> </tr>');
             }
             tbody.append(row);
             var downloadButton = row.find(".downloadEpisode");
@@ -135,7 +154,12 @@ _define('popup-layout', [window, 'util', 'bringe'], function (window, util, brin
                 util.fireEvent("openSerieStream", [{id: id, source: source}]);
             });
         }
-        openPopup();
+        if (serie.episodeResponses && serie.episodeResponses.complete) {
+            popupBox.find(".popup-fetching").hide();
+        } else {
+            popupBox.find(".popup-fetching").show();
+        }
+        openPopup(serie.title, serie.seasonNo, serie.episodeNo);
     }
 
     function openEpisodeSubtitlePopup(episode) {
@@ -178,6 +202,7 @@ _define('popup-layout', [window, 'util', 'bringe'], function (window, util, brin
     }
 
     return {
+        getPopupData: getPopupData,
         closePopup: closePopup,
         openWaiter: openWaiter,
         closeWaiter: closeWaiter,

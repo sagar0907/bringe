@@ -79,8 +79,8 @@ _define('util', [window], function (window) {
     }
 
     function ajaxPromise(url, type, data, headers, callbackArgument) {
-        return new Promise(function(resolve, reject) {
-            if(callbackArgument) {
+        return new Promise(function (resolve, reject) {
+            if (callbackArgument) {
 
             } else {
                 sendAjax(url, type, data, resolve, reject, headers);
@@ -127,6 +127,12 @@ _define('util', [window], function (window) {
         }
     }
 
+    function eachDomObj(list, callback) {
+        for (var i = 0; i < list.length; i++) {
+            callback($(list[i]), i, list.length);
+        }
+    }
+
     function filter(arr, callback) {
         var array = [],
             i;
@@ -170,6 +176,11 @@ _define('util', [window], function (window) {
         }
     }
 
+    function getDocFromHTML(html) {
+        var doc = new DOMParser().parseFromString(html, "text/html");
+        return $(doc);
+    }
+
     function getProxy(target, args, scope) {
         scope = scope || null;
         args = args || [];
@@ -210,8 +221,10 @@ _define('util', [window], function (window) {
         isSet: isSet,
         isArray: isArray,
         each: each,
+        eachDomObj: eachDomObj,
         any: any,
         filter: filter,
+        getDocFromHTML: getDocFromHTML,
         getProxy: getProxy,
         fireEvent: fireEvent,
         listenEvent: listenEvent,

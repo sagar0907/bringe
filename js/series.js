@@ -3,10 +3,11 @@ _define('series', [window, 'util', 'bringe', 'layout', 'fseries', '123series', '
 
         var serieAdapters = {
             'fseries': fseries,
+            'watchseries': watchseries,
             '123series': series123,
-            '123seriesonline': seriesonline123,
-            'watchseries': watchseries
+            '123seriesonline': seriesonline123
         };
+        var totalCount = 3;
 
         function handleSerieResponse() {
 
@@ -16,9 +17,33 @@ _define('series', [window, 'util', 'bringe', 'layout', 'fseries', '123series', '
 
         }
 
-        function handleEpisodeResponse(success) {
-            if (success) {
-                layout.showEpisodeStreamLink();
+        function handleEpisodeResponse(object) {
+            var thisSerie = bringe.serie,
+                popupData = layout.popup.getPopupData();
+            if (thisSerie.title != object.name || thisSerie.seasonNo != object.seasonNo || thisSerie.episodeNo != object.episodeNo) return;
+            if (object.status) {
+                var site = object.site;
+                if (!thisSerie.episodeResponses[site]) {
+                    thisSerie.episodeResponses[site] = true;
+                    thisSerie.episodeResponses.count++;
+                    if (thisSerie.episodeResponses.count === 1) {
+                        layout.showEpisodeStreamLink();
+                    }
+                }
+                if (object.complete) {
+                    thisSerie.episodeResponses.successCount++;
+                }
+                if (popupData.status && popupData.name === thisSerie.title) {
+                    layout.popup.openEpisodesStreamPopup(thisSerie, getStreamLinks());
+                }
+            } else {
+                thisSerie.episodeResponses.successCount++;
+            }
+            if (thisSerie.episodeResponses.successCount === totalCount) {
+                thisSerie.episodeResponses.complete = true;
+                if (popupData.status && popupData.name === thisSerie.title) {
+                    layout.popup.openEpisodesStreamPopup(thisSerie, getStreamLinks());
+                }
             }
         }
 
@@ -91,6 +116,7 @@ _define('series', [window, 'util', 'bringe', 'layout', 'fseries', '123series', '
 
         function loadEpisode() {
             if (bringe.page != "serie") return;
+            bringe.serie.episodeResponses = {count: 0, successCount: 0, complete: false};
             var obj = {title: bringe.serie.title, seasonNo: bringe.serie.seasonNo, episodeNo: bringe.serie.episodeNo};
             util.each(serieAdapters, function(serieAdapter){
                 if (util.isFunction(serieAdapter.loadEpisode)) {

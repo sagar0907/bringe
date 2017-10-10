@@ -8,7 +8,8 @@ _define('movies', [window, 'util', 'bringe', 'layout', 'fmovies', '123movies', '
         var totalSites = 3;
 
         function handleResponse(object) {
-            var thisMovie = bringe.movie;
+            var thisMovie = bringe.movie,
+                popupData = layout.popup.getPopupData();
             if (thisMovie.name != object.name) return;
             if (object.status) {
                 var site = object.site;
@@ -17,7 +18,6 @@ _define('movies', [window, 'util', 'bringe', 'layout', 'fmovies', '123movies', '
                     thisMovie.movieRespones.count++;
                     if (thisMovie.movieRespones.count === 1) {
                         layout.showMovieStreamLink();
-                        layout.movieLoadComplete();
                     }
                 }
                 thisMovie.streamLinkDetails = thisMovie.streamLinkDetails || [];
@@ -25,13 +25,19 @@ _define('movies', [window, 'util', 'bringe', 'layout', 'fmovies', '123movies', '
                     thisMovie.streamLinkDetails.push(object.linkDetails[i]);
                 }
                 if (object.complete) {
-                    thisMovie.successCount++;
+                    thisMovie.movieRespones.successCount++;
+                }
+                if (popupData.status && popupData.name === thisMovie.title) {
+                    layout.popup.openMovieStreamPopup(thisMovie);
                 }
             } else {
-                thisMovie.successCount++;
+                thisMovie.movieRespones.successCount++;
             }
             if (thisMovie.movieRespones.successCount === totalSites) {
-                layout.movieLoadComplete();
+                thisMovie.movieRespones.complete = true;
+                if (popupData.status && popupData.name === thisMovie.title) {
+                    layout.popup.openMovieStreamPopup(thisMovie);
+                }
             }
         }
 
@@ -99,7 +105,7 @@ _define('movies', [window, 'util', 'bringe', 'layout', 'fmovies', '123movies', '
             if (bringe.page != "movie") return;
             layout.findingMovieLink();
             var thisMovie = bringe.movie;
-            thisMovie.movieRespones = {count: 0, successCount: 0};
+            thisMovie.movieRespones = {count: 0, successCount: 0, complete: false};
             util.each(movieAdapters, function (movieAdapter) {
                 movieAdapter.loadMovie(thisMovie.name, thisMovie.year, handleResponse);
             });

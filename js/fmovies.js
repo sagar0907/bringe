@@ -218,25 +218,19 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
             }
         }
         promisesLeft = promises.length;
+        if (promisesLeft == 0) {
+            failFunction(name, null, true);
+        }
         function completeAPromise() {
             promisesLeft--;
             if (promisesLeft == 0) {
-                if (!linkFound) {
+                if (linkFound) {
                     successFunction(name, [], true);
                 } else {
                     failFunction(name, null, true);
                 }
             }
         }
-        Promise.all(promises).then(function () {
-            if (!linkFound) {
-                failFunction(name);
-            }
-        }).catch(function (error) {
-            if (!linkFound) {
-                failFunction(name, error);
-            }
-        });
         util.each(promises, function (promise, index) {
             promise.then(function (json) {
                 if (bringe.page != "movie") return;
@@ -273,8 +267,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
         var searchSucceeded = false;
         util.ajaxPromise(base_url).then(function (result) {
             if (bringe.page != "movie") return;
-            var doc = new DOMParser().parseFromString(result, "text/html"),
-                myDoc = $(doc),
+            var myDoc = util.getDocFromHTML(result),
                 searchNames = getMovieSearchTerms(name),
                 link,
                 promises = [];
@@ -301,8 +294,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                     } catch (ignore) {
                     }
                     if (!result.html) return;
-                    var doc = new DOMParser().parseFromString(result.html, "text/html"),
-                        myDoc = $(doc),
+                    var myDoc = util.getDocFromHTML(result.html),
                         movieItems = myDoc.find(".item"),
                         path;
                     if (movieItems.length == 0) return;

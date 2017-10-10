@@ -478,7 +478,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
 
         function openEpisodesStreamPopup() {
             var streamLinks = series.getStreamLinks();
-            layout.popup.openEpisodesStreamPopup(streamLinks);
+            layout.popup.openEpisodesStreamPopup(bringe.serie, streamLinks);
         }
 
         function openEpisodesSubtitlePopup() {

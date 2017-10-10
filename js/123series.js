@@ -1,5 +1,18 @@
 _define('123series', [window, 'util', 'bringe'], function (window, util, bringe) {
-    var base_url = "https://123movies.io";
+    var base_url = "https://123movies.io",
+        episodeCallback;
+
+    function ignoreError(error) {
+    }
+    function failEpisodeFunction(name, seasonNo, episodeNo, error) {
+        if (bringe.page != "serie") return;
+        episodeCallback({site: "123series", status: false, name: name, seasonNo: seasonNo, episodeNo: episodeNo});
+    }
+
+    function successEpisodeFunction(name, seasonNo, episodeNo, complete) {
+        if (bringe.page != "serie") return;
+        episodeCallback({site: "123series", status: true, name: name, seasonNo: seasonNo, episodeNo: episodeNo, complete: complete});
+    }
 
     function getSeasonData(sNo) {
         bringe.serie.websites.series123 = bringe.serie.websites.series123 || {};
@@ -53,21 +66,19 @@ _define('123series', [window, 'util', 'bringe'], function (window, util, bringe)
 
     function getSearchedSerie(title, movieItems) {
         if (movieItems.length == 1) {
-            return movieItems;
+            return $(movieItems[0]);
         }
-        var movieNames = [],
-            fIndex,
-            itemIndex;
-        for (itemIndex = 0; itemIndex < movieItems.length; itemIndex++) {
-            movieNames.push($(movieItems[itemIndex]).find(".mli-info h2").html());
-        }
-        for (fIndex = 0; fIndex < isSameNameFunctions.length; fIndex++) {
-            for (itemIndex = 0; itemIndex < movieNames.length; itemIndex++) {
-                if (isSameNameFunctions[fIndex](movieNames[itemIndex], title)) {
-                    return movieItems[itemIndex];
+        var movieNames = [];
+        util.eachDomObj(movieItems, function (movieItem) {
+            movieNames.push(movieItem.find(".mli-info h2").html());
+        });
+        return util.any(isSameNameFunctions, function (isSameNameFunction) {
+            return util.any(movieNames, function (movieName, index) {
+                if (isSameNameFunction(movieName, title)) {
+                    return $(movieItems[index]);
                 }
-            }
-        }
+            });
+        });
     }
 
     function getStreamLinks(obj) {
@@ -111,103 +122,110 @@ _define('123series', [window, 'util', 'bringe'], function (window, util, bringe)
     }
 
     function loadEpisode(obj, callback) {
-        var seasonNo = obj.seasonNo,
+        episodeCallback = callback;
+        var name = obj.title,
+            seasonNo = obj.seasonNo,
             episodeNo = obj.episodeNo,
             episodeData = getEpisodeData(seasonNo, episodeNo),
             ids = episodeData.ids,
-            url = base_url + '/ajax/load_embed/';
-        getEpisodeData(seasonNo, episodeNo).streams = [];
-        function episodeSuccessFunction(episodeData, index, result) {
-            try {
-                result = JSON.parse(result);
-            } catch (ignore) {
-            }
-            if (result && result.status == 1 && result.embed_url) {
-                var extUrl = result.embed_url,
-                    source = {};
-                source.src = extUrl;
-                if (extUrl[0] == '/') {
-                    source.src = 'https:' + extUrl;
-                }
-                source.file = source.src;
-                source.res = '-';
-                source.label = '-';
-                source.source = "123series";
-                source.id = '123-' + index + '*' + source.res;
-                source.type = 'iframe';
-                source.origin = getOriginFromUrl(source.src) || '123movies';
-                source.subtitles = [];
-                episodeData.streams = episodeData.streams || [];
-                episodeData.streams.push(source);
-                callback(true, {site: "123series"});
+            url = base_url + '/ajax/load_embed/',
+            promises = [],
+            success = false;
+        episodeData.streams = [];
+        util.each(ids, function (id) {
+            promises.push(util.ajaxPromise(url + id));
+        });
+        Promise.all(promises).then(function () {
+            if (success) {
+                successEpisodeFunction(name, seasonNo, episodeNo, true);
             } else {
-                callback(false, {site: "123series"});
+                failEpisodeFunction(name, seasonNo, episodeNo);
             }
-        }
-        util.each(ids, function(id, index) {
-            util.sendAjax(url + id, "GET", {}, util.getProxy(episodeSuccessFunction, [episodeData, index + 1]), util.getProxy(callback, [false, {site: "123series"}]));
+        }).catch(function(error) {
+            if (success) {
+                successEpisodeFunction(name, seasonNo, episodeNo, true, error);
+            } else {
+                failEpisodeFunction(name, seasonNo, episodeNo, error);
+            }
+        });
+        util.each(promises, function(promise, index) {
+            promise.then(function(result) {
+                try {
+                    result = JSON.parse(result);
+                } catch (ignore) {
+                }
+                if (result && result.status == 1 && result.embed_url) {
+                    var extUrl = result.embed_url,
+                        source = {};
+                    source.src = extUrl;
+                    if (extUrl[0] == '/') {
+                        source.src = 'https:' + extUrl;
+                    }
+                    source.file = source.src;
+                    source.res = '-';
+                    source.label = '-';
+                    source.source = "123series";
+                    source.id = '123-' + (index+1) + '*' + source.res;
+                    source.type = 'iframe';
+                    source.origin = getOriginFromUrl(source.src) || '123movies';
+                    source.subtitles = [];
+                    episodeData.streams = episodeData.streams || [];
+                    episodeData.streams.push(source);
+                    success = true;
+                    successEpisodeFunction(name, seasonNo, episodeNo);
+                }
+            }).catch(function(error) {
+                ignoreError(error);
+            });
         });
     }
 
     function loadSeason(obj, callback) {
+        if (!bringe.serie.websites || !bringe.serie.websites.series123 || !bringe.serie.websites.series123.serieId) {
+            callback(false, {site: "123series"});
+        }
         var seasonNo = obj.seasonNo,
-            link;
-
-        function seasonSuccessFunction(result) {
-            var doc = new DOMParser().parseFromString(result, "text/html"),
-                myDoc = $(doc),
+            link = base_url + '/ajax/v2_get_episodes/s' + seasonNo + '-' + bringe.serie.websites.series123.serieId;
+        util.ajaxPromise(link).then(function (result) {
+            var myDoc = util.getDocFromHTML(result),
                 servers = myDoc.find('.le-server'),
-                server, i,
-                links, j,
-                link, epNo,
-                epId,
                 success = false;
             getSeasonData(seasonNo).episodes = [];
-            for (i = 0; i < servers.length; i++) {
-                server = $(servers[i]);
-                links = server.find('.les-content a');
-                for (j = 0; j < links.length; j++) {
-                    link = $(links[j]);
-                    epNo = getEpisodeNoFromLink(link);
-                    epId = link.attr('episode-id');
-                    if (epId) {
-                        success = true;
-                        var episodeData = getEpisodeData(seasonNo, epNo);
-                        episodeData.ids = episodeData.ids || [];
-                        episodeData.ids.push(epId);
-                    }
-                }
-            }
+            util.eachDomObj(servers, function (server) {
+                var links = server.find('.les-content a');
+                util.eachDomObj(links, function (link) {
+                    var epNo = getEpisodeNoFromLink(link);
+                    var epId = link.attr('episode-id');
+                    if (!epNo || !epId) return;
+                    success = true;
+                    var episodeData = getEpisodeData(seasonNo, epNo);
+                    episodeData.ids = episodeData.ids || [];
+                    episodeData.ids.push(epId);
+                });
+            });
             callback(success, {site: "123series"});
-        }
-
-        if (bringe.serie.websites && bringe.serie.websites.series123 && bringe.serie.websites.series123.serieId) {
-            link = base_url + '/ajax/v2_get_episodes/s' + seasonNo + '-' + bringe.serie.websites.series123.serieId;
-            util.sendAjax(link, "GET", {}, util.getProxy(seasonSuccessFunction), util.getProxy(callback, [false, {site: "123series"}]));
-        }
+        }).catch(function (error) {
+            callback(false, {site: "123series"}, error);
+        });
     }
 
     function loadSerie(obj, callback) {
         var searchTerm = util.getSearchTerm(obj.title);
         var link = base_url + '/serie/search/' + searchTerm + '/view/all/all';
-
-        function searchSuccessFunction(result) {
-            var doc = new DOMParser().parseFromString(result, "text/html"),
-                myDoc = $(doc),
+        util.ajaxPromise(link).then(function (result) {
+            var myDoc = util.getDocFromHTML(result),
                 movieItems = myDoc.find(".movies-list .ml-item");
-            if (movieItems.length > 0) {
-                var movieItem = getSearchedSerie(obj.title, movieItems);
-                if (movieItem) {
-                    var movieId = $(movieItem).attr("data-movie-id");
-                    bringe.serie.websites.series123 = bringe.serie.websites.series123 || {};
-                    bringe.serie.websites.series123.serieId = movieId;
-                    callback(true, {site: "123series"});
-                    return;
-                }
+            var movieItem = getSearchedSerie(obj.title, movieItems);
+            if (!movieItem) {
+                return callback(false, {site: "123series"});
             }
-            callback(false, {site: "123series"});
-        }
-        util.sendAjax(link, "GET", {}, searchSuccessFunction, util.getProxy(callback, [false, {site: "123series"}]));
+            var movieId = $(movieItem).attr("data-movie-id");
+            bringe.serie.websites.series123 = bringe.serie.websites.series123 || {};
+            bringe.serie.websites.series123.serieId = movieId;
+            callback(true, {site: "123series"});
+        }).catch(function (error) {
+            callback(false, {site: "123series"}, error);
+        });
     }
 
     return {

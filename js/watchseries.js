@@ -1,5 +1,23 @@
 _define('watchseries', [window, 'util', 'bringe'], function (window, util, bringe) {
-    var base_url = 'http://ewatchseries.to';
+    var base_url = 'http://ewatchseries.to',
+        episodeCallback;
+
+    function failEpisodeFunction(name, seasonNo, episodeNo, error) {
+        if (bringe.page != "serie") return;
+        episodeCallback({site: "watchseries", status: false, name: name, seasonNo: seasonNo, episodeNo: episodeNo});
+    }
+
+    function successEpisodeFunction(name, seasonNo, episodeNo, complete) {
+        if (bringe.page != "serie") return;
+        episodeCallback({
+            site: "watchseries",
+            status: true,
+            name: name,
+            seasonNo: seasonNo,
+            episodeNo: episodeNo,
+            complete: complete
+        });
+    }
 
     function getSeasonData(sNo) {
         bringe.serie.websites.watchSeries = bringe.serie.websites.watchSeries || {};
@@ -70,54 +88,6 @@ _define('watchseries', [window, 'util', 'bringe'], function (window, util, bring
         }
     }
 
-    function seriePageSuccessFunction(result) {
-        if (bringe.page != "serie" || !result) return;
-        var parser = new DOMParser(),
-            doc = parser.parseFromString(result, "text/html"),
-            myDoc = $(doc),
-            seasonNo,
-            episodeNo,
-            episode,
-            link,
-            i, j;
-        var seasons = myDoc.find("div[itemprop='season']");
-        for (i = 0; i < seasons.length; i++) {
-            var list = $(seasons[i]).find("ul.listings"),
-                episodeList = list.find("li[itemprop='episode']");
-            seasonNo = parseInt(list.attr("id").replace("listing_", ""));
-            if (seasonNo > 0) {
-                for (j = 0; j < episodeList.length; j++) {
-                    episode = $(episodeList[j]);
-                    episodeNo = parseInt(episode.find("meta[itemprop='episodenumber']").attr("content"));
-                    link = episode.find("meta[itemprop='url']").attr("content");
-                    if (episodeNo > 0) {
-                        var episodeData = getEpisodeData(seasonNo, episodeNo);
-                        episodeData.link = link;
-                    }
-                }
-            }
-        }
-    }
-
-    function streamLinkSuccessFunction(episode, index, callback, result) {
-        var parser = new DOMParser(),
-            doc = parser.parseFromString(result, "text/html"),
-            myDoc = $(doc),
-            link,
-            obj = {},
-            script = $(myDoc.find("#player_code script")[2]).text(),
-            arr = script.split("src: '")[1];
-        if (arr && arr != '') {
-            link = arr.split("'")[0];
-            if (link && link != '') {
-                episode.streams = episode.streams || [];
-                obj = {src: link, res: "-", label: "-", source: "watchseries", id: index + '', origin: 'gorillavid'};
-                episode.streams.push(obj);
-                callback(true, {site: "watchseries"});
-            }
-        }
-    }
-
     function getEpisodeBySelector(selector) {
         var id = selector.id,
             seasonNo = selector.seasonNo,
@@ -136,55 +106,120 @@ _define('watchseries', [window, 'util', 'bringe'], function (window, util, bring
     }
 
     function loadEpisode(obj, callback) {
-        var seasonNo = obj.seasonNo,
+        episodeCallback = callback;
+        var name = obj.title,
+            seasonNo = obj.seasonNo,
             episodeNo = obj.episodeNo,
             episode = getEpisodeData(seasonNo, episodeNo),
-            link = episode.link;
-        function episodeSuccessFunction(result) {
+            link = episode.link,
+            promises = [];
+        if (!link) {
+            throw Error('Link Not Found');
+        }
+        util.ajaxPromise(link).then(function (response) {
             if (bringe.page != "serie") return;
-            var parser = new DOMParser(),
-                doc = parser.parseFromString(result, "text/html"),
-                myDoc = $(doc),
-                rows = myDoc.find("table#myTable tr"),
-                row, i;
+            var doc = util.getDocFromHTML(response),
+                rows = doc.find("table#myTable tr"),
+                success = false;
             episode.streams = [];
             rows = getWorthyRows(rows);
-            for (i = 0; i < rows.length; i++) {
+            util.each(rows, function (row) {
+                row = $(row);
                 var page = {};
-                row = $(rows[i]);
                 page.linkId = $(row).attr("id").replace("link_", "");
                 page.redirector = $(row).find("td a.buttonlink").attr("href");
                 page.pageId = $(row).find("td.deletelinks a").attr("onclick") + "";
                 page.pageId = getPageId(page.pageId);
-                if (page.pageId && page.pageId != '') {
-                    var link = "http://gorillavid.in/" + page.pageId;
-                    util.sendAjax(link, "POST", {id: page.pageId, op: 'download1', method_free: 'Free Download'}, util.getProxy(streamLinkSuccessFunction, [episode, i+1, callback]), util.getProxy(callback, [false, {site: "watchseries"}]));
+                if (!page.pageId || page.pageId == '') return;
+                var link = "http://gorillavid.in/" + page.pageId;
+                promises.push(util.ajaxPromise(link, 'POST', {
+                    id: page.pageId,
+                    op: 'download1',
+                    method_free: 'Free Download'
+                }));
+            });
+            Promise.all(promises).then(function() {
+                if (success) {
+                    successEpisodeFunction(name, seasonNo, episodeNo, true);
+                } else {
+                    failEpisodeFunction(name, seasonNo, episodeNo);
                 }
-            }
-        }
-        if (link) {
-            util.sendAjax(link, "GET", {}, episodeSuccessFunction, util.getProxy(callback, [false, {site: "watchseries"}]));
-        }
+            }).catch(function () {
+                if (success) {
+                    successEpisodeFunction(name, seasonNo, episodeNo, true);
+                } else {
+                    failEpisodeFunction(name, seasonNo, episodeNo);
+                }
+            });
+            util.each(promises, function (promise, i) {
+                promise.then(function (result) {
+                    var doc = util.getDocFromHTML(result),
+                        script = $(doc.find("#player_code script")[2]).text(),
+                        arr = script.split("src: '")[1];
+                    if (!arr || arr == '') return;
+                    var link = arr.split("'")[0];
+                    if (!link || link == '') return;
+                    episode.streams = episode.streams || [];
+                    obj = {
+                        src: link,
+                        res: "-",
+                        label: "-",
+                        source: "watchseries",
+                        id: (i + 1) + '',
+                        origin: 'gorillavid'
+                    };
+                    episode.streams.push(obj);
+                    success = true;
+                    successEpisodeFunction(name, seasonNo, episodeNo);
+                });
+            })
+        }).catch(function (error) {
+            failEpisodeFunction(name, seasonNo, episodeNo, error);
+        });
     }
 
     function loadSerie(obj, callback) {
         var serieName = obj.title,
             searchName = getWatchSeriesSearchTerm(serieName),
             link = base_url + '/show/search-shows-json';
-
-        function searchSuccessFunction(result) {
+        util.ajaxPromise(link, "POST", {term: searchName}).then(function (result) {
             if (bringe.page != "serie") return;
             try {
                 result = JSON.parse(result);
             } catch (e) {
             }
             var seo_url = getSearchedSerie(serieName, result);
-            if (seo_url) {
-                var link = base_url + '/serie/' + seo_url;
-                util.sendAjax(link, "GET", {}, seriePageSuccessFunction, util.getProxy(callback, [false, {site: "watchseries"}]));
+            if (!seo_url) {
+                throw Error('Search Failed');
             }
-        }
-        util.sendAjax(link, "POST", {term: searchName}, searchSuccessFunction, util.getProxy(callback, [false, {site: "watchseries"}]));
+            var link = base_url + '/serie/' + seo_url;
+            return util.ajaxPromise(link);
+        }).then(function (response) {
+            if (bringe.page != "serie" || !response) return;
+            var myDoc = util.getDocFromHTML(response),
+                seasonNo,
+                episodeNo,
+                episode,
+                link,
+                seasons = myDoc.find("div[itemprop='season']");
+            util.eachDomObj(seasons, function (season) {
+                var list = season.find("ul.listings"),
+                    episodeList = list.find("li[itemprop='episode']");
+                seasonNo = parseInt(list.attr("id").replace("listing_", ""));
+                if (seasonNo > 0) {
+                    util.eachDomObj(episodeList, function (episode) {
+                        episodeNo = parseInt(episode.find("meta[itemprop='episodenumber']").attr("content"));
+                        link = episode.find("meta[itemprop='url']").attr("content");
+                        if (episodeNo > 0) {
+                            var episodeData = getEpisodeData(seasonNo, episodeNo);
+                            episodeData.link = link;
+                        }
+                    });
+                }
+            });
+        }).catch(function (error) {
+            callback(false, {site: "watchseries"}, error);
+        });
     }
 
     return {

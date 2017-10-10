@@ -1,14 +1,15 @@
 _define('goseries', [window, 'util', 'bringe'], function (window, util, bringe) {
-    var seasonCallback;
     var episodeCallback;
     var base_url = "https://gostream.is";
 
-    function failSeasonFunction() {
-        seasonCallback(false, {site: "goseries"});
-    }
-    function failEpisodeFunction() {
+    function failEpisodeFunction(name, seasonNo, episodeNo) {
         if (bringe.page != "serie") return;
-        episodeCallback(false, {site: "goseries"});
+        episodeCallback({site: "goseries", status: false, name: name, seasonNo: seasonNo, episodeNo: episodeNo});
+    }
+
+    function successEpisodeFunction(name, seasonNo, episodeNo, complete) {
+        if (bringe.page != "serie") return;
+        episodeCallback({site: "goseries", status: true, name: name, seasonNo: seasonNo, episodeNo: episodeNo, complete: complete});
     }
 
     function getSeasonData(sNo) {
@@ -31,7 +32,7 @@ _define('goseries', [window, 'util', 'bringe'], function (window, util, bringe) 
     function getLinkById(streams, id) {
         var link = null;
         link = util.any(streams, function (stream) {
-            if(stream.id === id) {
+            if (stream.id === id) {
                 link = stream;
                 return link;
             }
@@ -39,23 +40,27 @@ _define('goseries', [window, 'util', 'bringe'], function (window, util, bringe) 
         return link;
     }
 
-    function isSameMovieName1(a, b) {
-        a = a.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "");
-        b = b.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "");
-        return a == b;
-    }
+    var isSameNameFunctions = function () {
+        function isSameMovieName1(a, b) {
+            a = a.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "");
+            b = b.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "");
+            return a == b;
+        }
 
-    function isSameMovieName2(a, b) {
-        a = a.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
-        b = b.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
-        return a == b;
-    }
+        function isSameMovieName2(a, b) {
+            a = a.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
+            b = b.trim().toLowerCase().replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
+            return a == b;
+        }
 
-    function isSameMovieName3(a, b) {
-        a = a.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
-        b = b.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
-        return a == b;
-    }
+        function isSameMovieName3(a, b) {
+            a = a.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
+            b = b.trim().toLowerCase().replace(/\(.*\)/, "").replaceAll(" ", "").replaceAll(/:|,|-|'|"|\(|\)/, "").replace("the", "");
+            return a == b;
+        }
+
+        return [isSameMovieName1, isSameMovieName2, isSameMovieName3];
+    };
 
     function getMovies123SearchTerm(serieName, seasonNo) {
         var searchTerm = serieName;
@@ -66,38 +71,24 @@ _define('goseries', [window, 'util', 'bringe'], function (window, util, bringe) 
         return searchTerm;
     }
 
-    function getMovies123SearchedMovie(movieItems) {
+    function getSearchedSerie(title, seasonNo, movieItems) {
         if (movieItems.length == 1) {
-            return movieItems;
+            return $(movieItems[0]);
         }
-        var movieItem, movieName,
-            title = bringe.serie.title,
-            seasonNo = bringe.season.seasonNo;
-        for (var i = 0; i < movieItems.length; i++) {
-            movieItem = movieItems[i];
-            movieName = $(movieItem).find("a").attr("title");
-            if (isSameMovieName1(movieName, title + " - Season " + seasonNo)) {
-                return movieItem;
-            }
-        }
-        for (i = 0; i < movieItems.length; i++) {
-            movieItem = movieItems[i];
-            movieName = $(movieItem).find("a").attr("title");
-            if (isSameMovieName2(movieName, title + " - Season " + seasonNo)) {
-                return movieItem;
-            }
-        }
-        for (i = 0; i < movieItems.length; i++) {
-            movieItem = movieItems[i];
-            movieName = $(movieItem).find("a").attr("title");
-            if (isSameMovieName3(movieName, title + " - Season " + seasonNo)) {
-                return movieItem;
-            }
-        }
-        failSeasonFunction();
+        var movieNames = [];
+        util.eachDomObj(movieItems, function (movieItem) {
+            movieNames.push(movieItem.find(".mli-info h2").html());
+        });
+        return util.any(isSameNameFunctions, function (isSameNameFunction) {
+            return util.any(movieNames, function (movieName, index) {
+                if (isSameNameFunction(movieName, title + " - Season " + seasonNo)) {
+                    return $(movieItems[index]);
+                }
+            });
+        });
     }
 
-    function dataHandler(eid, seasonNo, episodeNo, result) {
+    function dataHandler(eid, name, seasonNo, episodeNo, result) {
         try {
             result = JSON.parse(result);
             if (result && result.playlist && result.playlist[0] && result.playlist[0].sources && result.playlist[0].sources.length > 0) {
@@ -119,36 +110,11 @@ _define('goseries', [window, 'util', 'bringe'], function (window, util, bringe) 
                 var episodeData = getEpisodeData(seasonNo, episodeNo);
                 episodeData.streams = episodeData.streams || [];
                 Array.prototype.push.apply(episodeData.streams, sourceList);
-                episodeCallback(true, {site: "goseries"});
-            } else {
-                failEpisodeFunction();
+                successEpisodeFunction(name, seasonNo, episodeNo);
+                return true;
             }
         } catch (error) {
-            failEpisodeFunction();
-        }
-    }
-
-    function hashSuccessFunction(eid, seasonNo, episodeNo, result) {
-        var parts = result.split(',');
-        var x = parts[0].split("'")[1];
-        var y = parts[1].split("'")[1];
-        var link = base_url + '/ajax/movie_sources/' + eid + '?x=' + x + '&y=' + y;
-        if (x && y) {
-            util.sendAjax(link, "GET", {}, util.getProxy(dataHandler, [eid, seasonNo, episodeNo]), failEpisodeFunction);
-        } else {
-            failEpisodeFunction();
-        }
-    }
-
-    function getMovies123MovieLinks(eids, seasonNo, episodeNo) {
-        if (eids && eids.length > 0) {
-            for (var i = 0; i < eids.length; i++) {
-                var eid = eids[i];
-                var link = base_url + '/ajax/movie_token?eid=' + eid + '&mid=' + getSeasonData(seasonNo).seasonId;
-                util.sendAjax(link, "GET", {}, util.getProxy(hashSuccessFunction, [eid, seasonNo, episodeNo]), failEpisodeFunction);
-            }
-        } else {
-            failEpisodeFunction();
+            return false;
         }
     }
 
@@ -171,8 +137,8 @@ _define('goseries', [window, 'util', 'bringe'], function (window, util, bringe) 
     }
 
     function retrieveDataFromLink(link, seasonNo, serverId) {
-        var title = $(link).attr("title"),
-            linkId = $(link).attr("data-id"),
+        var title = link.attr("title"),
+            linkId = link.attr("data-id"),
             episodeNo = getEpisodeNoFromTitle(title),
             episodeData;
         if (linkId && episodeNo) {
@@ -184,85 +150,104 @@ _define('goseries', [window, 'util', 'bringe'], function (window, util, bringe) 
         return false;
     }
 
-    function episodesSuccessFunction(seasonNo, result) {
-        if (bringe.page != "serie") return;
-        try {
-            var json = JSON.parse(result);
-            var success = false;
-            if (json.status) {
-                var doc = new DOMParser().parseFromString(json.html, "text/html"),
-                    myDoc = $(doc),
-                    servers = myDoc.find(".le-server");
-                clearOldSeasonData(seasonNo);
-                if (servers.length > 0) {
-                    for (var i = 0; i < servers.length; i++) {
-                        var server = servers[i],
-                            serverId = $(server).attr("data-id");
-                        var title = $(server).find(".les-title").text();
-                        if (title.indexOf("OpenLoad") !== -1) {
-                            continue;
-                        }
-                        var links = $(server).find("a.btn-eps").toArray();
-                        if (links) {
-                            util.each(links, function (link) {
-                                success = retrieveDataFromLink(link, seasonNo, serverId) || success;
-                            });
-                        }
-                    }
-                    seasonCallback(success, {site: "goseries"});
-                    return;
-                }
-            }
-            failSeasonFunction();
-        } catch (ignore) {
-            failSeasonFunction();
-        }
-    }
-
-    function seasonPageSuccessFunction(seasonNo, result) {
-        if (bringe.page != "serie") return;
-        var doc = new DOMParser().parseFromString(result, "text/html"),
-            myDoc = $(doc),
-            url = myDoc.find(".fb-comments").attr("data-href"),
-            movies123MovieId = getMovieId(url),
-            movies123FetchLink = base_url + "/ajax/movie_episodes/" + movies123MovieId;
-        getSeasonData(seasonNo).seasonId = movies123MovieId;
-        util.sendAjax(movies123FetchLink, "GET", {}, util.getProxy(episodesSuccessFunction, [seasonNo]), failSeasonFunction);
-    }
-
-    function searchSuccessFunction(seasonNo, result) {
-        if (bringe.page != "serie") return;
-        var doc = new DOMParser().parseFromString(result, "text/html"),
-            myDoc = $(doc);
-        var movieItems = myDoc.find(".movies-list .ml-item");
-        if (movieItems.length > 0) {
-            var movieItem = getMovies123SearchedMovie(movieItems);
-            if (movieItem) {
-                var movies123MoviePageLink = $(movieItem).find("a").attr("href") + "watching.html";
-                util.sendAjax(movies123MoviePageLink, "GET", {}, util.getProxy(seasonPageSuccessFunction, [seasonNo]), failSeasonFunction);
-                return;
-            }
-        }
-        failSeasonFunction();
-    }
-
-    function loadSeason(obj, func) {
+    function loadSeason(obj, callback) {
         var serieName = obj.title,
             seasonNo = obj.seasonNo;
-        seasonCallback = func;
         var searchName = getMovies123SearchTerm(serieName, seasonNo);
         var link = base_url + '/movie/search/' + searchName;
-        util.sendAjax(link, "GET", {}, util.getProxy(searchSuccessFunction, [seasonNo]), failSeasonFunction);
+        util.ajaxPromise(link).then(function (result) {
+            if (bringe.page != "serie") return;
+            var doc = util.getDocFromHTML(result);
+            var movieItems = doc.find(".movies-list .ml-item");
+            var movieItem = getSearchedSerie(serieName, seasonNo, movieItems);
+            if (!movieItem) {
+                throw Error('Search Failed');
+            }
+            var movies123MoviePageLink = $(movieItem).find("a").attr("href") + "watching.html";
+            return util.ajaxPromise(movies123MoviePageLink);
+        }).then(function (response) {
+            if (bringe.page != "serie" || !response) return;
+            var doc = util.getDocFromHTML(response),
+                url = doc.find(".fb-comments").attr("data-href"),
+                movies123MovieId = getMovieId(url),
+                movies123FetchLink = base_url + "/ajax/movie_episodes/" + movies123MovieId;
+            getSeasonData(seasonNo).seasonId = movies123MovieId;
+            return util.ajaxPromise(movies123FetchLink);
+        }).then(function (response) {
+            if (bringe.page != "serie" || !response) return;
+            var json = JSON.parse(response),
+                success = false;
+            if (!json.status) {
+                throw Error('Bad Response');
+            }
+            var doc = util.getDocFromHTML(json.html),
+                servers = doc.find(".le-server");
+            clearOldSeasonData(seasonNo);
+            util.eachDomObj(servers, function (server) {
+                var serverId = server.attr("data-id"),
+                    title = server.find(".les-title").text();
+                if (title.indexOf("OpenLoad") !== -1) {
+                    return;
+                }
+                var links = server.find("a.btn-eps");
+                util.eachDomObj(links, function (link) {
+                    success = retrieveDataFromLink(link, seasonNo, serverId) || success;
+                });
+            });
+            callback(success, {site: "goseries"});
+        }).catch(function (error) {
+            callback(false, {site: "goseries"}, error);
+        });
     }
 
-    function loadEpisode(obj, func) {
-        episodeCallback = func;
-        var seasonNo = obj.seasonNo,
-            episodeNo = obj.episodeNo;
-        var episodeData = getEpisodeData(seasonNo, episodeNo),
-            ids = episodeData.ids;
+    function loadEpisode(obj, callback) {
+        episodeCallback = callback;
+        var name = obj.title,
+            seasonNo = obj.seasonNo,
+            episodeNo = obj.episodeNo,
+            episodeData = getEpisodeData(seasonNo, episodeNo),
+            eids = episodeData.ids,
+            promises = [],
+            promisesLeft,
+            success = false;
         episodeData.streams = [];
-        getMovies123MovieLinks(ids, seasonNo, episodeNo);
+        if (!eids && eids.length == 0) {
+            failEpisodeFunction(name, seasonNo, episodeNo);
+        }
+        util.each(eids, function (eid) {
+            var link = base_url + '/ajax/movie_token?eid=' + eid + '&mid=' + getSeasonData(seasonNo).seasonId;
+            promises.push(util.ajaxPromise(link));
+        });
+        promisesLeft = promises.length;
+        function completeAPromise() {
+            promisesLeft--;
+            if (promisesLeft == 0) {
+                if (success) {
+                    successEpisodeFunction(name, seasonNo, episodeNo, true);
+                } else {
+                    failEpisodeFunction(name, seasonNo, episodeNo);
+                }
+            }
+        }
+
+        util.each(promises, function (promise, i) {
+            promise.then(function (response) {
+                var parts = response.split(','),
+                    x = parts[0].split("'")[1],
+                    y = parts[1].split("'")[1],
+                    link = base_url + '/ajax/movie_sources/' + eids[i] + '?x=' + x + '&y=' + y;
+                if (!x || !y) {
+                    return completeAPromise();
+                }
+                return util.ajaxPromise(link);
+            }).then(function (response) {
+                if (!response) return;
+                success = dataHandler(eids[i], name, seasonNo, episodeNo, response) || success;
+                completeAPromise();
+            }).catch(function (error) {
+                completeAPromise(error);
+            });
+        });
     }
 
     function getStreamLinks(obj) {
