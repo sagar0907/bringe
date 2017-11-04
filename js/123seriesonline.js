@@ -110,7 +110,7 @@ _define('123seriesonline', [window, 'util', 'bringe'], function (window, util, b
         source.file = source.src;
         source.res = '-';
         source.label = '-';
-        source.source = "123online";
+        source.source = "123seriesonline";
         source.id = '123online-' + index + '*' + source.res;
         source.type = 'iframe';
         source.origin = '123moviesapp';

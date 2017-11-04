@@ -1,5 +1,5 @@
 _define('watchseries', [window, 'util', 'bringe'], function (window, util, bringe) {
-    var base_url = 'http://ewatchseries.to',
+    var base_url = 'http://xwatchseries.to',
         episodeCallback;
 
     function failEpisodeFunction(name, seasonNo, episodeNo, error) {
@@ -17,6 +17,10 @@ _define('watchseries', [window, 'util', 'bringe'], function (window, util, bring
             episodeNo: episodeNo,
             complete: complete
         });
+    }
+
+    function ignoreFunction(ignore) {
+
     }
 
     function getSeasonData(sNo) {
@@ -114,7 +118,7 @@ _define('watchseries', [window, 'util', 'bringe'], function (window, util, bring
             link = episode.link,
             promises = [];
         if (!link) {
-            throw Error('Link Not Found');
+            failEpisodeFunction(name, seasonNo, episodeNo, 'Link not Found');
         }
         util.ajaxPromise(link).then(function (response) {
             if (bringe.page != "serie") return;
@@ -171,8 +175,10 @@ _define('watchseries', [window, 'util', 'bringe'], function (window, util, bring
                     episode.streams.push(obj);
                     success = true;
                     successEpisodeFunction(name, seasonNo, episodeNo);
+                }).catch(function (error) {
+                    ignoreFunction(error);
                 });
-            })
+            });
         }).catch(function (error) {
             failEpisodeFunction(name, seasonNo, episodeNo, error);
         });

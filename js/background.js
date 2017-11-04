@@ -191,7 +191,7 @@ function webListener() {
                 }
                 if (!refererSet) {
                     details.requestHeaders.push(
-                        {"name": "Referer", "value": "https://fmovies.is/film/"}
+                        {"name": "Referer", "value": "https://fmovies.se/film/"}
                         );
                 }
                 return {requestHeaders: details.requestHeaders};

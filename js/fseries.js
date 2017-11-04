@@ -14,7 +14,7 @@ _define('fseries', [window, 'util', 'bringe'], function (window, util, bringe) {
     }
 
     function hashUrl(url, params) {
-        var salt = 'ypYZrEpHb';
+        var salt = 'FuckYouBitch';
 
         function sumOfChars(str) {
             var i = 0;

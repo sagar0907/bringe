@@ -1,26 +1,39 @@
-_define('trailer', [window], function (window) {
+_define('trailer', ['util'], function (util) {
     function searchGoogle(searchTerm, func) {
         var link = "https://www.google.com/search?q=" + searchTerm;
-        $.ajax({
-            url: link,
-            success: function (result) {
-                var parser = new DOMParser(),
-                    doc = parser.parseFromString(result, "text/html"),
-                    myDoc = $(doc);
-                var links = myDoc.find("._Rm");
-                if (links.length > 0) {
-                    var link = $(links[0]).html();
-                    var id = background.util().getParameterByName("v", link);
-                    if (id && id != "") {
-                        func(true, id);
+        var promise = util.ajaxPromise(link);
+        function handleLink(link) {
+            if (link) {
+                var id = background.util().getParameterByName("v", link);
+                if (id && id != "") {
+                    func(true, id);
+                    return true;
+                }
+            }
+            return false;
+        }
+        promise.then(function (result) {
+            var doc = util.getDocFromHTML(result),
+                mainLink = doc.find("._ELb a"),
+                links = doc.find("._Rm"),
+                link;
+            if (mainLink.length > 0) {
+                link = mainLink.attr('href');
+                if (handleLink(link)) {
+                    return;
+                }
+            }
+            if (links.length > 0) {
+                for (var i = 0; i < links.length; i++) {
+                    link = $(links[i]).html();
+                    if (handleLink(link)) {
                         return;
                     }
                 }
-                func(false);
-            },
-            error: function () {
-                func(false);
             }
+            func(false);
+        }).catch(function (error) {
+            func(false, error);
         });
     }
 
