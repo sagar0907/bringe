@@ -87,8 +87,8 @@
       <file leaf-file-name="manifest.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/manifest.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
+            <state relative-caret-position="75">
+              <caret line="5" column="21" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -467,7 +467,7 @@
       <workItem from="1507663808563" duration="932000" />
       <workItem from="1508087698039" duration="954000" />
       <workItem from="1508651877566" duration="3824000" />
-      <workItem from="1509738299843" duration="2806000" />
+      <workItem from="1509738299843" duration="3131000" />
     </task>
     <task id="LOCAL-00001" summary="clean and searchResult">
       <created>1500401868374</created>
@@ -595,11 +595,18 @@
       <option name="project" value="LOCAL" />
       <updated>1509780900723</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="description change">
+      <created>1509781078672</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1509781078672</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="500428000" />
+    <option name="totallyTimeSpent" value="500753000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -662,7 +669,8 @@
     <MESSAGE value="fmovies change" />
     <MESSAGE value="changes" />
     <MESSAGE value="modifications" />
-    <option name="LAST_COMMIT_MESSAGE" value="modifications" />
+    <MESSAGE value="description change" />
+    <option name="LAST_COMMIT_MESSAGE" value="description change" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -945,8 +953,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/manifest.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
+        <state relative-caret-position="75">
+          <caret line="5" column="21" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
           <folding />
         </state>
       </provider>
