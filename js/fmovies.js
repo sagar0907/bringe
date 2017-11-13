@@ -60,7 +60,20 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
             })
             .join('&');
 
-        return url + '?' + query;
+        if (url.indexOf('?') === -1) {
+            return url + '?' + query;
+        } else {
+            return url + '&' + query;
+        }
+    }
+
+    function getDecodedParams(params) {
+        util.each(params, function(val, key) {
+            if (val[0] === '.') {
+                params[key] = util.caesarShift(val.substr(1), 8);
+            }
+        });
+        return params;
     }
 
     var isSameNameFunctions = function () {
@@ -239,11 +252,13 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
                 } catch (ignore) {
                 }
                 if (json.target) {
+                    json = getDecodedParams(json);
                     json.target = cleanSpecialUrl(json.target);
                     json.origin = getOriginFromUrl(json.target);
                     return {data: [{file: json.target, origin: json.origin, type: 'iframe'}]};
                 } else if (json && json.grabber && json.params) {
-                    var url = hashUrl(json.grabber, json.params);
+                    var params = getDecodedParams(json.params);
+                    var url = hashUrl(json.grabber, params);
                     return util.ajaxPromise(url);
                 }
                 completeAPromise();
