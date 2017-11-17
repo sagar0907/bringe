@@ -14,7 +14,7 @@ _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
     }
 
     function hashUrl(url, params) {
-        var salt = 'FuckYouBitch';
+        var salt = 'iQDWcsGqN';
 
         function sumOfChars(str) {
             var i = 0;
