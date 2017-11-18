@@ -3,7 +3,7 @@
   "name": "Bringe",
   "short_name": "Bringe",
   "description": "Get Bringe to get ratings, reviews, trailers, subtitles, Streaming / Download links and more of your favourite Movies and TV Shows",
-  "version": "0.0.1.7",
+  "version": "0.0.1.8",
   "browser_action": {
     "default_icon": "images/bringe-48.png",
     "default_title": "Bringe"
@@ -42,5 +42,6 @@
       "js/background.js"
     ],
     "persistent": true
-  }
+  },
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"
 }

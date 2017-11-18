@@ -1,6 +1,6 @@
 _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'series', 'subscene', 'imdb', 'movies', 'downloads', 'player', 'google', 'trailer'],
     function (window, util, bringe, layout, rottenTomatoes, series, subscene, imdb, movies, downloads, player, google, trailer) {
-        function searchEntered() {
+        function searchEntered(fromOmnibox) {
             var handleSearchResult = function (success, result) {
                 layout.removeSearchBuffer();
                 if (success) {
@@ -31,6 +31,11 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
             layout.clearSearchList();
             var q = $("#search-input").val();
             if (q != "") {
+                if (fromOmnibox) {
+                    util.logEvent('search', 'omnibox', q);
+                } else {
+                    util.logEvent('search', 'enter', q);
+                }
                 rottenTomatoes.searchMovie(q, handleSearchResult);
                 layout.searching();
             }
@@ -137,6 +142,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
             if (bringe.searchResults.movies[index]) {
                 layout.hideAllSection();
                 var movie = bringe.searchResults.movies[index];
+                util.logEvent('getMovie', 'click', movie.name);
                 bringe.movie = setupThisMovie(movie);
                 layout.popup.showRottenLoader($(".movie-wrapper"));
                 layout.showMoviePart();
@@ -291,6 +297,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
                     season.links.rotten = "http://www.rottentomatoes.com" + serie.url;
                     season.ratings.rotten = serie.meterValue;
                     thisSerie.seasons.push(season);
+                    util.logEvent('getSerie', 'click', serie.title + ' S1');
                     series.loadSerie();
                     getSeason(0);
                     return;
@@ -307,6 +314,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
                 thisSerie.links.rotten = rottenLink;
                 thisSerie.websites = {};
                 layout.popup.showRottenLoader($(".serie-wrapper"));
+                util.logEvent('getSerie', 'click', serie.title);
                 layout.showSeriePart();
                 rottenTomatoes.getSerie(thisSerie, handleRottenLoaded);
                 imdb.searchSerie(thisSerie.title, handleImdbLoaded);
@@ -339,6 +347,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
                 bringe.serieLevel = "season";
                 bringe.season = bringe.serie.seasons[index];
                 bringe.serie.seasonNo = bringe.season.seasonNo;
+                util.logEvent('getSeason', 'click', bringe.serie.title + ' - ' + bringe.season.seasonNo);
                 layout.popup.showRottenLoader($(".serie-wrapper"));
                 layout.showSeriePart();
                 rottenTomatoes.getSeason(bringe.season, handleRottenLoaded, handleEpisodesLoaded);
@@ -371,6 +380,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
                 bringe.episode.seasonNo = bringe.season.seasonNo;
                 bringe.episode.serieName = bringe.serie.title;
                 bringe.serie.episodeNo = bringe.episode.episodeNo;
+                util.logEvent('getEpisode', 'click', bringe.episode.serieName + ' S' + bringe.episode.seasonNo + 'E' + bringe.serie.episodeNo);
                 layout.popup.showRottenLoader($(".serie-wrapper"));
                 layout.showSeriePart();
                 rottenTomatoes.getEpisode(bringe.episode, handleRottenLoaded);
@@ -383,6 +393,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function openMovieStreamLink(selector) {
+            util.logEvent('openMovieStream', 'click');
             if (selector && selector.id) {
                 var movie = movies.getMovieBySelector(selector);
                 if (movie) {
@@ -402,10 +413,12 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function downloadMovieStreamLink(obj) {
+            util.logEvent('downloadMovieStream', 'click');
             movies.downloadMovieStreamLink(obj);
         }
 
         function downloadMovieSubtitle(id) {
+            util.logEvent('downloadMovieSubtitle', 'click');
             layout.popup.openWaiter("Adding Subtitle to Downloads");
             downloads.addToDownload(bringe.movie.subtitleLinks[id].link, bringe.movie.name, " (Bringe).zip", function (downloadId) {
                 layout.popup.closeWaiter();
@@ -416,6 +429,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function downloadEpisodeSubtitle(id) {
+            util.logEvent('downloadEpisodeSubtitle', 'click');
             var serie = bringe.serie;
             layout.popup.openWaiter("Adding Subtitle to Downloads");
             downloads.addToDownload(subscene.getSubtitleEpisode(serie.seasonNo, serie.episodeNo).links[id].link, serie.title, " (Bringe).zip", function (downloadId) {
@@ -427,6 +441,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function openSerieStreamLink(selector) {
+            util.logEvent('openSerieStream', 'click');
             if (selector && selector.id && selector.source) {
                 var episode = series.getEpisodeBySelector(selector);
                 if (episode) {
@@ -446,6 +461,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function downloadSerieStreamLink(selector) {
+            util.logEvent('downloadSerieStream', 'click');
             if (selector && selector.id && selector.source) {
                 var episode = series.getEpisodeBySelector(selector),
                     link;

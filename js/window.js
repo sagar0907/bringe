@@ -4,6 +4,16 @@ String.prototype.replaceAll = function (search, replacement) {
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-109871193-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = 'https://ssl.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
 _define('util', [window], function (window) {
     var eventsRegistered = {};
 
@@ -228,6 +238,10 @@ _define('util', [window], function (window) {
         delete eventsRegistered[eventName];
     }
 
+    function logEvent(eventName, eventType, label) {
+        _gaq.push(['_trackEvent', eventName, eventType, label]);
+    }
+
     return {
         isSameMovieName: isSameMovieName,
         streamComparator: streamComparator,
@@ -249,7 +263,8 @@ _define('util', [window], function (window) {
         caesarShift: caesarShift,
         fireEvent: fireEvent,
         listenEvent: listenEvent,
-        removeEvent: removeEvent
+        removeEvent: removeEvent,
+        logEvent: logEvent
     }
 });
 
@@ -272,7 +287,7 @@ _define('handler', [window, document, 'util', 'manager', 'layout', 'downloads'],
     function documentReady() {
         background.setSearchFunction(function (text) {
             $("#search-input").val(text);
-            manager.searchEntered();
+            manager.searchEntered(true);
         });
 
         $(window).scroll(function () {
@@ -288,8 +303,10 @@ _define('handler', [window, document, 'util', 'manager', 'layout', 'downloads'],
 
         $(".header-logo").click(function () {
             layout.goToHome();
+            util.logEvent('logo', 'click');
         });
         $(".close-button").click(function () {
+            util.logEvent('close', 'click');
             background.closeWindow();
         });
         $(".reopen").click(function () {
@@ -303,34 +320,44 @@ _define('handler', [window, document, 'util', 'manager', 'layout', 'downloads'],
             layout.popup.closePopup();
         });
         $("#moviesResultsButton").click(function () {
+            util.logEvent('movieResults', 'click');
             layout.setMovieListVisible();
         });
         $("#seriesResultsButton").click(function () {
+            util.logEvent('serieResults', 'click');
             layout.setSerieListVisible();
         });
         $("#route-serie").click(function () {
+            util.logEvent('showSerieLevel', 'click');
             layout.showSerieLevel();
         });
         $("#route-season").click(function () {
+            util.logEvent('showSeasonLevel', 'click');
             layout.showSeasonLevel();
         });
         $("#episodeStreamButton").find(".feeling-lucky").click(function (evt) {
+            util.logEvent('episodeStreamButton', 'click');
             manager.openEpisodesStreamPopup();
         });
         $("#episodeSubtitleButton").find(".feeling-lucky").click(function (evt) {
+            util.logEvent('episodeSubtitleButton', 'click');
             manager.openEpisodesSubtitlePopup();
         });
         $("#episodeTrailerButton").find(".feeling-lucky").click(function (evt) {
+            util.logEvent('episodeTrailerButton', 'click');
             manager.openSeasonTrailer();
         });
 
         $("#movieTrailerButton").find(".feeling-lucky").click(function (evt) {
+            util.logEvent('movieTrailerButton', 'click');
             manager.openMovieTrailer();
         });
         $("#movieStreamButton").find(".feeling-lucky").click(function (evt) {
+            util.logEvent('movieStreamButton', 'click');
             manager.openMovieStreamPopup();
         });
         $("#movieSubtitleButton").find(".feeling-lucky").click(function (evt) {
+            util.logEvent('movieSubtitleButton', 'click');
             manager.openMovieSubtitlePopup();
         });
         $(".video-closer").click(function (evt) {
@@ -340,24 +367,29 @@ _define('handler', [window, document, 'util', 'manager', 'layout', 'downloads'],
             manager.closeYoutube();
         });
         $("#downloads-button").click(function (evt) {
+            util.logEvent('downloadsButton', 'click');
             layout.setupDownloadSection();
         });
 
         $(".downloads-back").click(function (evt) {
+            util.logEvent('downloadsBack', 'click');
             layout.goBackFromDownloads();
         });
 
         $("#footerFB").click(function (evt) {
+            util.logEvent('footerFB', 'click');
             chrome.tabs.create({'url': 'https://www.facebook.com/getBringe'}, function (tab) {
             });
         });
 
         $("#footerChrome").click(function (evt) {
+            util.logEvent('footerChrome', 'click');
             chrome.tabs.create({'url': 'https://goo.gl/xrh6u1'}, function (tab) {
             });
         });
 
         $("#footerGithub").click(function (evt) {
+            util.logEvent('footerGithub', 'click');
             chrome.tabs.create({'url': 'https://github.com/sagar0907/bringe'}, function (tab) {
             });
         });
