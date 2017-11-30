@@ -182,7 +182,7 @@ _define('123series', [window, 'util', 'bringe'], function (window, util, bringe)
 
     function loadSeason(obj, callback) {
         if (!bringe.serie.websites || !bringe.serie.websites.series123 || !bringe.serie.websites.series123.serieId) {
-            callback(false, {site: "123series"});
+            return callback(false, {site: "123series"});
         }
         var seasonNo = obj.seasonNo,
             link = base_url + '/ajax/v2_get_episodes/s' + seasonNo + '-' + bringe.serie.websites.series123.serieId;

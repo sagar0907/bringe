@@ -236,6 +236,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
             if (window.trending.movies[index]) {
                 layout.hideAllSection();
                 var movie = window.trending.movies[index];
+                util.logEvent('getMovie', 'shortcut', movie.name);
                 bringe.movie = setupThisMovie(movie);
                 layout.popup.showRottenLoader($(".movie-wrapper"));
                 layout.showMoviePart();
@@ -393,10 +394,10 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function openMovieStreamLink(selector) {
-            util.logEvent('openMovieStream', 'click');
             if (selector && selector.id) {
                 var movie = movies.getMovieBySelector(selector);
                 if (movie) {
+                    util.logEvent('openMovieStream', 'click', movie.name);
                     if (movie.type === 'iframe') {
                         chrome.tabs.create({'url': movie.src}, function (tab) {
                         });
@@ -418,7 +419,7 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function downloadMovieSubtitle(id) {
-            util.logEvent('downloadMovieSubtitle', 'click');
+            util.logEvent('downloadMovieSubtitle', 'click', bringe.movie.name);
             layout.popup.openWaiter("Adding Subtitle to Downloads");
             downloads.addToDownload(bringe.movie.subtitleLinks[id].link, bringe.movie.name, " (Bringe).zip", function (downloadId) {
                 layout.popup.closeWaiter();
@@ -429,9 +430,9 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function downloadEpisodeSubtitle(id) {
-            util.logEvent('downloadEpisodeSubtitle', 'click');
             var serie = bringe.serie;
             layout.popup.openWaiter("Adding Subtitle to Downloads");
+            util.logEvent('downloadEpisodeSubtitle', 'click', serie.title + ' - ' + serie.seasonNo + 'E' + serie.episodeNo);
             downloads.addToDownload(subscene.getSubtitleEpisode(serie.seasonNo, serie.episodeNo).links[id].link, serie.title, " (Bringe).zip", function (downloadId) {
                 layout.popup.closeWaiter();
                 if (downloadId) {
@@ -441,10 +442,10 @@ _define('manager', [window, 'util', 'bringe', 'layout', 'rottenTomatoes', 'serie
         }
 
         function openSerieStreamLink(selector) {
-            util.logEvent('openSerieStream', 'click');
             if (selector && selector.id && selector.source) {
                 var episode = series.getEpisodeBySelector(selector);
                 if (episode) {
+                    util.logEvent('openSerieStream', 'click');
                     if (episode.type === 'iframe') {
                         chrome.tabs.create({'url': episode.src}, function (tab) {
                         });

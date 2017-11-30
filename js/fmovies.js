@@ -1,6 +1,6 @@
 _define('fmovies', [window, 'util', 'bringe'], function (window, util, bringe) {
     var callback;
-    var base_url = "https://bmovies.to";
+    var base_url = "https://bmovies.is";
     var ts;
 
     function failFunction(name, error) {
