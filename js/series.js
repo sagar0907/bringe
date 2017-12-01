@@ -7,7 +7,7 @@ _define('series', [window, 'util', 'bringe', 'layout', 'fseries', '123series', '
             '123series': series123,
             '123seriesonline': seriesonline123
         };
-        var totalCount = 3;
+        var totalCount = 2;
 
         function handleSerieResponse() {
 
