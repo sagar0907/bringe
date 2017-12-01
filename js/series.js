@@ -3,7 +3,7 @@ _define('series', [window, 'util', 'bringe', 'layout', 'fseries', '123series', '
 
         var serieAdapters = {
             'fseries': fseries,
-            'watchseries': watchseries,
+            //'watchseries': watchseries,
             '123series': series123,
             '123seriesonline': seriesonline123
         };

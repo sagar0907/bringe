@@ -1,5 +1,5 @@
 _define('watchseries', [window, 'util', 'bringe'], function (window, util, bringe) {
-    var base_url = 'http://xwatchseries.to',
+    var base_url = 'http://itswatchseries.to',
         episodeCallback;
 
     function failEpisodeFunction(name, seasonNo, episodeNo, error) {
