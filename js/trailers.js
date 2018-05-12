@@ -14,8 +14,8 @@ _define('trailer', ['util'], function (util) {
         }
         promise.then(function (result) {
             var doc = util.getDocFromHTML(result),
-                mainLink = doc.find("._ELb a"),
-                links = doc.find("._Rm"),
+                mainLink = doc.find(".twQ0Be a"),
+                links = doc.find("cite.iUh30"),
                 link;
             if (mainLink.length > 0) {
                 link = mainLink.attr('href');

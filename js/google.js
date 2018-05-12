@@ -23,12 +23,12 @@ _define('google', [window], function (window) {
                     reviews = [],
                     social = [],
                     i;
-                var criticReviews = myDoc.find("critic-reviews-container ._Xai");
+                var criticReviews = myDoc.find("critic-reviews-container .beulkd");
                 for (i = 0; i < criticReviews.length; i++) {
                     var review = {};
                     var criticReview = $(criticReviews[i]);
-                    var text = criticReview.find("._Qsh i").html();
-                    var sourceDiv = criticReview.find("._Kpm div");
+                    var text = criticReview.find(".NIUoNb i").html();
+                    var sourceDiv = criticReview.find(".Htriib div");
                     var source = {};
                     if (sourceDiv.length > 0) {
                         var sourceSite = $(sourceDiv).find("a").text().trim();

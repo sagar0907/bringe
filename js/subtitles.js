@@ -135,7 +135,7 @@ _define('subscene', [window, 'util', 'bringe'], function (window, util, bringe) 
             var parser = new DOMParser(),
                 doc = parser.parseFromString(result, "text/html"),
                 myDoc = $(doc);
-            var links = myDoc.find("a[onmousedown]");
+            var links = myDoc.find("h3.r a");
             var subsceneLinks = getSubsceneLinks(links);
             for (var i = 0; i < subsceneLinks.length; i++) {
                 util.sendAjax(subsceneLinks[i], "GET", {}, util.getProxy(subtitleSuccessFunction, [func]), failFunction);
