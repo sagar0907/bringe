@@ -45,7 +45,7 @@ _define('subscene', [window, 'util', 'bringe'], function (window, util, bringe) 
         return '';
     }
 
-    function getSubsceneLinks(links) {
+    function filterSubsceneLinks(links) {
         var list = [];
         if (bringe.page != "movie" && bringe.page != "serie") return list;
         for (var i = 0; i < links.length; i++) {
@@ -56,94 +56,72 @@ _define('subscene', [window, 'util', 'bringe'], function (window, util, bringe) 
         return list;
     }
 
-    function searchEpisodeSubtitle(thisEpisode, func) {
-        var link;
-        if (bringe.page != "serie") {
-            return;
+    function getSubsceneLinks(result) {
+        var parser = new DOMParser(),
+            doc = parser.parseFromString(result, "text/html"),
+            myDoc = $(doc);
+        var links = myDoc.find("h3.r a");
+        return filterSubsceneLinks(links);
+    }
+
+    function getSubtitleLinkFromSubscene(result) {
+        var parser = new DOMParser(),
+            doc = parser.parseFromString(result, "text/html"),
+            myDoc = $(doc),
+            button = myDoc.find("#downloadButton"),
+            ratingBox = myDoc.find(".rating span"),
+            rating = "-";
+        if (button.length > 0) {
+            var link = "https://subscene.com" + button.attr("href");
+            if (ratingBox.length > 0) {
+                rating = ratingBox.html();
+            }
+            return {link: link, rating: rating};
         }
-        link = "https://www.google.com/search?q=" + thisEpisode.serieName + "+" + getSeasonPart(thisEpisode.seasonNo) + getEpisodePart(thisEpisode.episodeNo) + "+english+-arabic+site:subscene.com/subtitles";
+    }
+
+    function searchEpisodeSubtitle(thisEpisode, callback) {
+        var link = "https://www.google.com/search?q=" + thisEpisode.serieName + "+" + getSeasonPart(thisEpisode.seasonNo) + getEpisodePart(thisEpisode.episodeNo) + "+english+-arabic+site:subscene.com/subtitles";
         var episode = getSubtitleEpisode(thisEpisode.seasonNo, thisEpisode.episodeNo);
         episode.links = [];
-        function searchEpisodeSuccess(result) {
-            if (bringe.page != "serie") {
-                return;
-            }
-            var parser = new DOMParser(),
-                doc = parser.parseFromString(result, "text/html"),
-                myDoc = $(doc),
-                links = myDoc.find("a[onmousedown]"),
-                subsceneLinks = getSubsceneLinks(links);
-            for (var i = 0; i < subsceneLinks.length; i++) {
-                util.sendAjax(subsceneLinks[i], "GET", {}, util.getProxy(parseSubtitleEpisodeLink, [thisEpisode, func]), util.getProxy(func, [false]));
-            }
-        }
 
-        util.sendAjax(link, "GET", {}, searchEpisodeSuccess, util.getProxy(func, [false]));
+        util.ajaxPromise(link).then(function (response) {
+            var links = getSubsceneLinks(response);
+            util.each(links, function (link) {
+                util.ajaxPromise(link).then(function (response) {
+                    var link = getSubtitleLinkFromSubscene(response);
+                    if (link) {
+                        var subtitleEpisode = getSubtitleEpisode(thisEpisode.seasonNo, thisEpisode.episodeNo);
+                        subtitleEpisode.links = subtitleEpisode.links || [];
+                        var len = subtitleEpisode.links.length;
+                        link.index = len;
+                        subtitleEpisode.links.push(link);
+                        if (len == 0) {
+                            callback(true);
+                        }
+                    }
+                });
+            });
+        }).catch(function (error) {
+            callback(false, error);
+        });
     }
 
-    function parseSubtitleEpisodeLink(thisEpisode, func, result) {
-        if (bringe.page != "serie") return;
-        var parser = new DOMParser(),
-            doc = parser.parseFromString(result, "text/html"),
-            myDoc = $(doc),
-            button = myDoc.find("#downloadButton"),
-            ratingBox = myDoc.find(".rating"),
-            rating = "-";
-        if (button.length > 0) {
-            var link = "https://subscene.com" + button.attr("href");
-            if (ratingBox.length > 0) {
-                ratingBox = ratingBox.find("span");
-                if (ratingBox.length > 0)
-                    rating = ratingBox.html();
-            }
-            var subtitleEpisode = getSubtitleEpisode(thisEpisode.seasonNo, thisEpisode.episodeNo);
-            subtitleEpisode.links = subtitleEpisode.links || [];
-            var len = subtitleEpisode.links.length;
-            if (len == 0) {
-                func(true);
-            }
-            subtitleEpisode.links.push({link: link, rating: rating, index: len});
-        }
-    }
-
-    function subtitleSuccessFunction(func, result) {
-        var parser = new DOMParser(),
-            doc = parser.parseFromString(result, "text/html"),
-            myDoc = $(doc),
-            button = myDoc.find("#downloadButton"),
-            ratingBox = myDoc.find(".rating"),
-            rating = "-";
-        if (button.length > 0) {
-            var link = "https://subscene.com" + button.attr("href");
-            if (ratingBox.length > 0) {
-                ratingBox = ratingBox.find("span");
-                if (ratingBox.length > 0) {
-                    rating = ratingBox.html();
-                }
-            }
-            func(true, {link: link, rating: rating});
-        }
-    }
-
-    function searchMovieSubtitle(name, year, func) {
-        function failFunction() {
-            func(false);
-        }
-
-        function movieSuccessFunction(result) {
-            if (bringe.page != "movie") return;
-            var parser = new DOMParser(),
-                doc = parser.parseFromString(result, "text/html"),
-                myDoc = $(doc);
-            var links = myDoc.find("h3.r a");
-            var subsceneLinks = getSubsceneLinks(links);
-            for (var i = 0; i < subsceneLinks.length; i++) {
-                util.sendAjax(subsceneLinks[i], "GET", {}, util.getProxy(subtitleSuccessFunction, [func]), failFunction);
-            }
-        }
-
+    function searchMovieSubtitle(name, year, callback) {
         var link = "https://www.google.com/search?q=" + name + "+" + year + "+english+-arabic+site:subscene.com/subtitles";
-        util.sendAjax(link, "GET", {}, movieSuccessFunction, failFunction);
+        util.ajaxPromise(link).then(function (response) {
+            var links = getSubsceneLinks(response);
+            util.each(links, function (link) {
+                util.ajaxPromise(link).then(function (response) {
+                    var link = getSubtitleLinkFromSubscene(response);
+                    if (link) {
+                        callback(true, link);
+                    }
+                });
+            });
+        }).catch(function (error) {
+            callback(false, error);
+        })
     }
 
     return {
