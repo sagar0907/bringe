@@ -153,7 +153,7 @@ _define('fseries', [window, 'util', 'bringe'], function (window, util, bringe) {
         if (bringe.page != "serie") return;
         var myDoc = util.getDocFromHTML(result),
             script = $(myDoc.find('.videocontent script')[0]),
-            regx = /playerInstance.setup\({sources:\[{file:'(.+)',label:'autoP'/;
+            regx = /playerInstance.setup\({sources:\[{file:'(.+?)',label:'autoP'/;
         script = script.html().replaceAll(' ', '').replaceAll('\n', '');
         var matches = script && regx.exec(script);
         var url = matches && matches[1];
